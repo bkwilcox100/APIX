@@ -1,0 +1,88 @@
+CREATE TABLE IF NOT EXISTS heb_AppProperties (
+	appId varchar(1024), 
+	description varchar(1024), 
+	appVersions varchar(1024), 
+	creationDate varchar(1024), 
+	lastModifiedDate varchar(1024), 
+
+);
+CREATE TABLE IF NOT EXISTS heb_AppVersion (
+	appVersionId varchar(1024), 
+	osName varchar(1024), 
+	osVersion varchar(1024), 
+	creationDate varchar(1024), 
+	lastModifiedDate varchar(1024), 
+
+);
+CREATE TABLE IF NOT EXISTS heb_ResourcePath (
+	batchPath varchar(1024), 
+	description varchar(1024), 
+	id varchar(1024), 
+	name varchar(1024), 
+	path varchar(1024), 
+
+);
+CREATE TABLE IF NOT EXISTS heb_ServiceDescription (
+	currentVersion varchar(1024), 
+	description varchar(1024), 
+	documentation varchar(1024), 
+	id varchar(1024), 
+	labels varchar(1024), 
+	name varchar(1024), 
+	openApiSpecUrl varchar(1024), 
+	serviceVersions varchar(1024), 
+
+);
+CREATE TABLE IF NOT EXISTS heb_ServiceVersion (
+	basePath varchar(1024), 
+	description varchar(1024), 
+	hostName varchar(1024), 
+	id varchar(1024), 
+	openApiSpecUrl varchar(1024), 
+	resourcePaths varchar(1024), 
+	versionNumber varchar(1024), 
+
+);
+CREATE TABLE IF NOT EXISTS heb_ApiCollection (
+	contactInfo varchar(1024), 
+	description varchar(1024), 
+	id varchar(1024), 
+	name varchar(1024), 
+	serviceDescriptions varchar(1024), 
+
+);
+CREATE TABLE IF NOT EXISTS heb_SuccessMessage (
+	success varchar(1024), 
+
+);
+CREATE TABLE IF NOT EXISTS heb_Message (
+	code varchar(1024), 
+	text varchar(1024), 
+
+);
+CREATE TABLE IF NOT EXISTS heb_ErrorResponse (
+	id varchar(1024), 
+	status varchar(1024), 
+	object varchar(1024), 
+	message varchar(1024), 
+
+);
+CREATE TABLE IF NOT EXISTS heb_BatchResponse (
+	success varchar(1024), 
+	errors varchar(1024), 
+
+);
+CREATE TABLE IF NOT EXISTS heb_AuditLogEntry (
+	changeId varchar(1024), 
+	dataItemType varchar(1024), 
+	itemId varchar(1024), 
+	userId varchar(1024), 
+	operation varchar(1024), 
+	jsonResponse varchar(1024), 
+	creationDate varchar(1024), 
+	lastModifiedDate varchar(1024), 
+
+);
+CREATE TABLE IF NOT EXISTS heb_JsonMap (
+
+);

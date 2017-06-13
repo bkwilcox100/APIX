@@ -1,5 +1,0 @@
-
-
-exports.createTable = function(document){
-
-}

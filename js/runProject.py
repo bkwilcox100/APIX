@@ -9,8 +9,8 @@ print("Now running Server @ " + rightNow)
 systemType = platform.system()
 if (systemType == 'Darwin'):
     #os.chdir("/Users/brandonwilcox/Development/OpenAPI/NodeJS/APIX")
-    os.system("cd /Users/brandonwilcox/Development/OpenAPI/NodeJS/APIX")
-    os.system("node /Users/brandonwilcox/Development/OpenAPI/NodeJS/APIX/main.js")
+    os.system("cd /Users/brandonwilcox/Development/OpenAPI/NodeJS/APIX/js")
+    os.system("node /Users/brandonwilcox/Development/OpenAPI/NodeJS/APIX/js/main.js")
 else:
-    os.chdir("C:/Users/w767413/Documents/OpenAPI/NodeJS/APIX/")
+    os.chdir("C:/Users/w767413/Documents/OpenAPI/NodeJS/APIX/js/")
     subprocess.run("node main.js")

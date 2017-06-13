@@ -1,3 +1,5 @@
+use middle_layer;
+
 CREATE TABLE IF NOT EXISTS heb_AppProperties (
 	appId varchar(64) not null,
 	description varchar(1024),

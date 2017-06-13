@@ -13,7 +13,7 @@ Return: None
 */
 
 exports.createTable = function(doc, destPath){
-  var wholeCreateTable = "";
+  var wholeCreateTable = "use middle_layer;\n\n";
   var primaryKey = null;
 
   // Check for required field

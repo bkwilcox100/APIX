@@ -4,12 +4,47 @@
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link href="./styles.css" rel="stylesheet">
+
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
     <title>APIX UI</title>
   </head>
-  <body>
+  <body onload="runFunctions()">
+    <script src="./interface_main.js" type="text/javascript"></script>
     <div class="header">
-      <h1 id="siteTitle">APIX Expander</h1>
+      <img src="./resources/heb_logo.png" alt="HEB Logo" id="logo">
+      <div class="title-sub">
+        <h2 id="site-title">APIX (aka API Expander)</h2>
+        <h5 id="site-subtitle">A simple tool for expanding an Open API defintion into useful documentation</h5>
+      </div>
     </div>
-    
+    <div class="main-content">
+      <h1 id="api-name"></h1>
+      <p>
+        <ul>
+          <li id="api-description"></li>
+          <li id="api-author"></li>
+          <li id="api-ex-doc"></li>
+          <li id="api-host"></li>
+          <br>
+          <li>
+            <b>Open API Paths:</b>
+            <p id="OATable-paths">
+
+            </p>
+          </li>
+          <li>
+            <b>Open API Definitions:</b>
+            <p id="OATable-definitions">
+            </p>
+          </li>
+          <li>
+            Open API Spec:
+            <p>
+              <pre class="prettyprint" id="json-plug"</pre>
+            </p>
+          </li>
+        </ul>
+      </p>
+    </div>
   </body>
 </html>

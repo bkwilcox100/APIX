@@ -21,13 +21,14 @@ var yam = require('js-yaml');
 var stdfunc = require("./stdfunc.js");
 
 // User Defined Variables
-var sourceYML = './openapiexample.yml';
-
+var sourceYML = './docs/openapiexample.yml';
+var sourceXML = './docs/data-store.xml';
 // Serialize YML document
-var doc = stdfunc.serializeYML(sourceYML,'./currentJSON.json');
+var doc = stdfunc.serializeYML(sourceYML, './docs/YML_JSON.json');
+var x_doc = stdfunc.serializeXML(sourceXML, './docs/XML_JSON.json');
 
 // Create Table based on YML document
-stdfunc.createTable(doc, './sql_output.sql');
+stdfunc.createTable(doc, './docs/sql_output.sql');
 
 // TESTING PURPOSES: Create Local Server and listen on port 8080
 http.createServer(function(req, res) {
@@ -35,13 +36,16 @@ http.createServer(function(req, res) {
     'Content-Type': 'text/html'
   });
   res.write("API Name: " + doc.info.title + "\n");
-  if (doc.info.hasOwnProperty('description')){
+  if (doc.info.hasOwnProperty('description')) {
     res.write("Description: " + doc.info.description + "\n");
   }
-  if (doc.info.hasOwnProperty('contact')){
-    if (doc.info.contact.hasOwnProperty('name')){
+  if (doc.info.hasOwnProperty('contact')) {
+    if (doc.info.contact.hasOwnProperty('name')) {
       res.write("Author: " + doc.info.contact.name + "\n");
     }
   }
+  res.write("YML Parse: COMPLETE\n");
+  res.write("SQL Table Create: COMPLETE\n");
+  res.write("XML Parse: COMPLETE\n")
   res.end("END RESPONSE");
 }).listen(8080);

@@ -1,5 +1,6 @@
 var fs = require('fs');
 var yam = require('js-yaml');
+var xml2js = require('xml2js');
 
 /*
 Name: createTable
@@ -12,124 +13,100 @@ Preconditions:
 Return: None
 */
 
-exports.createTable = function(doc, destPath){
+exports.createTable = function(doc, destPath) {
   var wholeCreateTable = "use middle_layer;\n\n";
   var primaryKey = null;
 
   // Check for required field
   var requiredList = [];
-  for (key in doc["definitions"]){
-    for(keyItem in doc["definitions"][key]["required"]){
+  for (key in doc["definitions"]) {
+    for (keyItem in doc["definitions"][key]["required"]) {
       requiredList.push(doc["definitions"][key]["required"][keyItem]);
     }
   }
 
   // Create Table for each definition
-  for (key in doc["definitions"]){
+  for (key in doc["definitions"]) {
     var tableString = "CREATE TABLE IF NOT EXISTS heb_" + key + " (\n";
     primaryKey = null;
-    for (prop in doc["definitions"][key]["properties"]){
+    for (prop in doc["definitions"][key]["properties"]) {
       isArray = false;
-      for (element in doc["definitions"][key]["properties"][prop]){
+      for (element in doc["definitions"][key]["properties"][prop]) {
         var propertyName = JSON.stringify(prop);
         var typeFormat = doc["definitions"][key]["properties"][prop]["format"];
         var flag = doc["definitions"][key]["properties"][prop]["type"];
 
         // Ensure the loop only adds to the document once per property
-        if (element == "type"){
+        if (element == "type") {
           // If the property is type string
-          if (flag == "string"){
+          if (flag == "string") {
             // Check if ID
-            if (propertyName.slice(-3, -1).toUpperCase() == "ID" ){
+            if (propertyName.slice(-3, -1).toUpperCase() == "ID") {
               tableString += ("\t" + prop + " varchar(64)");
               // If first occurence of ID data, set as primary key
-              if (primaryKey == null){
+              if (primaryKey == null) {
                 primaryKey = prop;
               }
-            }
-
-            else if (propertyName.slice(-5, -1).toUpperCase() == "DATE"){
+            } else if (propertyName.slice(-5, -1).toUpperCase() == "DATE") {
               tableString += ("\t" + prop + " datetime default current_timestamp");
-              if (propertyName.slice(1, 5).toUpperCase() == "LAST"){
+              if (propertyName.slice(1, 5).toUpperCase() == "LAST") {
                 tableString += " on update current_timestamp";
               }
-            }
-
-            else {
+            } else {
               tableString += ("\t" + prop + " varchar(1024)");
             }
           }
 
           // If property is type integer
           else if (flag == "integer") {
-            console.log("INTEGER DETECTED: " + typeFormat);
             var hasMin = doc["definitions"][key]["properties"][prop].hasOwnProperty('minimum');
             var hasMax = doc["definitions"][key]["properties"][prop].hasOwnProperty('maximum');
-            if (hasMax && hasMin){
+            if (hasMax && hasMin) {
               var max = doc["definitions"][key]["properties"][prop]["maximum"];
               var min = doc["definitions"][key]["properties"][prop]["minimum"];
-              if (max < min){
+              if (max < min) {
                 throw "Bad Index: Min larger than max";
-              }
-              else {
+              } else {
                 tableString += ("\t" + prop + " varchar(" + max + ")");
               }
-            }
-
-            else if (hasMax) {
+            } else if (hasMax) {
               var max = doc["definitions"][key]["properties"][prop]["maximum"];
               tableString += ("\t" + prop + " varchar(" + max + ")");
-            }
-
-            else if (hasMin) {
+            } else if (hasMin) {
               var min = doc["definitions"][key]["properties"][prop]["minimum"];
-              if (min < 32){
+              if (min < 32) {
                 tableString += ("\t" + prop + " varchar(" + 32 + ")");
               } else {
                 tableString += ("\t" + prop + " varchar(" + min + ")");
               }
-            }
-            else {
+            } else {
               tableString += ("\t" + prop + " varchar(64)");
             }
-          }
-
-          else if (flag == "number") {
-            console.log("NUMBER DETECTED");
-            if (typeFormat == "float"){
+          } else if (flag == "number") {
+            if (typeFormat == "float") {
               tableString += ("\t" + prop + " varchar(32)");
             } else {
               tableString += ("\t" + prop + " varchar(64)");
             }
-          }
-
-          else if (flag == "boolean") {
+          } else if (flag == "boolean") {
             tableString += ("\t" + prop + " varchar(1)");
-          }
-
-          else {
+          } else {
             //tableString += ("\t" + prop + " other\n");
-            console.log("DATA FALLEN: " + prop);
           }
 
           var isRequired = false;
 
-          for (x in requiredList){
-            if (requiredList[x] == prop){
+          for (x in requiredList) {
+            if (requiredList[x] == prop) {
               tableString += " not null,";
               isRequired = true;
               break; // Redesign before final
             }
           }
 
-          console.log("Prop: " + prop);
-          console.log("Flag: " + flag);
-          console.log(requiredList);
-          console.log();
-
-          if (!isRequired && flag == "string"){
+          if (!isRequired && flag == "string") {
             tableString += ",\n";
-          } else if (isRequired){
+          } else if (isRequired) {
             tableString += "\n";
           } else if (flag != "array") {
             tableString += ",\n";
@@ -163,7 +140,7 @@ Preconditions:
 - YML document exists at specfied path
 Return: JSON object
 */
-exports.serializeYML = function(sourcePath, destPath){
+exports.serializeYML = function(sourcePath, destPath) {
   // Constants
   var CURRENT_TIME = Date();
   // Attempt to Serialize YAML file
@@ -184,4 +161,36 @@ exports.serializeYML = function(sourcePath, destPath){
     console.log(error);
   }
   return doc;
+}
+
+/*
+Name: serializeXML
+Description: Converts XML to JSON object
+Parameters:
+- sourcePath : Source XML doc to be converted
+Preconditions:
+- XML document exists at specfied path
+Return: JSON object
+*/
+exports.serializeXML = function(sourcePath, destPath) {
+  fs.readFile(sourcePath, 'utf8', function(err, data) {
+    if (err) {
+      console.error(err);
+    }
+    xml2js.parseString(data, function(err2, result) {
+      if (err2) {
+        console.error(err2);
+      }
+      console.log("XML Conversion Successful");
+      var stringResult = JSON.stringify(result);
+      console.log(result);
+      fs.writeFile(destPath, stringResult, function(err3) {
+        if (err3) {
+          console.error(err3);
+        }
+        console.log("XML Write Successful");
+      });
+      return result;
+    });
+  });
 }

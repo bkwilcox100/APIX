@@ -1,6 +1,9 @@
 html, body {
-  margin: 0;
-  padding: 0;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  position:fixed;
 }
 
 html {
@@ -8,14 +11,66 @@ html {
 }
 
 body {
-background-color: #72a8ff;
 font-family: "Open Sans";
 }
 
+ul {
+  list-style-type: none;
+}
+
+table {
+  border-collapse: collapse;
+  color: #0052CC;
+}
+
+td, th {
+  border: 1px solid #0052CC;
+  text-align: left;
+  padding: 8px;
+}
+
+#logo {
+  height: auto;
+  width: 100px;
+  display: inline-block;
+}
+
+.title-sub {
+  display: inline-block;
+  margin-left: 20px;
+}
+
+#site-title {
+  margin: 0;
+}
+
+#site-subtitle {
+  margin: 0;
+}
+
 .header {
-    top: 0;
-    padding: 0;
-    position:relative;
-    margin: 0;
-    background-color: white;
+  padding-left: 20px;
+}
+
+.main-content h1 {
+  margin-bottom: 0;
+  padding: 0;
+  margin-left: 40px;
+}
+
+.main-content a {
+  text-decoration: none;
+}
+
+.main-content pre {
+  color: green;
+  font-size: 13px;
+}
+
+.main-content li {
+  font-size: 18px;
+}
+
+.main-content b {
+  color: #EE2E24;
 }

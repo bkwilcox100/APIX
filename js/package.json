@@ -12,5 +12,9 @@
   "dependencies": {
     "js-yaml": "^3.8.4"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://git.heb.com/w767413/APIX.git"
+  }
 }

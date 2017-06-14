@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<data-store>
+
+	<!--
+		==========================================================
+		Definitions of resources for Liquid Sky Context Filters
+		==========================================================
+	-->
+	<!-- Liquid Sky Translation Repository Definition -->
+	<data-type name="contextFilters" id-property="dataTypeName" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="ls_context_filters" type="primary" id-column="data_type_name">
+			<column column-name="data_type_name" property="dataTypeName" />
+			<column column-name="description" property="description" />
+			<column column-name="json_data" property="jsonData" />
+		</table>
+	</data-type>
+	<!--DO NOT TOUCH-->
+	
+	<!--
+		==========================================================
+		Definitions of resources for Liquid Sky Admin Audit Log
+		==========================================================
+	-->
+	<!-- Liquid Sky Admin Portal Audit Log -->
+	<data-type name="liquidSkyAdminAuditLog" id-property="changeId" id-generator-prefix="alc_" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="ls_admin_audit_log" type="primary" id-column="id">
+			<column column-name="id" property="changeId" />
+			<column column-name="data_item_type" property="dataItemType" />
+			<column column-name="data_item_id" property="itemId" />
+			<column column-name="user_id" property="userId" />
+			<column column-name="operation" property="operation" />
+			<column column-name="json_response" property="jsonResponse" />
+		</table>
+
+		<!-- Named Queries -->
+		<named-query name="getAllAuditLogs">
+			select id from ls_admin_audit_log order by creation_date desc;
+		</named-query>
+
+		<named-query name="getLast100AuditLogs">
+			select id from ls_admin_audit_log order by creation_date desc limit 100;
+		</named-query>
+
+		<named-query name="getLastNAuditLogs">
+			select id from ls_admin_audit_log order by creation_date desc limit ?;
+		</named-query>
+
+		<named-query name="getAllAuditLogsForType">
+			select id from ls_admin_audit_log where data_item_type = ?
+		</named-query>
+
+		<named-query name="getAllAuditLogsForTypeAndItemId">
+			select id from ls_admin_audit_log where data_item_type = ? and data_item_id = ?;
+		</named-query>
+
+	</data-type>
+
+
+	<!--
+		==========================================================
+		Definitions of resources for AppProperties (App Version)
+		==========================================================
+	-->
+	<!--  Defines an app version DataType -->
+	<data-type name="appProperties" id-property="appId" use-id-generator="false" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="heb_app_properties" type="primary" id-column="appId">
+			<column column-name="appid" property="appId">
+				<attribute name="requiredProperty" value="true"/>
+				<attribute name="restrictedProperty" value="true"/>
+				<attribute name="maxLength" value="64"/>
+				<attribute name="minLength" value="1"/>
+			</column>
+			<column column-name="description" property="description">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="1024"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+		</table>
+
+		<!-- defines the link to all app version entries item types attached to this app properties -->
+		<table name="heb_app_version" type="reference" id-column="appid">
+			<column column-name="app_version_id" list-item-type="appVersion" property="appVersions" read-only="true" cascade="true" />
+		</table>
+
+		<!-- Named Queries -->
+		<named-query name="all_app_properties">
+			select appid from heb_app_properties
+		</named-query>
+	</data-type>
+
+	<!--  Defines an app version entry -->
+	<data-type name="appVersion" id-property="id" id-generator-prefix="av" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="heb_app_version" type="primary" id-column="app_version_id">
+			<column column-name="app_version_id" property="id">
+				<attribute name="restrictedProperty" value="true"/>
+			</column>
+			<column column-name="appid" item-type="appProperties" property="parent" />
+			<column column-name="os_name" property="osName">
+				<attribute name="requiredProperty" value="true"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="64"/>
+				<attribute name="minLength" value="1"/>
+			</column>
+			<column column-name="os_version" property="osVersion">
+				<attribute name="requiredProperty" value="true"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="64"/>
+				<attribute name="minLength" value="1"/>
+			</column>
+		</table>
+	</data-type>
+
+
+	<!--
+		==========================================================
+		Definitions of resources for API Discovery
+		==========================================================
+	-->
+	<!--  Defines the apiCollection DataType -->
+	<data-type name="apiCollection" id-property="id" id-generator-prefix="acol" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="heb_api_collection" type="primary" id-column="collection_id">
+			<column column-name="collection_id" property="id">
+				<attribute name="restrictedProperty" value="true"/>
+			</column>
+			<column column-name="name" property="name">
+				<attribute name="requiredProperty" value="true"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="128"/>
+				<attribute name="minLength" value="1"/>
+			</column>
+			<column column-name="description" property="description">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="2048"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+			<column column-name="contact_info" property="contactInfo">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="2048"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+		</table>
+
+		<!-- Defines the link to all service descriptions for this collection -->
+		<table name="heb_api_service_description" type="reference" id-column="collection_id">
+			<column column-name="service_id" list-item-type="serviceDescription" property="serviceDescriptions" read-only="true" cascade="true" />
+		</table>
+
+		<!-- Defines named query that gets all ApiCollections -->
+		<named-query name="getAllApiCollections">
+			select collection_id from heb_api_collection order by creation_date desc;
+		</named-query>
+	</data-type>
+
+	<!--  Defines the serviceDescription DataType -->
+	<data-type name="serviceDescription" id-property="id" id-generator-prefix="asrv" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="heb_api_service_description" type="primary" id-column="service_id">
+			<column column-name="service_id" property="id">
+				<attribute name="restrictedProperty" value="true"/>
+			</column>
+			<column column-name="collection_id" item-type="apiCollection" property="parent" />
+			<column column-name="name" property="name">
+				<attribute name="requiredProperty" value="true"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="128"/>
+				<attribute name="minLength" value="1"/>
+			</column>
+			<column column-name="description" property="description">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="2048"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+			<column column-name="labels" property="labels">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="2048"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+			<column column-name="open_api_spec_url" property="openApiSpecUrl">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="2083"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+			<column column-name="documentation_url" property="documentationUrl">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="2083"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+			<column column-name="current_version" property="currentVersion">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="10"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+		</table>
+
+		<!-- Defines the link to all service versions for this collection -->
+		<table name="heb_api_service_version" type="reference" id-column="service_id">
+			<column column-name="version_id" list-item-type="serviceVersion" property="serviceVersions" read-only="true" cascade="true" />
+		</table>
+	</data-type>
+
+	<!--  Defines the serviceVersion DataType -->
+	<data-type name="serviceVersion" id-property="id" id-generator-prefix="aver" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="heb_api_service_version" type="primary" id-column="version_id">
+			<column column-name="version_id" property="id">
+				<attribute name="restrictedProperty" value="true"/>
+			</column>
+			<column column-name="service_id" item-type="serviceDescription" property="parent" />
+			<column column-name="version_number" property="versionNumber">
+				<attribute name="requiredProperty" value="true"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="10"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+			<column column-name="description" property="description">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="2048"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+			<column column-name="host_name" property="hostName">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="1024"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+			<column column-name="base_path" property="basePath">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="256"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+			<column column-name="open_api_spec_url" property="openApiSpecUrl">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="2083"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+		</table>
+
+		<!-- Defines the link to all resource paths for this collection -->
+		<table name="heb_api_resource_path" type="reference" id-column="version_id">
+			<column column-name="path_id" list-item-type="resourcePath" property="resourcePaths" read-only="true" cascade="true" />
+		</table>
+	</data-type>
+
+	<!--  Defines the resourcePath DataType -->
+	<data-type name="resourcePath" id-property="id" id-generator-prefix="ares" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="heb_api_resource_path" type="primary" id-column="path_id">
+			<column column-name="path_id" property="id">
+				<attribute name="restrictedProperty" value="true"/>
+			</column>
+			<column column-name="version_id" item-type="serviceVersion" property="parent" />
+			<column column-name="name" property="name">
+				<attribute name="requiredProperty" value="true"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="128"/>
+				<attribute name="minLength" value="1"/>
+			</column>
+			<column column-name="description" property="description">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="2048"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+			<column column-name="path" property="path">
+				<attribute name="requiredProperty" value="true"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="1024"/>
+				<attribute name="minLength" value="1"/>
+			</column>
+			<column column-name="batch_path" property="batchPath">
+				<attribute name="requiredProperty" value="false"/>
+				<attribute name="restrictedProperty" value="false"/>
+				<attribute name="maxLength" value="1024"/>
+				<attribute name="minLength" value="0"/>
+			</column>
+		</table>
+	</data-type>
+</data-store>

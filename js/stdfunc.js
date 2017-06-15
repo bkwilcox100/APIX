@@ -1,15 +1,16 @@
 var fs = require('fs');
 var yam = require('js-yaml');
 var xml2js = require('xml2js');
-
 /*
 Name: createTable
-Description: Creates SQL table and outputs to file
+Description: Creates SQL table from OA Spec
 Parameters:
 - doc : JSON object used for table creation
 - destPath : Destination for output SQL file
 Preconditions:
 - YML file has already been serialized
+Postconditions:
+- destPath exists
 Return: None
 */
 
@@ -138,6 +139,8 @@ Parameters:
 - destPath : Document to store JSON data
 Preconditions:
 - YML document exists at specfied path
+Postconditions:
+- destPath exists
 Return: JSON object
 */
 exports.serializeYML = function(sourcePath, destPath) {
@@ -170,6 +173,8 @@ Parameters:
 - sourcePath : Source XML doc to be converted
 Preconditions:
 - XML document exists at specfied path
+Postconditions:
+- destPath exists
 Return: JSON object
 */
 exports.serializeXML = function(sourcePath, destPath) {
@@ -193,4 +198,54 @@ exports.serializeXML = function(sourcePath, destPath) {
       return result;
     });
   });
+}
+
+/*
+Name: createXML
+Description: Creates an XML document from OA Spec
+Parameters:
+- sourceDoc : Source YML doc to be converted to XML
+Preconditions:
+- YML document exists at specfied path
+Postconditions:
+- destPath exists
+Return: None
+*/
+exports.createXML = function(sourceDoc, destPath){
+var wholeDoc = "";
+// Iterates through the definitions object
+for (def in sourceDoc["definitions"]){
+  wholeDoc += "<data-type "
+  var hasID = false;
+  var idString = "";
+  wholeDoc += ("name=\"" + def + "\" ");
+  // Iterates through properties to check for an ID
+  for (id in sourceDoc["definitions"][def]["properties"]){
+    if (id.slice(-2, id.length).toLowerCase() == "id"){
+      hasID = true;
+      idString = id;
+      break;
+    }
+  }
+  // If an ID exists add a property
+  if (hasID){
+    wholeDoc += ("id-property=\"" + idString + "\"");
+  }
+  wholeDoc += ">\n";
+
+  wholeDoc += ("<table name=\"heb_" + toUnderscore(def) + "\" ");
+  wholeDoc += ("id-column=\"" + idString + "\">\n");
+  for (prop in sourceDoc["definitions"][def]["properties"]){
+
+  }
+}
+
+console.log(wholeDoc);
+}
+
+// Utility Functions
+
+var toUnderscore = exports.toUnderscore = function(string){
+  var newString = string.replace(/\.?([A-Z]+)/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "");
+  return newString;
 }

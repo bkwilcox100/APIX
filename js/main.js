@@ -30,6 +30,8 @@ var x_doc = stdfunc.serializeXML(sourceXML, './docs/XML_JSON.json');
 // Create Table based on YML document
 stdfunc.createTable(doc, './docs/sql_output.sql');
 
+stdfunc.createXML(doc, "./docs/G_XML.xml");
+
 // TESTING PURPOSES: Create Local Server and listen on port 8080
 http.createServer(function(req, res) {
   res.writeHead(200, {

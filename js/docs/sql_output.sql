@@ -1,6 +1,6 @@
 use middle_layer;
 
-CREATE TABLE IF NOT EXISTS heb_AppProperties (
+CREATE TABLE IF NOT EXISTS heb_app_properties (
 	appId varchar(64) not null,
 	description varchar(1024),
 	orderNumber varchar(64),
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS heb_AppProperties (
 	primary key (appId)
 );
 
-CREATE TABLE IF NOT EXISTS heb_AppVersion (
+CREATE TABLE IF NOT EXISTS heb_app_version (
 	appVersionId varchar(64) not null,
 	osName varchar(1024) not null,
 	osVersion varchar(1024) not null,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS heb_AppVersion (
 	primary key (appVersionId)
 );
 
-CREATE TABLE IF NOT EXISTS heb_ResourcePath (
+CREATE TABLE IF NOT EXISTS heb_resource_path (
 	batchPath varchar(1024),
 	description varchar(1024),
 	id varchar(64),
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS heb_ResourcePath (
 	primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS heb_ServiceDescription (
+CREATE TABLE IF NOT EXISTS heb_service_description (
 	currentVersion varchar(1024),
 	description varchar(1024),
 	documentation varchar(1024),
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS heb_ServiceDescription (
 	primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS heb_ServiceVersion (
+CREATE TABLE IF NOT EXISTS heb_service_version (
 	basePath varchar(1024),
 	description varchar(1024),
 	hostName varchar(1024),
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS heb_ServiceVersion (
 	primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS heb_ApiCollection (
+CREATE TABLE IF NOT EXISTS heb_api_collection (
 	contactInfo varchar(1024),
 	description varchar(1024),
 	id varchar(64),
@@ -56,28 +56,28 @@ CREATE TABLE IF NOT EXISTS heb_ApiCollection (
 	primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS heb_SuccessMessage (
+CREATE TABLE IF NOT EXISTS heb_success_message (
 	primary key (null)
 );
 
-CREATE TABLE IF NOT EXISTS heb_Message (
+CREATE TABLE IF NOT EXISTS heb_message (
 	code varchar(1024),
 	text varchar(1024),
 	primary key (null)
 );
 
-CREATE TABLE IF NOT EXISTS heb_ErrorResponse (
+CREATE TABLE IF NOT EXISTS heb_error_response (
 	id varchar(64),
 	status varchar(1024),
 ,
 	primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS heb_BatchResponse (
+CREATE TABLE IF NOT EXISTS heb_batch_response (
 	primary key (null)
 );
 
-CREATE TABLE IF NOT EXISTS heb_AuditLogEntry (
+CREATE TABLE IF NOT EXISTS heb_audit_log_entry (
 	changeId varchar(64),
 	dataItemType varchar(1024),
 	itemId varchar(64),
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS heb_AuditLogEntry (
 	primary key (changeId)
 );
 
-CREATE TABLE IF NOT EXISTS heb_JsonMap (
+CREATE TABLE IF NOT EXISTS heb_json_map (
 	primary key (null)
 );
 

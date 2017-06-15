@@ -1,14 +1,18 @@
 # APIX or API Expander
 
 A simple tool to expand Open API definitions into useful documentation.
+Written by Brandon Wilcox
 
 ## Installation
 
 TODO: Describe the installation process
 
 ## Usage
-
-TODO: Write usage instructions
+### Requirements
+These are some requirements to keep in mind when writing your OA Spec
++ The ID in every definition MUST end in "ID" (case-insensitive)
++ Any Date objects must end in "Date" (case-insensitive)
++ The primary key must be required and be the first property listed
 
 ## Contributing
 

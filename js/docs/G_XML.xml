@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<data-store>
+
+	<!--
+		==========================================================
+		Definitions of resources for Liquid Sky Context Filters
+		==========================================================
+	-->
+	<!-- Liquid Sky Translation Repository Definition -->
+	<data-type name="contextFilters" id-property="dataTypeName" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="ls_context_filters" type="primary" id-column="data_type_name">
+			<column column-name="data_type_name" property="dataTypeName" />
+			<column column-name="description" property="description" />
+			<column column-name="json_data" property="jsonData" />
+		</table>
+	</data-type>
+<!--
+==========================================================
+Definitions of resources for AppProperties
+==========================================================
+-->
+<data-type name="appProperties" id-property="appId" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_app_properties" type="primary" id-column="appId">
+		<column column-name="appid" property="appId">
+			<attribute name="requiredProperty" value="true"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="description" property="description">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="ordernumber" property="orderNumber">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="64"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="appversions" property="appVersions">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="64"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="creationdate" property="creationDate">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="lastmodifieddate" property="lastModifiedDate">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+	</table>
+</data-type>
+
+<!--
+==========================================================
+Definitions of resources for AppVersion
+==========================================================
+-->
+<data-type name="appVersion" id-property="appVersionId" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_app_version" type="primary" id-column="appVersionId">
+		<column column-name="appversionid" property="appVersionId">
+			<attribute name="requiredProperty" value="true"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="osname" property="osName">
+			<attribute name="requiredProperty" value="true"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="osversion" property="osVersion">
+			<attribute name="requiredProperty" value="true"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="creationdate" property="creationDate">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="lastmodifieddate" property="lastModifiedDate">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+	</table>
+</data-type>
+
+<!--
+==========================================================
+Definitions of resources for ResourcePath
+==========================================================
+-->
+<data-type name="resourcePath" id-property="id" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_resource_path" type="primary" id-column="id">
+		<column column-name="batchpath" property="batchPath">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="description" property="description">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="id" property="id">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="name" property="name">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="path" property="path">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+	</table>
+</data-type>
+
+<!--
+==========================================================
+Definitions of resources for ServiceDescription
+==========================================================
+-->
+<data-type name="serviceDescription" id-property="id" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_service_description" type="primary" id-column="id">
+		<column column-name="currentversion" property="currentVersion">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="description" property="description">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="documentation" property="documentation">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="id" property="id">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="labels" property="labels">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="name" property="name">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="openapispecurl" property="openApiSpecUrl">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="serviceversions" property="serviceVersions">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="64"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+	</table>
+</data-type>
+
+<!--
+==========================================================
+Definitions of resources for ServiceVersion
+==========================================================
+-->
+<data-type name="serviceVersion" id-property="id" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_service_version" type="primary" id-column="id">
+		<column column-name="basepath" property="basePath">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="description" property="description">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="hostname" property="hostName">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="id" property="id">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="openapispecurl" property="openApiSpecUrl">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="resourcepaths" property="resourcePaths">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="64"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="versionnumber" property="versionNumber">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+	</table>
+</data-type>
+
+<!--
+==========================================================
+Definitions of resources for ApiCollection
+==========================================================
+-->
+<data-type name="apiCollection" id-property="id" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_api_collection" type="primary" id-column="id">
+		<column column-name="contactinfo" property="contactInfo">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="description" property="description">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="id" property="id">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="name" property="name">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="servicedescriptions" property="serviceDescriptions">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="64"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+	</table>
+</data-type>
+
+<!--
+==========================================================
+Definitions of resources for SuccessMessage
+==========================================================
+-->
+<data-type name="successMessage" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_success_message" type="primary" id-column="">
+		<column column-name="success" property="success">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="64"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+	</table>
+</data-type>
+
+<!--
+==========================================================
+Definitions of resources for Message
+==========================================================
+-->
+<data-type name="message" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_message" type="primary" id-column="">
+		<column column-name="code" property="code">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="text" property="text">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+	</table>
+</data-type>
+
+<!--
+==========================================================
+Definitions of resources for ErrorResponse
+==========================================================
+-->
+<data-type name="errorResponse" id-property="id" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_error_response" type="primary" id-column="id">
+		<column column-name="id" property="id">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="status" property="status">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="object" property="object">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="64"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="message" property="message">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+	</table>
+</data-type>
+
+<!--
+==========================================================
+Definitions of resources for BatchResponse
+==========================================================
+-->
+<data-type name="batchResponse" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_batch_response" type="primary" id-column="">
+		<column column-name="success" property="success">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="64"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="errors" property="errors">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="64"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+	</table>
+</data-type>
+
+<!--
+==========================================================
+Definitions of resources for AuditLogEntry
+==========================================================
+-->
+<data-type name="auditLogEntry" id-property="changeId" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_audit_log_entry" type="primary" id-column="changeId">
+		<column column-name="changeid" property="changeId">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="dataitemtype" property="dataItemType">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="itemid" property="itemId">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="userid" property="userId">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="operation" property="operation">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="jsonresponse" property="jsonResponse">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="creationdate" property="creationDate">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+		<column column-name="lastmodifieddate" property="lastModifiedDate">
+			<attribute name="requiredProperty" value="false"/>
+			<attribute name="restrictedProperty" value="false"/>
+			<attribute name="maxLength" value="1024"/>
+			<attribute name="minLength" value="0"/>
+		</column>
+	</table>
+</data-type>
+
+<!--
+==========================================================
+Definitions of resources for JsonMap
+==========================================================
+-->
+<data-type name="jsonMap" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+	<table name="heb_json_map" type="reference" id-column="">
+	</table>
+</data-type>
+
+</data-store>

@@ -12,6 +12,7 @@ Preconditions:
 Postconditions:
 - destPath exists
 Return: None
+Status: COMPLETE
 */
 
 exports.createTable = function(doc, destPath) {
@@ -28,7 +29,7 @@ exports.createTable = function(doc, destPath) {
 
   // Create Table for each definition
   for (key in doc["definitions"]) {
-    var tableString = "CREATE TABLE IF NOT EXISTS heb_" + key + " (\n";
+    var tableString = "CREATE TABLE IF NOT EXISTS heb_" + toUnderscore(key) + " (\n";
     primaryKey = null;
     for (prop in doc["definitions"][key]["properties"]) {
       isArray = false;
@@ -142,6 +143,7 @@ Preconditions:
 Postconditions:
 - destPath exists
 Return: JSON object
+Status: COMPLETE
 */
 exports.serializeYML = function(sourcePath, destPath) {
   // Constants
@@ -176,6 +178,7 @@ Preconditions:
 Postconditions:
 - destPath exists
 Return: JSON object
+Status: COMPLETE
 */
 exports.serializeXML = function(sourcePath, destPath) {
   fs.readFile(sourcePath, 'utf8', function(err, data) {
@@ -210,42 +213,148 @@ Preconditions:
 Postconditions:
 - destPath exists
 Return: None
+Status: INCOMPLETE
 */
-exports.createXML = function(sourceDoc, destPath){
-var wholeDoc = "";
-// Iterates through the definitions object
-for (def in sourceDoc["definitions"]){
-  wholeDoc += "<data-type "
-  var hasID = false;
-  var idString = "";
-  wholeDoc += ("name=\"" + def + "\" ");
-  // Iterates through properties to check for an ID
-  for (id in sourceDoc["definitions"][def]["properties"]){
-    if (id.slice(-2, id.length).toLowerCase() == "id"){
-      hasID = true;
-      idString = id;
-      break;
+exports.createXML = function(sourceDoc, destPath) {
+  var wholeDoc = "";
+  fs.readFile('./docs/xml_ls_template.xml', 'utf8', function(err, data) {
+    if (err) {
+      console.error(err);
     }
-  }
-  // If an ID exists add a property
-  if (hasID){
-    wholeDoc += ("id-property=\"" + idString + "\"");
-  }
-  wholeDoc += ">\n";
+    wholeDoc = data;
+    console.log("XML Read Successful");
 
-  wholeDoc += ("<table name=\"heb_" + toUnderscore(def) + "\" ");
-  wholeDoc += ("id-column=\"" + idString + "\">\n");
-  for (prop in sourceDoc["definitions"][def]["properties"]){
+    // Iterates through the definitions object
+    for (def in sourceDoc["definitions"]) {
+      var commentStr = "<!--\n==========================================================\n"
+      commentStr += "Definitions of resources for " + def + "\n"
+      commentStr += "==========================================================\n-->\n";
+      wholeDoc += commentStr;
+      wholeDoc += "<data-type "
+      var hasID = false;
+      var idString = "";
+      var hasIdGenerator = true;
+      var hasPubSub = false;
+      var hasFCM = false;
+      wholeDoc += ("name=\"" + toCamelCase(def) + "\" ");
+      // Iterates through properties to check for an ID
+      for (id in sourceDoc["definitions"][def]["properties"]) {
+        var isPrimarySet = false;
+        if (id.slice(-2, id.length).toLowerCase() == "id") {
+          hasID = true;
+          idString = id;
+          break;
+        }
+      }
+      // If an ID exists, add a property
+      if (hasID) {
+        wholeDoc += ("id-property=\"" + idString + "\" ");
+      }
+      wholeDoc += ("id-generator-prefix=\"\" ");
+      wholeDoc += ("use-id-generator=\"" + hasIdGenerator + "\" ");
+      wholeDoc += ("pub-sub-enabled=\"" + hasPubSub + "\" ");
+      wholeDoc += ("fcm-enabled=\"" + hasFCM + "\"");
 
-  }
-}
+      wholeDoc += ">\n";
 
-console.log(wholeDoc);
+      wholeDoc += ("\t<table name=\"heb_" + toUnderscore(def) + "\" ");
+
+      // Set to primary if first, else set to reference
+      if (!isPrimarySet) {
+        wholeDoc += "type=\"primary\" ";
+        isPrimarySet = true;
+      } else {
+        wholeDoc += "type=\"reference\" ";
+      }
+      wholeDoc += ("id-column=\"" + idString + "\">\n");
+
+      // Iterates through properties
+      for (prop in sourceDoc["definitions"][def]["properties"]) {
+        var isRequired = false;
+        var isRestricted = true;
+        var maxLength = 64;
+        var minLength = 0;
+        
+        // Check to see if definition is empty
+        if (sourceDoc["definitions"][def].hasOwnProperty('properties')) {
+          // Check required list for property
+          for (rItem in sourceDoc["definitions"][def]["required"]) {
+            if (prop == sourceDoc["definitions"][def]["required"][rItem]) {
+              isRequired = true;
+            }
+          }
+
+          // Check for Min and Max Lengths
+          if (sourceDoc["definitions"][def]["properties"][prop].hasOwnProperty('maximum')) {
+            maxLength = sourceDoc["definitions"][def]["properties"][prop]["maximum"];
+          } else if (sourceDoc["definitions"][def]["properties"][prop].hasOwnProperty('minimum')) {
+            minLength = sourceDoc["definitions"][def]["properties"][prop]["minimum"];
+          } else {
+            if (sourceDoc["definitions"][def]["properties"][prop].hasOwnProperty('type')) {
+              switch (sourceDoc["definitions"][def]["properties"][prop]["type"]) {
+                case "string":
+                  maxLength = 1024;
+                  break;
+
+                case "integer":
+                  maxLength = 64;
+                  break;
+
+                case "number":
+                  maxLength = 64;
+                  break;
+
+                case "float":
+                  maxLength = 64;
+                  break;
+
+                case "boolean":
+                  maxLength = 1;
+                  break;
+
+                default:
+                  maxLength = 64;
+
+              }
+            } else {
+              maxLength = 1024;
+            }
+          }
+
+          wholeDoc += ("\t\t<column column-name=\"" + prop.toLowerCase() + "\" property=\"" + prop + "\">\n");
+
+          // Go back and add conditions for attributes
+          wholeDoc += ("\t\t\t<attribute name=\"requiredProperty\" value=\"" + isRequired + "\"/>\n");
+          wholeDoc += ("\t\t\t<attribute name=\"restrictedProperty\" value=\"false\"/>\n");
+          wholeDoc += ("\t\t\t<attribute name=\"maxLength\" value=\"" + maxLength + "\"/>\n");
+          wholeDoc += ("\t\t\t<attribute name=\"minLength\" value=\"" + minLength + "\"/>\n");
+        }
+        wholeDoc += "\t\t</column>\n";
+      }
+      wholeDoc += "\t</table>\n";
+      wholeDoc += "</data-type>\n\n";
+    }
+    wholeDoc += "</data-store>";
+    console.log(wholeDoc);
+    fs.writeFile(destPath, wholeDoc, function(err) {
+      if (err) {
+        console.error(err);
+      }
+      console.log("XML Write Successful");
+    });
+  });
+
 }
 
 // Utility Functions
 
-var toUnderscore = exports.toUnderscore = function(string){
-  var newString = string.replace(/\.?([A-Z]+)/g, function (x,y){return "_" + y.toLowerCase()}).replace(/^_/, "");
+var toUnderscore = exports.toUnderscore = function(string) {
+  var newString = string.replace(/\.?([A-Z]+)/g, function(x, y) {
+    return "_" + y.toLowerCase()
+  }).replace(/^_/, "");
   return newString;
+}
+
+var toCamelCase = exports.toCamelCase = function capitalizeFirstLetter(string) {
+  return string.charAt(0).toLowerCase() + string.slice(1);
 }

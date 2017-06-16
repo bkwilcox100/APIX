@@ -1,0 +1,508 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Middle Layer Admin Portal",
+		"_postman_id": "83f89f0a-a5bd-e983-25f8-0e751f9d05fd",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Api Discovery",
+			"description": "",
+			"item": [
+				{
+					"name": "ApiCollection Read Collection",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Get default app Properties"
+					},
+					"response": []
+				},
+				{
+					"name": "ApiCollection - Read Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol4?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Get default app Properties"
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceDescription - Read Collection",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol1/serviceDescriptions?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Get default app Properties"
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceDescription - Read Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol_test1/serviceDescriptions/asrv_test1?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Get default app Properties"
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceVersion - Read Collection",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol_test1/serviceDescriptions/asrv_test1/serviceVersions?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Get default app Properties"
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceVersion - Read Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol_test1/serviceDescriptions/asrv1/serviceVersions/aver1?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Get default app Properties"
+					},
+					"response": []
+				},
+				{
+					"name": "ResourcePath - Read Collection",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol_test1/serviceDescriptions/asrv_test1/serviceVersions/aver1/resourcePaths?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Get default app Properties"
+					},
+					"response": []
+				},
+				{
+					"name": "ResourcePath - Read Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol_test1/serviceDescriptions/asrv_test1/serviceVersions/aver_test1/resourcePaths/ares_test1?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Get default app Properties"
+					},
+					"response": []
+				},
+				{
+					"name": "ApiCollection Batch Create",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection?key={{key}}",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{\n\t  \"name\": \"Scott Test Collection\",\n\t  \"contactInfo\": \"scott@liquidsky.ninja\",\n\t  \"description\": \"Creation Test Api Collection 1\"\n\t},\n\t{\n\t  \"name\": \"Tom Test Collection\",\n\t  \"contactInfo\": \"tom@liquidsky.ninja\",\n\t  \"description\": \"Creation Test Api Collection 2\"\n\t},\n\t{\n\t  \"name\": \"Ryan Test Collection\",\n\t  \"contactInfo\": \"ryan@liquidsky.ninja\",\n\t  \"description\": \"Creation Test Api Collection 3\"\n\t},\n\t{\n\t  \"contactInfo\": \"broken@liquidsky.ninja\",\n\t  \"description\": \"Expect a 400 for missing name\"\n\t}\n]"
+						},
+						"description": "Batch Create Api Collection resources."
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceDescription Batch Create",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol4/serviceDescriptions?key={{key}}",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{\n\t  \"name\": \"Test Service 1\",\n\t  \"description\": \"This should create successfully\",\n\t  \"labels\": \"ecommerce, product, sku, upc\",\n\t  \"openApiSpecUrl\": \"https://api.heb.com/test/openapi.json\",\n\t  \"documentationUrl\": \"https://confluence.heb.com:8443/display/ESELLING/API+Discovery+Microservice\",\n\t  \"currentVersion\": \"1\"\n\t},\n\t{\n\t  \"name\": \"Test Service 2\",\n\t  \"description\": \"This should create successfully\",\n\t  \"labels\": \"things, stuff, other\",\n\t  \"openApiSpecUrl\": \"https://api.heb.com/test/openapi.json\",\n\t  \"documentationUrl\": \"https://confluence.heb.com:8443/display/ESELLING/API+Discovery+Microservice\",\n\t  \"currentVersion\": \"2\"\n\t},\n\t{\n\t  \"description\": \"This should fail with missing name error\",\n\t  \"labels\": \"ecommerce, product, sku, upc\",\n\t  \"openApiSpecUrl\": \"https://api.heb.com/test/openapi.json\",\n\t  \"documentationUrl\": \"https://confluence.heb.com:8443/display/ESELLING/API+Discovery+Microservice\",\n\t  \"currentVersion\": \"1\"\n\t},\n\t{\n\t  \"name\": \"Just Name\"\n\t}\n]"
+						},
+						"description": "Batch Create ServiceDescription resources."
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceVersion Batch Create",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol4/serviceDescriptions/asrv97/serviceVersions?key={{key}}",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"versionNumber\": \"1\",\n    \"description\": \"V1 Test Contract\",\n    \"hostName\": \"api.heb.com\",\n    \"basePath\": \"/api\",\n    \"openApiSpecUrl\": \"https://api.heb.com/product/v1/openapi.json\"\n  },\n  {\n    \"versionNumber\": \"2\",\n    \"description\": \"V2 Test Contract\",\n    \"hostName\": \"api.heb.com\",\n    \"basePath\": \"/api\",\n    \"openApiSpecUrl\": \"https://api.heb.com/product/v1/openapi.json\"\n  },\n  {\n    \"versionNumber\": \"1\",\n    \"hostName\": \"api.heb.com\"\n  },\n  {\n    \"description\": \"Should fail for missing versionNumber\",\n    \"hostName\": \"api.heb.com\",\n    \"basePath\": \"/_ah/api\",\n    \"openApiSpecUrl\": \"https://api.heb.com/product/v1/openapi.json\"\n  },\n  {\n    \"versionNumber\": \"1\",\n    \"description\": \"Should fail for missing hostName\",\n    \"basePath\": \"/_ah/api\",\n    \"openApiSpecUrl\": \"https://api.heb.com/product/v1/openapi.json\"\n  }\n]"
+						},
+						"description": "Batch Create ServiceDescription resources."
+					},
+					"response": []
+				},
+				{
+					"name": "ResourcePath Batch Create",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol4/serviceDescriptions/asrv97/serviceVersions/aver17/resourcePaths?key={{key}}",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"name\": \"Passing Test ResourcePath\",\n    \"description\": \"This will work as expected.\",\n    \"path\": \"/whatever/{testId}\",\n    \"batchPath\": \"/whatever\"\n  },\n  {\n    \"name\": \"Passing Minimum Info Test ResourcePath\",\n    \"path\": \"/whatever/{testId}\"\n  },\n  {\n    \"description\": \"Fail for missing name\",\n    \"path\": \"/whatever/{testId}\",\n    \"batchPath\": \"/whatever\"\n  },\n  {\n    \"name\": \"Passing Test ResourcePath\",\n    \"description\": \"Fail for missing path\",\n    \"batchPath\": \"/whatever\"\n  }\n]"
+						},
+						"description": "Batch Create ResourcePath resources."
+					},
+					"response": []
+				},
+				{
+					"name": "ApiCollection - Update Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol1?key={{key}}",
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"collectionId\": \"acol1\",\n  \"name\": \"Updated Collection Name\",\n  \"contactInfo\": \"scott@someother.email\",\n  \"description\": \"Update Test Api Collection 1\"\n}"
+						},
+						"description": "Batch Create Api Collection resources."
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceDescription - Update Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol1/serviceDescriptions/asrv1?key={{key}}",
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Updated Test Service Name\",\n\t\"description\": \"This should update successfully\",\n\t\"labels\": \"ecommerce, product, sku, upc\",\n\t\"openApiSpecUrl\": \"https://api.heb.com/test/openapi.json\",\n\t\"documentationUrl\": \"https://confluence.heb.com:8443/display/ESELLING/API+Discovery+Microservice\",\n\t\"currentVersion\": \"1\"\n}"
+						},
+						"description": "Batch Create Api Collection resources."
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceVersion - Update Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol1/serviceDescriptions/asrv1/serviceVersions/aver1?key={{key}}",
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"versionNumber\": \"9\",\n\t\"description\": \"Updated ServiceVersion\",\n\t\"hostName\": \"updated.heb.com\",\n\t\"basePath\": \"/api/changed\",\n\t\"openApiSpecUrl\": \"https://updated.heb.com/product/v1/openapi.json\"\n}"
+						},
+						"description": "Batch Create Api Collection resources."
+					},
+					"response": []
+				},
+				{
+					"name": "ResourcePath - Update Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol1/serviceDescriptions/asrv1/serviceVersions/aver1/resourcePaths/ares1?key={{key}}",
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Updated ResourcePath\",\n\t\"description\": \"this resource was updated\",\n\t\"path\": \"/updated/{testId}\",\n\t\"batchPath\": \"/updated\"\n}"
+						},
+						"description": "update a ResourcePath resource\n"
+					},
+					"response": []
+				},
+				{
+					"name": "ResourcePath - Delete Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol1/serviceDescriptions/asrv1/serviceVersions/aver1/resourcePaths/ares2?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "update a ResourcePath resource\n"
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceVersion - Delete Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol1/serviceDescriptions/asrv1/serviceVersions/aver2?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "update a ResourcePath resource\n"
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceDescription - Delete Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol1/serviceDescriptions/asrv2?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "update a ResourcePath resource\n"
+					},
+					"response": []
+				},
+				{
+					"name": "ApiCollection - Delete Resource",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol2?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "update a ResourcePath resource\n"
+					},
+					"response": []
+				},
+				{
+					"name": "ResourcePath - Batch Delete",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol4/serviceDescriptions/asrv97/serviceVersions/aver17/resourcePaths?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"ares63\", \"ares64\", \"ares65\"]"
+						},
+						"description": "update a ResourcePath resource\n"
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceVersion - Batch Delete",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol4/serviceDescriptions/asrv97/serviceVersions?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"aver13\", \"aver14\", \"aver15\"]"
+						},
+						"description": "update a ResourcePath resource\n"
+					},
+					"response": []
+				},
+				{
+					"name": "ServiceDescription - Batch Delete",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection/acol4/serviceDescriptions?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"asrv11\", \"asrv12\", \"asrv13\"]"
+						},
+						"description": "update a ResourcePath resource\n"
+					},
+					"response": []
+				},
+				{
+					"name": "ApiCollection - Batch Delete",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/apicollection?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"acol1\", \n\"acol2\", \n\"acol3\", \n\"acol4\", \n\"acol5\", \n\"acol6\", \n\"acol7\", \n\"acol8\", \n\"acol9\", \n\"acol10\", \n\"acol11\", \n\"acol12\", \n\"acol13\", \n\"acol14\", \n\"acol15\", \n\"acol16\", \n\"acol17\", \n\"acol18\", \n\"acol19\", \n\"acol20\"\n]"
+						},
+						"description": "update a ResourcePath resource\n"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AppProperties (App Version)",
+			"description": "",
+			"item": [
+				{
+					"name": "AppProperties - Read Batch",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "AppProperties - Create Batch",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties?key={{key}}",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{\n\t  \"appId\": \"   \",\n\t  \"description\": \"This should fail with a blank id supplied.\"\n\t},\n\t{\n\t  \"appId\": \"scott10\",\n\t  \"description\": \"first App Description\"\n\t},\n\t{\n\t  \"appId\": \"scott11\",\n\t  \"description\": \"Some other description\"\n\t},\n\t{\n\t  \"appId\": \"scott12\",\n\t  \"description\": \"I can't come up with anything.\"\n\t},\n\t{\n\t  \"appId\": \"scott13\",\n\t  \"description\": \"  \"\n\t}\n]"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "AppProperties - Delete Batch",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"scott10\", \"scott11\", \"scott12\", \"scott13\", \"scott14\"]"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "AppProperties - Read",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties/scott12?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": "Get default app Properties"
+					},
+					"response": []
+				},
+				{
+					"name": "AppProperties - Update",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties/scott12?key={{key}}",
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Updated Description\",\n  \"junk\": \"This is just an item that will be ignored.\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "AppProperties - Delete",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties/scott11?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "AppVersion - Create Batch",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties/scott12/appversion?key={{key}}",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n      {\n        \"osVersion\": \"1.8\",\n        \"osName\": \"Android\"\n      },\n      {\n        \"osVersion\": \"1.0\",\n        \"osName\": \"iOs\"\n      },\n      {\n        \"osVersion\": \"1.1\",\n        \"osName\": \"Windows\"\n      }\n]"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "AppVersion - Read Batch",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties/scott12/appversion?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "AppVersion - Delete Batch",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties/scott12/appversion?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    \"av448\",\n    \"av449\",\n    \"av450\"\n  ]"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "AppVersion - Read",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties/scott12/appversion/av77?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "AppVersion - Update",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties/scott12/appversion/av77?key={{key}}",
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"osVersion\": \"42.1337\",\n\t\"osName\": \"Something else New\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "AppVersion - Delete",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/appproperties/scott12/appversion/av136?key={{key}}",
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Audit Log",
+			"description": "",
+			"item": [
+				{
+					"name": "AuditLog - Read All",
+					"request": {
+						"url": "{{protocol}}://{{AdminRestURL}}/_ah/api/adminrest/v1/auditlog?key={{key}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

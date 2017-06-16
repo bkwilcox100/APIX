@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-liquidsky-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-liquidsky-pubsub" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-liquidsky-service-adminrest" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-liquidsky-service-apidiscovery" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-liquidsky-service-appversion" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-liquidsky-service-shoppinglist" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-liquidsky-spring-base" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-liquidsky-spring-swagger" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-liquidsky-taskqueue" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-liquidsky-web-admin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-liquidsky-web-default" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/heb-productfeed" charset="UTF-8" />
+  </component>
+</project>

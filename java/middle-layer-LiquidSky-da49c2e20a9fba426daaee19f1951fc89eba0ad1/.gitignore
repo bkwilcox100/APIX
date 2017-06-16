@@ -1,0 +1,9 @@
+.classpath
+.eclipse-pmd
+.externalToolBuilders
+.project
+.settings/
+eclipse-launch-profiles
+bin/
+target/
+/etc/deployment/tmp

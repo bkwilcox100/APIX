@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Build Cloud SQL">
+
+	<target name="-init-database">
+		<!-- IMPORTANT - an input task is skipped if the property has already been set elsewhere -->
+		<input message="Please enter Cloud SQL root password [appengine.cloudsql-database-root-password]: " addproperty="appengine.cloudsql-database-root-password" />
+		<input message="Please enter Cloud SQL hebdb user password [appengine.cloudsql-database-password]: " addproperty="appengine.cloudsql-database-password" />
+	</target>
+
+	<target name="-create-cloud-sql" depends="-init-database">
+		<echo message="START: Creating Cloud SQL for project: ${appengine.app.id}" />
+<echo>
+The Cloud SQL instance ID must use lowercase letters,
+numbers, or hyphens and start with a letter. Must be
+81 or less characters.  Use the default value unless
+there is a specific reason for using something else.
+</echo>
+		<input message="Please enter Cloud SQL instance ID [project.sql.instance.id]: " addproperty="project.sql.instance.id" defaultvalue="${default.project.sql.instance.id}" />
+		<echo>
+The Cloud SQL tier determines the database server size.  See
+https://cloud.google.com/sql/pricing#2nd-gen-instance-pricing
+for available options. Use the default unless there is a
+specific need for higher performance, such as when setting up
+a load testing environment.
+		</echo>
+		<input message="Please enter Cloud SQL tier [project.sql.tier]: " addproperty="project.sql.tier" defaultvalue="${default.project.sql.tier}" />
+		<exec executable="gcloud" failonerror="true">
+			<arg line="beta sql instances create ${project.sql.instance.id} --tier=${project.sql.tier} --activation-policy=ALWAYS --project=${appengine.app.id} --database-version=MYSQL_5_7" />
+		</exec>
+		<exec executable="gcloud" failonerror="true">
+			<arg line="beta sql users set-password root % --instance=${project.sql.instance.id} --password=${appengine.cloudsql-database-root-password} --project=${appengine.app.id}" />
+		</exec>
+		<echo message="FINISHED: Creating Cloud SQL instance with ID ${project.sql.instance.id} for project: ${appengine.app.id}" />
+		<echo message="START: Creating middle_layer database for Cloud SQL instance with ID ${project.sql.instance.id}" />
+		<exec executable="gcloud" failonerror="true">
+			<arg line="beta sql databases create middle_layer --instance=${project.sql.instance.id} --project=${appengine.app.id}" />
+		</exec>
+		<echo message="FINISHED: Creating middle_layer database for Cloud SQL instance with ID ${project.sql.instance.id}" />
+		<echo message="START: Creating hebdb user for Cloud SQL instance with ID ${project.sql.instance.id}" />
+		<copy file="${build.db.dir}/create-hebdb-user.sql" todir="${build.tmp.dir}" />
+		<replace file="${build.tmp.dir}/create-hebdb-user.sql" token="@hebdb_password@" value="${appengine.cloudsql-database-password}" />
+		<!-- copy the create user script to cloud storage -->
+		<exec executable="gsutil" failonerror="true">
+			<arg line="cp ${build.tmp.dir}/create-hebdb-user.sql ${cloud.tmp.dir}/create-hebdb-user.sql" />
+		</exec>
+		<exec executable="gsutil" failonerror="true">
+			<arg line="acl ch -u AllUsers:R ${cloud.tmp.dir}/create-hebdb-user.sql" />
+		</exec>
+		<!-- execute the create user script -->
+		<exec executable="gcloud" failonerror="true">
+			<arg line="sql instances import ${project.sql.instance.id} ${cloud.tmp.dir}/create-hebdb-user.sql --project=${appengine.app.id}" />
+		</exec>
+		<!-- delete the create user script from cloud storage -->
+		<exec executable="gsutil" failonerror="true">
+			<arg line="rm ${cloud.tmp.dir}/create-hebdb-user.sql" />
+		</exec>
+		<echo message="FINISHED: Creating hebdb user for Cloud SQL instance with ID ${project.sql.instance.id}" />
+	</target>
+
+	<target name="-delete-cloud-sql">
+		<echo message="START: Deleting Cloud SQL instance with ID ${project.sql.instance.id} for project: ${appengine.app.id}" />
+		<exec executable="gcloud">
+			<arg line="sql instances delete ${project.sql.instance.id} --project=${appengine.app.id}" />
+		</exec>
+		<echo message="FINISHED: Deleting Cloud SQL instance with ID ${project.sql.instance.id} for project: ${appengine.app.id}" />
+	</target>
+
+</project>

@@ -1,0 +1,578 @@
+# deployment steps:
+# 1. deploy the Open API spec using:
+#      gcloud service-management deploy target/openapi.yaml
+# 2. the output of the above command will include something like the following:
+#    Service Configuration [config_id] uploaded for service [name]
+# 3. update the appengine.app.modules.shoppinglist.endpoints.config.id
+#    environment property with the config_id value from step #2.
+# 4. deploy the full application using "mvn appengine:deploy"
+# 5. callers can generate API keys (passed as "key=API_KEY") using
+#    https://console.cloud.google.com/apis/credentials
+
+swagger: "2.0"
+info:
+  title: "HEB Liquid Sky Shopping List Endpoints"
+  description: "HEB e-commerce shopping list endpoints"
+  version: "1.0.0"
+# the domain of the service
+host: shoppinglist-dot-${appengine.app.id}.appspot.com
+# "configured" means any path not specified below gets a JSON error
+# response, "all" means any path not specified below is passed through
+# to the application, and the request is handled by the app
+x-google-allow: all
+# allow cross-domain ajax requests
+# see https://cloud.google.com/endpoints/docs/release-notes
+x-google-endpoints:
+  - name: shoppinglist-dot-${appengine.app.id}.appspot.com
+    allowCors: true
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - https
+paths:
+  /_ah/api/shoppinglist/v1/shoppingLists:
+    get:
+      operationId: ShoppinglistGetAllLists,
+      parameters:
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    post:
+      operationId: ShoppinglistCreateShoppingList
+      parameters:
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+        - name: singleList
+          in: query
+          required: false
+          type: boolean
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+  /_ah/api/shoppinglist/v1/shoppingLists/{listId}:
+    get:
+      operationId: ShoppinglistReadShoppingList
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    put:
+      operationId: ShoppinglistUpdateShoppingList
+      parameters:
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: singleList
+          in: query
+          required: false
+          type: boolean
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    delete:
+      operationId: ShoppinglistDeleteShoppingList
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+  /_ah/api/shoppinglist/v1/shoppingLists/{listId}/products:
+    get:
+      operationId: ShoppinglistReadProductItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    post:
+      operationId: ShoppinglistCreateProductItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    put:
+      operationId: ShoppinglistUpdateProductItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+  /_ah/api/shoppinglist/v1/shoppingLists/{listId}/products/{itemId}:
+    get:
+      operationId: ShoppinglistReadProductItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    put:
+      operationId: ShoppinglistUpdateProductItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    delete:
+      operationId: ShoppinglistDeleteProductItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+  /_ah/api/shoppinglist/v1/shoppingLists/{listId}/coupons:
+    get:
+      operationId: ShoppinglistReadCouponItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    post:
+      operationId: ShoppinglistCreateCouponItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    put:
+      operationId: ShoppinglistUpdateCouponItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+  /_ah/api/shoppinglist/v1/shoppingLists/{listId}/coupons/{itemId}:
+    get:
+      operationId: ShoppinglistReadCouponItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    put:
+      operationId: ShoppinglistUpdateCouponItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    delete:
+      operationId: ShoppinglistDeleteCouponItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+  /_ah/api/shoppinglist/v1/shoppingLists/{listId}/recipes:
+    get:
+      operationId: ShoppinglistReadRecipeItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    post:
+      operationId: ShoppinglistCreateRecipeItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    put:
+      operationId: ShoppinglistUpdateRecipeItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+  /_ah/api/shoppinglist/v1/shoppingLists/{listId}/recipes/{itemId}:
+    get:
+      operationId: ShoppinglistReadRecipeItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    put:
+      operationId: ShoppinglistUpdateRecipeItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    delete:
+      operationId: ShoppinglistDeleteRecipeItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+  /_ah/api/shoppinglist/v1/shoppingLists/{listId}/freeforms:
+    get:
+      operationId: ShoppinglistReadFreeformItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    post:
+      operationId: ShoppinglistCreateFreeformItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    put:
+      operationId: ShoppinglistUpdateFreeformItems
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+  /_ah/api/shoppinglist/v1/shoppingLists/{listId}/freeforms/{itemId}:
+    get:
+      operationId: ShoppinglistReadFreeformItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    put:
+      operationId: ShoppinglistUpdateFreeformItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+    delete:
+      operationId: ShoppinglistDeleteFreeformItem
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          type: string
+        - name: itemId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+  /_ah/api/oauth/v1/token:
+    post:
+      operationId: OauthGetOAuthToken
+      parameters:
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/OAuthRequest'
+        - name: auth_code
+          in: query
+          required: false
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/OAuthResponse'
+  /echo/v1/echo:
+    post:
+      operationId: ShoppinglistTestEcho
+      parameters:
+        - name: body
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/JsonMap'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/JsonMap'
+# This section requires all requests to any path to require an API key.
+security:
+- api_key: []
+securityDefinitions:
+  # This section configures basic authentication with an API key.
+  api_key:
+    type: apiKey
+    name: key
+    in: query
+# defintions are shared object types used in requests/responses
+definitions:
+  JsonMap:
+    type: object
+  OAuthRequest:
+    properties:
+      authCode:
+        type: string
+      timestamp:
+        type: string
+      uid:
+        type: string
+  OAuthResponse:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: string
+      refresh_token:
+        type: string
+      token_type:
+        type: string

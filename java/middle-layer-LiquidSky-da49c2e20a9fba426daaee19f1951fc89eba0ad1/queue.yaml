@@ -1,0 +1,9 @@
+# gcloud app deploy queue.yaml
+
+queue:
+- name: fcm-queue
+  mode: pull
+- name: pubsub-queue
+  target: taskqueue
+  rate: 30/s
+  bucket_size: 50

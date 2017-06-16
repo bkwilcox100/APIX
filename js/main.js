@@ -21,15 +21,15 @@ var yam = require('js-yaml');
 var stdfunc = require("./stdfunc.js");
 
 // User Defined Variables
-var sourceYML = './docs/openapiexample.yml';
-var sourceXML = './docs/data-store.xml';
+var sourceYML = './docs/yml/openapiexample.yml';
+var sourceXML = './docs/xml/data-store.xml';
 // Serialize YML document
-var doc = stdfunc.serializeYML(sourceYML, './docs/YML_JSON.json');
+var doc = stdfunc.serializeYML(sourceYML, './docs/json/YML_JSON.json');
 
 // Create Table based on YML document
-stdfunc.createTable(doc, './docs/sql_output.sql');
+stdfunc.createTable(doc, './docs/sql/sql_output.sql');
 
-stdfunc.createXML(doc, "./docs/G_XML.xml");
+stdfunc.createXML(doc, "./docs/xml/G_XML.xml");
 
 // TESTING PURPOSES: Create Local Server and listen on port 8080
 // http.createServer(function(req, res) {

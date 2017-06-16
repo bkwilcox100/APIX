@@ -1,6 +1,7 @@
 var fs = require('fs');
 var yam = require('js-yaml');
 var xml2js = require('xml2js');
+
 /*
 Name: createTable
 Description: Creates SQL table from OA Spec
@@ -14,7 +15,6 @@ Postconditions:
 Return: None
 Status: COMPLETE
 */
-
 exports.createTable = function(doc, destPath) {
   var wholeCreateTable = "use middle_layer;\n\n";
   var primaryKey = null;
@@ -126,9 +126,9 @@ exports.createTable = function(doc, destPath) {
 
   fs.writeFile(destPath, wholeCreateTable, function(error) {
     if (error) {
-      return console.error();
+      throw error;
     }
-    console.log("Table Created and Exported Successfully");
+    console.log("SQL Write Successful");
   });
 }
 
@@ -154,16 +154,16 @@ exports.serializeYML = function(sourcePath, destPath) {
     var doc = yam.safeLoad(fs.readFileSync(sourcePath, 'utf8'));
 
     // Print object to screen for confirmation
-    console.log(doc);
+    //console.log(doc);
     fs.writeFile(destPath, JSON.stringify(doc), function(error) {
       if (error) {
-        return console.error();
+        throw error;
       }
-      console.log("Object to File Write Successful");
+      console.log("YML Read and Conversion Successful");
 
     });
-  } catch (error) {
-    console.log(error);
+  } catch (loadError) {
+    throw loadError;
   }
   return doc;
 }
@@ -183,20 +183,20 @@ Status: COMPLETE
 exports.serializeXML = function(sourcePath, destPath) {
   fs.readFile(sourcePath, 'utf8', function(err, data) {
     if (err) {
-      console.error(err);
+      throw err;
     }
     xml2js.parseString(data, function(err2, result) {
       if (err2) {
-        console.error(err2);
+        throw err2;
       }
       console.log("XML Conversion Successful");
       var stringResult = JSON.stringify(result);
       console.log(result);
       fs.writeFile(destPath, stringResult, function(err3) {
         if (err3) {
-          console.error(err3);
+          throw err3;
         }
-        console.log("XML Write Successful");
+        console.log("XML Read Successful");
       });
       return result;
     });
@@ -217,25 +217,29 @@ Status: INCOMPLETE
 */
 exports.createXML = function(sourceDoc, destPath) {
   var wholeDoc = "";
-  fs.readFile('./docs/xml_ls_template.xml', 'utf8', function(err, data) {
+  fs.readFile('./docs/xml/xml_ls_template.xml', 'utf8', function(err, data) {
     if (err) {
-      console.error(err);
+      throw err;
     }
     wholeDoc = data;
-    console.log("XML Read Successful");
 
     // Iterates through the definitions object
     for (def in sourceDoc["definitions"]) {
-      var commentStr = "<!--\n==========================================================\n"
-      commentStr += "Definitions of resources for " + def + "\n"
-      commentStr += "==========================================================\n-->\n";
-      wholeDoc += commentStr;
-      wholeDoc += "<data-type "
+      // Per Definition Variables
       var hasID = false;
       var idString = "";
       var hasIdGenerator = true;
       var hasPubSub = false;
       var hasFCM = false;
+      var arrayList = [];
+      var arrayPropList = [];
+      var hasArray = false;
+
+      var commentStr = "<!--\n==========================================================\n"
+      commentStr += "Definitions of resources for " + def + "\n"
+      commentStr += "==========================================================\n-->\n";
+      wholeDoc += commentStr;
+      wholeDoc += "<data-type "
       wholeDoc += ("name=\"" + toCamelCase(def) + "\" ");
       // Iterates through properties to check for an ID
       for (id in sourceDoc["definitions"][def]["properties"]) {
@@ -274,7 +278,7 @@ exports.createXML = function(sourceDoc, destPath) {
         var isRestricted = true;
         var maxLength = 64;
         var minLength = 0;
-        
+
         // Check to see if definition is empty
         if (sourceDoc["definitions"][def].hasOwnProperty('properties')) {
           // Check required list for property
@@ -283,7 +287,12 @@ exports.createXML = function(sourceDoc, destPath) {
               isRequired = true;
             }
           }
-
+          // Add to array list if property is array
+          if (sourceDoc["definitions"][def]["properties"][prop]["type"] == "array"){
+            arrayList.push(def);
+            arrayPropList.push(prop);
+            hasArray = true;
+          }
           // Check for Min and Max Lengths
           if (sourceDoc["definitions"][def]["properties"][prop].hasOwnProperty('maximum')) {
             maxLength = sourceDoc["definitions"][def]["properties"][prop]["maximum"];
@@ -332,15 +341,18 @@ exports.createXML = function(sourceDoc, destPath) {
         wholeDoc += "\t\t</column>\n";
       }
       wholeDoc += "\t</table>\n";
+      console.log(arrayList);
+      console.log(hasArray);
+
       wholeDoc += "</data-type>\n\n";
     }
     wholeDoc += "</data-store>";
-    console.log(wholeDoc);
+    //console.log(wholeDoc);
     fs.writeFile(destPath, wholeDoc, function(err) {
       if (err) {
-        console.error(err);
+        throw err;
       }
-      console.log("XML Write Successful");
+      console.log("XML Write and Conversion Successful");
     });
   });
 
@@ -357,4 +369,11 @@ var toUnderscore = exports.toUnderscore = function(string) {
 
 var toCamelCase = exports.toCamelCase = function capitalizeFirstLetter(string) {
   return string.charAt(0).toLowerCase() + string.slice(1);
+}
+
+var getArrTableName = exports.getArrTableName = function(str){
+  var lastIndex = str.lastIndexOf('/');
+  lastIndex++;
+  var newStr = str.slice(lastIndex, str.length);
+  return newStr;
 }

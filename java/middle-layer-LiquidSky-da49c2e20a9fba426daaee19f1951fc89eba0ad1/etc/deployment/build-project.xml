@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Build Project" default="help" basedir=".">
+
+	<target name="-init-create">
+		<!-- IMPORTANT - an input task is skipped if the property has already been set elsewhere -->
+		<echo>
+Project name must contain only letters, numbers, quotes,
+hyphens, spaces or exclamation points and must be between
+4 and 30 characters.
+		</echo>
+		<input message="Please enter the Google Cloud Project name [appengine.app.name]: " addproperty="appengine.app.name" />
+	</target>
+
+	<target name="-add-project-roles">
+		<!-- see https://cloud.google.com/kms/docs/reference/permissions-and-roles -->
+		<_add-service-account-role role="roles/cloudkms.cryptoKeyEncrypterDecrypter" />
+	</target>
+
+	<target name="-create-api-keys">
+		<echo>
+
+			TODO: Create default service API keys.  Not currently supported by GCloud.
+
+		</echo>
+		<antcall target="-press-enter-to-continue" />
+	</target>
+
+	<target name="-create-project" depends="-init-create,-create-base-project,-create-cloud-sql,-add-project-roles,-create-api-keys,-enable-services,-kms-setup,-set-properties" />
+
+	<target name="-create-base-project" depends="-init-create">
+		<echo message="START: Creating project: ${appengine.app.id}" />
+		<exec executable="gcloud" failonerror="true">
+			<arg line="projects create ${appengine.app.id} --name=&quot;${appengine.app.name}&quot;" />
+		</exec>
+		<echo message="FINISHED: Creating project: ${appengine.app.id}" />
+		<echo message="${line.separator}${line.separator}" />
+		<echo message="START: Enabling billing for project: ${appengine.app.id}" />
+		<input message="Please enter the Google Project Billing ID [project.billing.id]: " addproperty="project.billing.id" />
+		<exec executable="gcloud" failonerror="true">
+			<arg line="alpha billing accounts projects link ${appengine.app.id} --account-id=${project.billing.id}" />
+		</exec>
+		<echo message="FINISHED: Enabling billing for project: ${appengine.app.id}" />
+		<!-- pause to avoid errors previously seen with accounts not being fully initialized -->
+		<echo message="Pausing for 15 seconds to allow settings to take effect..." />
+		<sleep seconds="15" />
+		<echo message="START: Creating default Cloud Storage bucket for project: ${appengine.app.id}" />
+		<exec executable="gsutil" failonerror="true">
+			<arg line="mb -p ${appengine.app.id} ${cloud.root.dir}" />
+		</exec>
+		<echo message="FINISHED: Creating default Cloud Storage bucket for project: ${appengine.app.id}" />
+		<echo message="START: Creating app engine instance for project: ${appengine.app.id}" />
+		<exec executable="gcloud" failonerror="true">
+			<arg line="app create --project=${appengine.app.id} --region=us-central" />
+		</exec>
+		<echo message="FINISHED: Creating app engine instance for project: ${appengine.app.id}" />
+	</target>
+
+	<target name="-enable-services" depends="-enable-pubsub,-enable-memcache,-enable-firebase,-enable-kms" />
+
+	<target name="-enable-firebase">
+		<echo>
+Firebase messaging must currently be manually enabled
+
+1. Go to https://console.firebase.google.com/
+2. Click on the "Import Google Project" button
+3. Import the ${appengine.app.id} project.
+		</echo>
+		<antcall target="-press-enter-to-continue" />
+	</target>
+
+	<target name="-enable-pubsub">
+		<echo message="START: Enabling pub/sub for project: ${appengine.app.id}" />
+		<exec executable="gcloud" failonerror="true">
+			<arg line="service-management enable pubsub.googleapis.com --project=${appengine.app.id}" />
+		</exec>
+		<echo message="FINISHED: Enabling pub/sub for project: ${appengine.app.id}" />
+	</target>
+
+	<target name="-enable-memcache">
+		<echo>
+
+			TODO: Enable memory store.  Not currently supported by GCloud.
+			gcloud compute project-info add-metadata --project=heb-middle-layer --metadata=gae_developer_option_enable_service_name_dispatch=true
+
+		</echo>
+		<antcall target="-press-enter-to-continue" />
+	</target>
+	
+	<target name="-enable-kms">
+		<echo message="START: Enabling kms for project: ${appengine.app.id}" />
+		<exec executable="gcloud" failonerror="true">
+			<arg line="service-management enable cloudkms.googleapis.com --project=${appengine.app.id}" />
+		</exec>
+		<echo message="FINISHED: Enabling kms for project: ${appengine.app.id}" />
+	</target>
+	
+	<target name="-kms-setup" depends="-create-keyring,-create-properties-key" />
+	
+	<target name="-create-keyring">
+		<echo message="START: Creating keyring for project: ${appengine.app.id}" />
+		<exec executable="gcloud" failonerror="true">
+			<arg line="kms keyrings create application-shared --location=global --project=${appengine.app.id}" />
+		</exec>
+		<echo message="FINISHED: Creating keyring for project: ${appengine.app.id}" />
+	</target>
+	
+	<target name="-create-properties-key">
+		<echo message="START: Creating keys for project: ${appengine.app.id}" />
+		<exec executable="gcloud" failonerror="true">
+			<arg line="kms keys create gcp-creds --purpose=encryption --keyring=application-shared --location=global --project=${appengine.app.id}" />
+		</exec>
+		<exec executable="gcloud" failonerror="true">
+			<arg line="kms keys create app-settings --purpose=encryption --keyring=application-shared --location=global --project=${appengine.app.id}" />
+		</exec>
+		<echo message="FINISHED: Creating keys for project: ${appengine.app.id}" />
+	</target>
+
+	<target name="-delete-confirm">
+		<echo message="Project ${appengine.app.id} will be deleted" />
+		<antcall target="-confirm-continue" />
+	</target>
+
+	<target name="-delete-base-project">
+		<echo message="START: Deleting project: ${appengine.app.id}" />
+		<exec executable="gcloud">
+			<arg line="projects delete ${appengine.app.id}" />
+		</exec>
+		<echo message="FINISHED: Deleting project: ${appengine.app.id}" />
+	</target>
+
+	<macrodef name="_add-service-account-role">
+		<attribute name="role" />
+		<sequential>
+			<echo message="START: Granting role @{role} to service account: ${appengine.service.account}" />
+			<exec executable="gcloud" failonerror="true">
+				<arg line="projects add-iam-policy-binding ${appengine.app.id} --member serviceAccount:${appengine.service.account} --role @{role}" />
+			</exec>
+			<echo message="FINISHED: Granting role @{role} to service account: ${appengine.service.account}" />
+		</sequential>
+	</macrodef>
+</project>

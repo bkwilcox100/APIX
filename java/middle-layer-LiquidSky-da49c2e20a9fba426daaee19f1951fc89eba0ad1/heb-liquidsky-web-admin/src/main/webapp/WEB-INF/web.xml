@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	version="2.5" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<jsp-config>
+		<jsp-property-group>
+			<url-pattern>*.jsp</url-pattern>
+			<page-encoding>UTF-8</page-encoding>
+			<include-prelude>/includes/prelude.jspf</include-prelude>
+		</jsp-property-group>
+	</jsp-config>
+
+	<!--  
+		======================
+		Filter definitions
+		======================
+	 -->
+
+	<filter>
+		<filter-name>unauthorizedFilter</filter-name>
+		<filter-class>com.heb.liquidsky.auth.unauthorizedFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>unauthorizedFilter</filter-name>
+		<url-pattern>/unauthorized.jsp</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<filter-name>AdminFilter</filter-name>
+		<filter-class>com.heb.liquidsky.auth.AdminFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AdminFilter</filter-name>
+		<url-pattern>/admin/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<filter-name>LogoutFilter</filter-name>
+		<filter-class>com.heb.liquidsky.auth.LogoutFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>LogoutFilter</filter-name>
+		<url-pattern>/logout</url-pattern>
+	</filter-mapping>
+
+
+	<!--  
+		======================
+		Servlet definitions
+		======================
+	 -->
+	<servlet>
+		<servlet-name>LoginServlet</servlet-name>
+		<servlet-class>com.heb.liquidsky.auth.LoginServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class>com.heb.liquidsky.auth.LogoutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>Oauth2CallbackServlet</servlet-name>
+		<servlet-class>com.heb.liquidsky.auth.Oauth2CallbackServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Oauth2CallbackServlet</servlet-name>
+		<url-pattern>/oauth2callback</url-pattern>
+	</servlet-mapping>
+
+
+
+	<context-param>
+		<param-name>adminweb.callback</param-name>
+		<param-value>${adminweb.callback}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>adminweb.clientID</param-name>
+		<param-value>${adminweb.clientID}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>adminweb.clientSecret</param-name>
+		<param-value>${adminweb.clientSecret}</param-value>
+	</context-param>	
+</web-app>

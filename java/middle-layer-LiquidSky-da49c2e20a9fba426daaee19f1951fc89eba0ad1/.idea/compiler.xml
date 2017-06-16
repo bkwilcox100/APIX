@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="heb-liquidsky-core" />
+        <module name="heb-liquidsky-pubsub" />
+        <module name="heb-liquidsky-service-adminrest" />
+        <module name="heb-liquidsky-service-apidiscovery" />
+        <module name="heb-liquidsky-service-appversion" />
+        <module name="heb-liquidsky-service-shoppinglist" />
+        <module name="heb-liquidsky-spring-base" />
+        <module name="heb-liquidsky-spring-swagger" />
+        <module name="heb-liquidsky-taskqueue" />
+        <module name="heb-liquidsky-web-admin" />
+        <module name="heb-liquidsky-web-default" />
+        <module name="heb-productfeed" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="heb-liquidsky-base" target="1.8" />
+      <module name="heb-liquidsky-core" target="1.8" />
+      <module name="heb-liquidsky-pubsub" target="1.8" />
+      <module name="heb-liquidsky-service-adminrest" target="1.8" />
+      <module name="heb-liquidsky-service-apidiscovery" target="1.8" />
+      <module name="heb-liquidsky-service-appversion" target="1.8" />
+      <module name="heb-liquidsky-service-shoppinglist" target="1.8" />
+      <module name="heb-liquidsky-spring-base" target="1.8" />
+      <module name="heb-liquidsky-spring-swagger" target="1.8" />
+      <module name="heb-liquidsky-taskqueue" target="1.8" />
+      <module name="heb-liquidsky-web-admin" target="1.7" />
+      <module name="heb-liquidsky-web-default" target="1.7" />
+      <module name="heb-productfeed" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

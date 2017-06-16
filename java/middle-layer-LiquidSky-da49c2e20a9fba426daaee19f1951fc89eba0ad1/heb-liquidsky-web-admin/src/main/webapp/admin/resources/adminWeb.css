@@ -1,0 +1,142 @@
+body{
+	font-family: sans-serif;
+}
+
+table {
+	border-collapse: separate;
+	border: 1px solid white;
+}
+
+#MainMenu ul{
+	padding: 0;
+	list-style: none;
+	margin: 0;
+}
+
+#UserBar ul{
+	padding: .5rem;
+	list-style: none;
+	margin: 0;
+	background: linear-gradient(to right, #003b6f, white);
+	color: white;
+}
+
+#UserBar ul li{
+	display: inline-block;
+}
+
+#UserBar > ul > li > img {
+	max-height: 2rem;
+	vertical-align: middle;
+}
+
+.bodyContainer{
+	width: 100%;
+	min-height: 20rem;
+}
+
+#sharedFooter ul{
+	padding: .5rem;
+	background: #003b6f;
+	list-style: none;
+	margin: 0;
+	color: white;
+}
+
+#sharedFooter ul li{
+	display: inline-block;
+}
+
+#sharedFooter ul li a {
+	color: white;
+}
+
+span.propertyName {
+    font-weight: bold;
+}
+
+#ParentCollectionOperations{
+	padding: .5rem;
+	list-style: none;
+	margin: 0;
+}
+
+#ParentCollectionOperations li {
+	display: inline-block;
+}
+
+.collectionTable{
+	/* background: linear-gradient(green, black); */
+	background-color: lightgray;
+	padding: .5rem;
+	width: 100%;
+    table-layout: fixed;
+}
+
+.propertyValue{
+	display:inline-block;
+}
+
+.logTableHeader {
+	background-color: lightblue;
+}
+
+.logTableHeader > span {
+	font-weight: bold;
+}
+
+.logTD {
+	background-color: lightgray;
+	max-width: 50rem;
+}
+
+.adminButton{
+	width: 10rem;
+	height: 1rem;
+	background-color: lightgray;
+	text-align: center;
+	padding: 4px;
+	border-color: gray;
+	border-width: 3px;
+	border-style: solid;
+	cursor: pointer;
+	display: inline-block;
+}
+
+.refreshButton {
+	background-color: lightgreen;
+	border-color: green;
+}
+
+/* styles for aligning forms */
+form.alignedForm label{
+	display: inline-block;
+	width: 10rem;
+	text-align: right;
+}
+form.alignedForm input {
+  display: inline-block;
+  width: 32rem;
+}
+
+form.alignedForm button{
+	width: 43rem;
+	margin: .5rem 0 1rem 0;
+}
+
+/* styles for the scroll to top button */
+a.back-to-top {
+	display: none;
+	width: 60px;
+	height: 60px;
+	text-indent: -9999px;
+	position: fixed;
+	z-index: 999;
+	right: 20px;
+	bottom: 20px;
+	background: #003b6f url("up-arrow.png") no-repeat center 43%;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+	border: 2px solid white;
+}

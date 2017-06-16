@@ -1,0 +1,9 @@
+dispatch:
+    
+  #Service Discovery
+  - url : "*/apidiscovery/*"
+    service : apidiscovery
+    
+  #App Version
+  - url : "*/appversion/*"
+    service : appversionservice

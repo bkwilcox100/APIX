@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<data-store>
+	<!--  Defines the apiCollection DataType -->
+	<data-type name="apiCollection" id-property="id" id-generator-prefix="acol" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="heb_api_collection" type="primary" id-column="collection_id">
+			<column column-name="collection_id" property="id" />
+			<column column-name="name" property="name" />
+			<column column-name="description" property="description" />
+			<column column-name="contact_info" property="contactInfo" />
+		</table>
+		
+		<!-- Defines the link to all service descriptions for this collection -->
+		<table name="heb_api_service_description" type="reference" id-column="collection_id">
+			<column column-name="service_id" list-item-type="serviceDescription" property="serviceDescriptions" read-only="true" cascade="true" />
+		</table>
+	</data-type>
+
+	<!--  Defines the serviceDescription DataType -->
+	<data-type name="serviceDescription" id-property="id" id-generator-prefix="asrv" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="heb_api_service_description" type="primary" id-column="service_id">
+			<column column-name="service_id" property="id" />
+			<column column-name="collection_id" item-type="apiCollection" property="parentCollection" />
+			<column column-name="name" property="name" />
+			<column column-name="description" property="description" />
+			<column column-name="labels" property="labels" />
+			<column column-name="open_api_spec_url" property="openApiSpecUrl" />
+			<column column-name="documentation_url" property="documentationUrl" />
+			<column column-name="current_version" property="currentVersion" />
+		</table>
+		
+		<!-- Defines the link to all service versions for this collection -->
+		<table name="heb_api_service_version" type="reference" id-column="service_id">
+			<column column-name="version_id" list-item-type="serviceVersion" property="serviceVersions" read-only="true" cascade="true" />
+		</table>
+	</data-type>
+
+	<!--  Defines the serviceVersion DataType -->
+	<data-type name="serviceVersion" id-property="id" id-generator-prefix="aver" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="heb_api_service_version" type="primary" id-column="version_id">
+			<column column-name="version_id" property="id" />
+			<column column-name="service_id" item-type="serviceDescription" property="parentService" />
+			<column column-name="version_number" property="versionNumber" />
+			<column column-name="description" property="description" />
+			<column column-name="host_name" property="hostName" />
+			<column column-name="base_path" property="basePath" />
+			<column column-name="open_api_spec_url" property="openApiSpecUrl" />
+		</table>
+		
+		<!-- Defines the link to all resource paths for this collection -->
+		<table name="heb_api_resource_path" type="reference" id-column="version_id">
+			<column column-name="path_id" list-item-type="resourcePath" property="resourcePaths" read-only="true" cascade="true" />
+		</table>
+	</data-type>
+	
+	<!--  Defines the resourcePath DataType -->
+	<data-type name="resourcePath" id-property="id" id-generator-prefix="ares" pub-sub-enabled="false" fcm-enabled="false">
+		<table name="heb_api_resource_path" type="primary" id-column="path_id">
+			<column column-name="path_id" property="id" />
+			<column column-name="version_id" item-type="serviceVersion" property="parentVersion" />
+			<column column-name="name" property="name" />
+			<column column-name="description" property="description" />
+			<column column-name="path" property="path" />
+			<column column-name="batch_path" property="batchPath" />
+		</table>
+	</data-type>
+</data-store>

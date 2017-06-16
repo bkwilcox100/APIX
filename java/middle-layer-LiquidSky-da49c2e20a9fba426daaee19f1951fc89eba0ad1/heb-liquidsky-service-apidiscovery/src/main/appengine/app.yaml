@@ -1,0 +1,32 @@
+service: apidiscovery
+
+runtime: java
+env: flex
+
+runtime_config:
+   jdk: openjdk8
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+  secure: always
+
+threadsafe: true
+
+resources:
+  memory_gb: ${appengine.app.modules.apidiscovery.specs.memory_gb}
+
+automatic_scaling:
+  min_num_instances: ${appengine.app.modules.apidiscovery.specs.min-num-instances}
+  max_num_instances: ${appengine.app.modules.apidiscovery.specs.max-num-instances}
+
+health_check:
+  check_interval_sec: ${appengine.app.modules.apidiscovery.check_interval_sec}
+
+endpoints_api_service:
+  name: apidiscovery-dot-${appengine.app.id}.appspot.com
+  config_id: ${appengine.app.modules.apidiscovery.endpoints.config.id}
+  
+beta_settings:
+  # don't scan for annotations at every startup
+  java_quickstart: true

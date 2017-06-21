@@ -980,6 +980,7 @@ definitions:
 # definitions for AppProperties (AppVersion)
   AppProperties:
     type: object
+    group: "AppProperties"
     required:
     - appId
     properties:
@@ -1001,6 +1002,7 @@ definitions:
         type: string
   AppVersion:
     type: object
+    group: "AppProperties"
     required:
     - appVersionId
     - osName
@@ -1019,6 +1021,7 @@ definitions:
 
 # definitions for API Discovery Service.
   ResourcePath:
+    group: "APIDiscovery"
     properties:
       batchPath:
         type: string
@@ -1031,6 +1034,7 @@ definitions:
       path:
         type: string
   ServiceDescription:
+    group: "APIDiscovery"
     properties:
       currentVersion:
         type: string
@@ -1051,6 +1055,7 @@ definitions:
         items:
           "$ref": "#/definitions/ServiceVersion"
   ServiceVersion:
+    group: "APIDiscovery"
     properties:
       basePath:
         type: string
@@ -1069,6 +1074,7 @@ definitions:
       versionNumber:
         type: string
   ApiCollection:
+    group: "APIDiscovery"
     properties:
       contactInfo:
         type: string
@@ -1083,60 +1089,60 @@ definitions:
         items:
           "$ref": "#/definitions/ServiceDescription"
 
-# definitions for standard infrastructure objects.
-  SuccessMessage:
-    type: object
-    properties:
-      success:
-        type: array
-        items:
-          type: string
-  Message:
-    type: object
-    properties:
-      code:
-        type: string
-      text:
-        type: string
-  ErrorResponse:
-    type: object
-    properties:
-      id:
-        type: string
-      status:
-        type: string
-      object:
-        type: object
-      message:
-          $ref: '#/definitions/Message'
-  BatchResponse:
-    type: object
-    properties:
-      success:
-        type: array
-        items:
-          type: string
-      errors:
-        type: array
-        items:
-          $ref: '#/definitions/AppVersion'
-  AuditLogEntry:
-    type: object
-    properties:
-      changeId:
-        type: string
-      dataItemType:
-        type: string
-      itemId:
-        type: string
-      userId:
-        type: string
-      operation:
-        type: string
-      jsonResponse:
-        type: string
-      creationDate:
-        type: string
-      lastModifiedDate:
-       type: string
-  JsonMap: {}
+# # definitions for standard infrastructure objects.
+#   SuccessMessage:
+#     type: object
+#     properties:
+#       success:
+#         type: array
+#         items:
+#           type: string
+#   Message:
+#     type: object
+#     properties:
+#       code:
+#         type: string
+#       text:
+#         type: string
+#   ErrorResponse:
+#     type: object
+#     properties:
+#       id:
+#         type: string
+#       status:
+#         type: string
+#       object:
+#         type: object
+#       message:
+#           $ref: '#/definitions/Message'
+#   BatchResponse:
+#     type: object
+#     properties:
+#       success:
+#         type: array
+#         items:
+#           type: string
+#       errors:
+#         type: array
+#         items:
+#           $ref: '#/definitions/AppVersion'
+#   AuditLogEntry:
+#     type: object
+#     properties:
+#       changeId:
+#         type: string
+#       dataItemType:
+#         type: string
+#       itemId:
+#         type: string
+#       userId:
+#         type: string
+#       operation:
+#         type: string
+#       jsonResponse:
+#         type: string
+#       creationDate:
+#         type: string
+#       lastModifiedDate:
+#        type: string
+#   JsonMap: {}

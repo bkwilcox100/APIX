@@ -1,3 +1,0 @@
-USE middle_layer;
-
-ALTER TABLE heb_shopping_list ADD COLUMN SITE_ID INT UNSIGNED DEFAULT 0;

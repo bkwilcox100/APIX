@@ -1,7 +1,6 @@
 # APIX or API Expander
 
-A simple tool to expand Open API definitions into useful documentation.
-Written by Brandon Wilcox
+A simple tool to expand Open API definitions into useful documentation and resources.
 
 ## Installation
 
@@ -9,18 +8,18 @@ TODO: Describe the installation process
 
 ## Usage
 ### Requirements
-These are some requirements to keep in mind when writing your OA Spec
+Along with the specifications found on the [Open API Repo](https://github.com/OAI/OpenAPI-Specification), here are some things to keep in mind:
 + The ID in every definition MUST end in "ID" (case-insensitive)
 + Any Date objects must end in "Date" (case-insensitive)
 + The primary key must be required and be the first property listed
++ Must include "group" attribute in every definition (can be the same group)
 
-## Contributing
-
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+## Features
++ Auto Generate Resources
+    + XML Datastore
+    + SQL Tables
+    + Java Interface Files
+    + Overview of Info (HTML Interface)
 
 ## History
 
@@ -28,7 +27,7 @@ TODO: Write history
 
 ## Credits
 
-TODO: Write credits
+Developer: Brandon Wilcox
 
 ## License
 

@@ -27,10 +27,14 @@ var sourceXML = './docs/xml/data-store.xml';
 var doc = stdfunc.serializeYML(sourceYML, './docs/json/YML_JSON.json');
 
 // Create Table based on YML document
-stdfunc.createTable(doc, './docs/sql/sql_output.sql');
+//stdfunc.createTable(doc, './docs/sql/sql_output.sql');
 
-stdfunc.createXML(doc, "./docs/xml/G_XML.xml");
+//stdfunc.createXML(doc, "./docs/xml/G_XML.xml");
 
+//stdfunc.serializeXML('./docs/xml/G_XML.xml', './docs/json/G_JSON.json');
+
+stdfunc.createJava(doc);
+//console.log(stdfunc.getTLC(doc));
 // TESTING PURPOSES: Create Local Server and listen on port 8080
 // http.createServer(function(req, res) {
 //   res.writeHead(200, {

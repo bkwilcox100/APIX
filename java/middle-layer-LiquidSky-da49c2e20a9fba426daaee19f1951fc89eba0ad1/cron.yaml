@@ -1,7 +1,0 @@
-# gcloud app deploy cron.yaml
-
-cron:
-- description: daily summary job
-  url: /tasks/summary
-  target: product-feed
-  schedule: every 24 hours

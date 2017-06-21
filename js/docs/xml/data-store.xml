@@ -14,8 +14,6 @@
 			<column column-name="json_data" property="jsonData" />
 		</table>
 	</data-type>
-	<!--DO NOT TOUCH-->
-	
 	<!--
 		==========================================================
 		Definitions of resources for Liquid Sky Admin Audit Log

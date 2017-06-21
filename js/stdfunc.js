@@ -453,7 +453,7 @@ exports.createJava = function(source) {
           wholeDoc += "\t\treturn response;\n\t}\n\n";
         } else {
           wholeDoc += ("\tpublic Map<String, Object> createBatch" + def + "(JsonElement requestBody, String " + idString + ") throws ServiceException {\n");
-          wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + toUnderscoreUpper(groupList[group]) + ", null, null, requestBody, APP_PROPERTIES_" + toUnderscoreUpper(idString) + ");\n");
+          wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + toUnderscoreUpper(groupList[group]) + ", " + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(groupList[0]) + ", requestBody, null);\n");
           wholeDoc += "\t\treturn response;\n\t}\n\n";
         }
       }
@@ -468,10 +468,15 @@ exports.createJava = function(source) {
           wholeDoc += ("\tpublic Map<String, Object> read" + def + "Resource(String " + idString + ") throws ServiceException {\n");
           wholeDoc += ("\t\treturn ResourceUtils.readResource(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", CONTEXT_FILTER);\n\t}\n\n");
         } else {
-          //var NTLC = source['definitions'][def]['properties']
+          var altID = "NO ID FOUND";
+          for (prop in source['definitions'][def]['properties']){
+            if (prop.slice(-2, prop.length).toLowerCase() == 'id'){
+              altID = prop;
+            }
+          }
           wholeDoc += ("\tpublic List<Map<String, Object>> read" + def + "Collection() throws ServiceException {\n");
           wholeDoc += ("\t\treturn ResourceUtils.readSubCollection(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", CONTEXT_FILTER);\n\t}\n\n");
-          wholeDoc += ("\tpublic Map<String, Object> read" + def + "Resource(String " + idString + ", INSERT CHILD ID) throws ServiceException {\n");
+          wholeDoc += ("\tpublic Map<String, Object> read" + def + "Resource(String " + idString + ", String " + altID + ") throws ServiceException {\n");
           wholeDoc += ("\t\treturn ResourceUtils.readResource(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", CONTEXT_FILTER);\n\t}\n\n");
         }
       }
@@ -485,8 +490,14 @@ exports.createJava = function(source) {
           wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", requestBody, CONTEXT_FILTER);\n");
           wholeDoc += ("\t\treturn response;\n\t}\n\n");
         } else {
-          wholeDoc += ("\tpublic Map<String, Object> update" + def + "Resource(JsonElement requestBody, String " + idString + ", INSERT CHILD ID) throws ServiceException {\n");
-          wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(INSERT CHILD ID, DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", " + idString + ", DEFAULT_PARENT_PROPERTY, requestBody, CONTEXT_FILTER);\n");
+          var altID = "NO ID FOUND";
+          for (prop in source['definitions'][def]['properties']){
+            if (prop.slice(-2, prop.length).toLowerCase() == 'id'){
+              altID = prop;
+            }
+          }
+          wholeDoc += ("\tpublic Map<String, Object> update" + def + "Resource(JsonElement requestBody, String " + idString + ", String " + altID + ") throws ServiceException {\n");
+          wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + altID + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", " + idString + ", DEFAULT_PARENT_PROPERTY, requestBody, CONTEXT_FILTER);\n");
           wholeDoc += ("\t\treturn response;\n\t}\n\n");
         }
       }
@@ -504,12 +515,18 @@ exports.createJava = function(source) {
           wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.deleteResource(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ");\n");
           wholeDoc += "return response;\n\t}\n\n";
         } else {
+          var altID = "NO ID FOUND";
+          for (prop in source['definitions'][def]['properties']){
+            if (prop.slice(-2, prop.length).toLowerCase() == 'id'){
+              altID = prop;
+            }
+          }
           wholeDoc += ("\tpublic Map<String, Object> deleteBatch" + def + "Resource(JsonElement requestBody) throws ServiceException {\n");
           wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.deleteResourceList(requestBody, DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ");\n");
           wholeDoc += ("\t\treturn response;\n\t}\n\n");
 
-          wholeDoc += ("\tpublic Map<String, Object> delete" + def + "Resource(String " + idString + ", String INSERT CHILD ID) throws ServiceException {\n");
-          wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.deleteResource(INSERT CHILD ID, DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", " + idString + ", DEFAULT_PARENT_PROPERTY);\n");
+          wholeDoc += ("\tpublic Map<String, Object> delete" + def + "Resource(String " + idString + ", String " + altID + ") throws ServiceException {\n");
+          wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.deleteResource(" + altID + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", " + idString + ", DEFAULT_PARENT_PROPERTY);\n");
           wholeDoc += "\t\treturn response;\n\t}\n\n";
         }
       }

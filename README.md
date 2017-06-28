@@ -15,6 +15,7 @@ Along with the specifications found on the [Open API Repo](https://github.com/OA
 
 ## Installation
 *DO NOT ATTEMPT*
+
 To install, download the APIX project and navigate to the 'js' folder.
 
     npm install APIX

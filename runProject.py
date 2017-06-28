@@ -11,8 +11,8 @@ print("Now running @ " + rightNow)
 systemType = platform.system()
 if (systemType == 'Darwin'):
     #os.chdir("/Users/brandonwilcox/Development/OpenAPI/NodeJS/APIX")
-    os.system("cd /Users/brandonwilcox/Development/'Open Source'/APIX/js")
-    os.system("node ./js/apix.js")
+    os.system("cd /Users/brandonwilcox/Development/'Open Source'/APIX/")
+    os.system("node ./apix.js")
 else:
     os.chdir("C:/Users/w767413/Documents/OpenAPI/NodeJS/APIX/js/")
     subprocess.run("node apix.js")

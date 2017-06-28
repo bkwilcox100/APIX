@@ -16,15 +16,18 @@ NOTES:
 var http = require('http');
 var fs = require('fs');
 var yam = require('js-yaml');
+var CLI = require('CLUI');
+var spinner = CLI.Spinner;
 
 // User Defined Functions
-var stdfunc = require("./stdfunc.js");
+var stdfunc = require("./functions/stdfunc.js");
 
 // User Defined Variables
 var sourceYML = './docs/yml/openapiexample.yml';
 var sourceXML = './docs/xml/data-store.xml';
+var serverSpinner = new spinner('Starting Server...');
 // Serialize YML document
-var doc = stdfunc.serializeYML(sourceYML, './docs/json/YML_JSON.json');
+var doc = stdfunc.serializeYML(sourceYML);
 
 // Create Table based on YML document
 //stdfunc.createTable(doc, './docs/sql/sql_output.sql');

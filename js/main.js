@@ -27,7 +27,7 @@ var sourceYML = './docs/yml/openapiexample.yml';
 var sourceXML = './docs/xml/data-store.xml';
 var serverSpinner = new spinner('Starting Server...');
 // Serialize YML document
-var doc = stdfunc.serializeYML(sourceYML);
+var doc = stdfunc.serializeYML('/Users/brandonwilcox/Downloads/openapi.yaml');
 
 // Create Table based on YML document
 //stdfunc.createTable(doc, './docs/sql/sql_output.sql');
@@ -36,7 +36,9 @@ var doc = stdfunc.serializeYML(sourceYML);
 
 //stdfunc.serializeXML('./docs/xml/G_XML.xml', './docs/json/G_JSON.json');
 
-stdfunc.createJava(doc);
+//stdfunc.createJava(doc);
+stdfunc.createJava(doc, '/Users/brandonwilcox/Downloads/');
+//console.log(stdfunc.getServiceName(doc));
 //console.log(stdfunc.getTLC(doc));
 // TESTING PURPOSES: Create Local Server and listen on port 8080
 // http.createServer(function(req, res) {

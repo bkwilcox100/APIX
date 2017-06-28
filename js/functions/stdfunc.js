@@ -1,8 +1,94 @@
+// TODO: Make Function ignore some of the definitions
+
 var fs = require('fs');
 var yam = require('js-yaml');
 var xml2js = require('xml2js');
 var _ = require('underscore');
 const path = require('path');
+
+/*
+Name: getServiceName
+Description: Gets service name from OA Spec
+Parameters:
+- doc : JSON object of OA Spec
+Preconditions:
+- doc exists
+Postconditions:
+- None
+Return: String
+Status: COMPLETE
+*/
+exports.getServiceName = function(doc) {
+  for (i = 0; i < doc['tags'].length; i++) {
+    for (tag in doc['tags'][i]) {
+      if (doc['tags'][i]['name']) {
+        return doc['tags'][i]['description'];
+      }
+      console.log(doc['tags'][i][tag]);
+    }
+  }
+  return 'NoN';
+}
+
+/*
+Name: serializeYML
+Description: Converts YML to JSON object
+Parameters:
+- sourcePath : Source YML doc to be converted
+- destPath : Document to store JSON data
+Preconditions:
+- YML document exists at specfied path
+Postconditions:
+- destPath exists
+Return: JSON object
+Status: COMPLETE
+*/
+exports.serializeYML = function(sourcePath) {
+  // Attempt to Serialize YAML file
+  try {
+    // Load YAML from file and convert to java object
+    var doc = yam.safeLoad(fs.readFileSync(sourcePath, 'utf8'));
+    console.log("YML Read and Conversion Successful");
+  } catch (loadError) {
+    throw loadError;
+  }
+  return doc;
+}
+
+/*
+Name: serializeXML
+Description: Converts XML to JSON object
+Parameters:
+- sourcePath : Source XML doc to be converted
+Preconditions:
+- XML document exists at specfied path
+Postconditions:
+- destPath exists
+Return: JSON object
+Status: COMPLETE
+*/
+exports.serializeXML = function(sourcePath, destPath) {
+  fs.readFile(sourcePath, 'utf8', function(err, data) {
+    if (err) {
+      throw err;
+    }
+    xml2js.parseString(data, function(err2, result) {
+      if (err2) {
+        throw err2;
+      }
+      console.log("XML Conversion Successful");
+      var stringResult = JSON.stringify(result);
+      console.log(result);
+      fs.writeFile(destPath, stringResult, function(err3) {
+        if (err3) {
+          throw err3;
+        }
+        console.log("XML Read Successful");
+      });
+      return result;
+    });
+  });
+}
 
 /*
 Name: createTable
@@ -132,66 +218,6 @@ exports.createTable = function(doc, destPath) {
       throw error;
     }
     console.log("SQL Write Successful");
-  });
-}
-
-/*
-Name: serializeYML
-Description: Converts YML to JSON object
-Parameters:
-- sourcePath : Source YML doc to be converted
-- destPath : Document to store JSON data
-Preconditions:
-- YML document exists at specfied path
-Postconditions:
-- destPath exists
-Return: JSON object
-Status: COMPLETE
-*/
-exports.serializeYML = function(sourcePath) {
-  // Attempt to Serialize YAML file
-  try {
-    // Load YAML from file and convert to java object
-    var doc = yam.safeLoad(fs.readFileSync(sourcePath, 'utf8'));
-    console.log("YML Read and Conversion Successful");
-  } catch (loadError) {
-    throw loadError;
-  }
-  return doc;
-}
-
-/*
-Name: serializeXML
-Description: Converts XML to JSON object
-Parameters:
-- sourcePath : Source XML doc to be converted
-Preconditions:
-- XML document exists at specfied path
-Postconditions:
-- destPath exists
-Return: JSON object
-Status: COMPLETE
-*/
-exports.serializeXML = function(sourcePath, destPath) {
-  fs.readFile(sourcePath, 'utf8', function(err, data) {
-    if (err) {
-      throw err;
-    }
-    xml2js.parseString(data, function(err2, result) {
-      if (err2) {
-        throw err2;
-      }
-      console.log("XML Conversion Successful");
-      var stringResult = JSON.stringify(result);
-      console.log(result);
-      fs.writeFile(destPath, stringResult, function(err3) {
-        if (err3) {
-          throw err3;
-        }
-        console.log("XML Read Successful");
-      });
-      return result;
-    });
   });
 }
 
@@ -420,13 +446,13 @@ exports.createJava = function(source, destPath) {
         wholeDoc += ("\tprivate static final String DATA_ITEM_NAME_" + toUnderscoreUpper(def) + " = \"" + toCamelCase(def) + "\";\n");
         for (prop in source['definitions'][def]['properties']) {
           wholeDoc += ("\tprivate static final String APP_PROPERTIES_" + toUnderscoreUpper(prop) + " = \"" + toCamelCase(prop) + "\";\n")
-          if (_.contains(TLC, def)){
+          if (_.contains(TLC, def)) {
             if (prop.slice(-2, prop.length).toLowerCase() == "id") {
               idString = prop;
             }
           }
         }
-        if (_.contains(TLC, def)){
+        if (_.contains(TLC, def)) {
           wholeDoc += ("\tprivate static final String APP_PROPERTIES_COLLECTION_QUERY = \"all_" + toUnderscore(def) + "\";\n");
         }
         wholeDoc += "\n";
@@ -442,7 +468,7 @@ exports.createJava = function(source, destPath) {
     wholeDoc += "\n\t// Create Operations\n\n";
     for (def in source['definitions']) {
       if (source['definitions'][def]['group'] == groupList[group]) {
-        if (_.contains(TLC, def)){
+        if (_.contains(TLC, def)) {
           wholeDoc += ("\tpublic Map<String, Object> createBatch" + def + "(JsonElement requestBody) throws ServiceException {\n");
           wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + toUnderscoreUpper(groupList[group]) + ", null, null, requestBody, APP_PROPERTIES_" + toUnderscoreUpper(idString) + ");\n");
           wholeDoc += "\t\treturn response;\n\t}\n\n";
@@ -464,8 +490,8 @@ exports.createJava = function(source, destPath) {
           wholeDoc += ("\t\treturn ResourceUtils.readResource(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", CONTEXT_FILTER);\n\t}\n\n");
         } else {
           var altID = "NO ID FOUND";
-          for (prop in source['definitions'][def]['properties']){
-            if (prop.slice(-2, prop.length).toLowerCase() == 'id'){
+          for (prop in source['definitions'][def]['properties']) {
+            if (prop.slice(-2, prop.length).toLowerCase() == 'id') {
               altID = prop;
             }
           }
@@ -486,8 +512,8 @@ exports.createJava = function(source, destPath) {
           wholeDoc += ("\t\treturn response;\n\t}\n\n");
         } else {
           var altID = "NO ID FOUND";
-          for (prop in source['definitions'][def]['properties']){
-            if (prop.slice(-2, prop.length).toLowerCase() == 'id'){
+          for (prop in source['definitions'][def]['properties']) {
+            if (prop.slice(-2, prop.length).toLowerCase() == 'id') {
               altID = prop;
             }
           }
@@ -511,8 +537,8 @@ exports.createJava = function(source, destPath) {
           wholeDoc += "return response;\n\t}\n\n";
         } else {
           var altID = "NO ID FOUND";
-          for (prop in source['definitions'][def]['properties']){
-            if (prop.slice(-2, prop.length).toLowerCase() == 'id'){
+          for (prop in source['definitions'][def]['properties']) {
+            if (prop.slice(-2, prop.length).toLowerCase() == 'id') {
               altID = prop;
             }
           }
@@ -530,7 +556,7 @@ exports.createJava = function(source, destPath) {
     var fileName = destPath + groupList[group] + "Interface.java";
     fs.writeFile(fileName, wholeDoc, function(err) {
       if (err) {
-        throw err
+        throw err;
       }
       console.log("Java Interface Written Successfully");
     });
@@ -577,7 +603,7 @@ var getTLC = exports.getTLC = function(doc) {
   }
   for (def in doc["definitions"]) {
     for (i in nList) {
-      if (!(_.contains(nList,def)) && !(_.contains(tList, def))) {
+      if (!(_.contains(nList, def)) && !(_.contains(tList, def))) {
         tList.push(def)
       }
     }

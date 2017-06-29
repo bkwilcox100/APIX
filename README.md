@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 <p align="center">
   <img src="./apix_logo.png"/>
 </p>
+=======
+![](./apix_logo.png)
+>>>>>>> f9f647b2659e9386140d7a09eb4949f9a777eecb
 
 # APIX or API Expander
 

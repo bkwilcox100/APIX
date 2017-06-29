@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "A tool to expand Open API definitions into useful documentation",
   "main": "apix.js",
-  "bin":{
-      "apix" : "./apix.js"
+  "bin": {
+    "apix": "./apix.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,7 +21,9 @@
     "underscore": "^1.8.3",
     "xml2js": "^0.4.17"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  },
   "repository": {
     "type": "git",
     "url": "https://git.heb.com/w767413/APIX.git"

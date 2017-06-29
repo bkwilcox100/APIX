@@ -4,7 +4,7 @@ var fs = require('fs');
 var yam = require('js-yaml');
 var xml2js = require('xml2js');
 var _ = require('underscore');
-const path = require('path');
+var path = require('path');
 
 /*
 Name: getServiceName

@@ -11,15 +11,20 @@ Along with the specifications found on the [Open API Repo](https://github.com/OA
 + The ID in every definition MUST end in "ID" (case-insensitive)
 + Any Date objects must end in "Date" (case-insensitive)
 + The primary key must be required and be the first property listed
-+ Must include "group" attribute in every definition (can be the same group)
++ All definitions must include a title property with a group attribute
 
 ## Installation
-*DO NOT ATTEMPT*
 
-To install, download the APIX project and navigate to the 'js' folder.
+To install, download the APIX project and navigate to its directory. Run:
 
-    npm install APIX
+    $ npm install
+    $ node apix.js
 
+*UNTESTED*
+To install globally, download the APIX and navigate to its directory. Run:
+
+    $ npm install -g
+    $ apix
 ## Features
 + Auto Generates Resources
     + XML Datastore

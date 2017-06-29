@@ -1,5 +1,9 @@
 <p align="center">
+<<<<<<< HEAD
   <img src="./apix_logo.png" width="100" height="100"/>
+=======
+  <img src="./apix_logo.png" style="width: 100px; height: 100px;"/>
+>>>>>>> ac6880db5ec1896ecbdfa64e47dceadc66871aea
 </p>
 
 # APIX or API Expander

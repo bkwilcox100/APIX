@@ -1,3 +1,5 @@
+![](./apix_logo.png)
+
 # APIX or API Expander
 
 A simple tool to expand Open API definitions into useful documentation and resources.

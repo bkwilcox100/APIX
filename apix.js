@@ -6,11 +6,9 @@ var fs = require('fs');             // For interacting with file system
 var path = require('path');         // For interacting with file system
 var yam = require('js-yaml');       // For parsing the YML files
 var xml2js = require('xml2js');     // For parsing XML files (Remove)
-var CLI = require('CLUI');          // For Guages, Progress Bars, Spinners, etc.
 var _ = require('underscore');      // Utility Functions Library
 var clear = require('clear');       // Clears screen before start of program
 var chalk = require('chalk');       // For colorful UI
-var Spinner = CLI.Spinner;          // Spinner from CLUI module
 var mkdirp = require('mkdirp');     // For creating multiple directories
 
 // User Defined Functions

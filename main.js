@@ -16,8 +16,6 @@ NOTES:
 var http = require('http');
 var fs = require('fs');
 var yam = require('js-yaml');
-var CLI = require('CLUI');
-var spinner = CLI.Spinner;
 
 // User Defined Functions
 var stdfunc = require("./functions/stdfunc.js");
@@ -25,7 +23,7 @@ var stdfunc = require("./functions/stdfunc.js");
 // User Defined Variables
 var sourceYML = './docs/yml/openapiexample.yml';
 var sourceXML = './docs/xml/data-store.xml';
-var serverSpinner = new spinner('Starting Server...');
+
 // Serialize YML document
 var doc = stdfunc.serializeYML('/Users/brandonwilcox/Downloads/openapi.yaml');
 
@@ -37,9 +35,13 @@ var doc = stdfunc.serializeYML('/Users/brandonwilcox/Downloads/openapi.yaml');
 //stdfunc.serializeXML('./docs/xml/G_XML.xml', './docs/json/G_JSON.json');
 
 //stdfunc.createJava(doc);
+
 stdfunc.createJava(doc, '/Users/brandonwilcox/Downloads/');
+
 //console.log(stdfunc.getServiceName(doc));
+
 //console.log(stdfunc.getTLC(doc));
+
 // TESTING PURPOSES: Create Local Server and listen on port 8080
 // http.createServer(function(req, res) {
 //   res.writeHead(200, {

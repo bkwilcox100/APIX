@@ -21,7 +21,7 @@ To install, download the APIX project and navigate to the 'js' folder.
     npm install APIX
 
 ## Features
-+ Auto Generate Resources
++ Auto Generates Resources
     + XML Datastore
     + SQL Tables
     + Java Interface Files

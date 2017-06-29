@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./apix_logo.png"/>
+</p>
+
 # APIX or API Expander
 
 A simple tool to expand Open API definitions into useful documentation and resources.

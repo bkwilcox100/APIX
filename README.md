@@ -25,8 +25,9 @@ To install globally, download the APIX and navigate to its directory. Run:
 
     $ npm install -g
     $ apix
+
 ## Features
-+ Auto Generates Resources
++ Auto Generates:
     + XML Datastore
     + SQL Tables
     + Java Interface Files
@@ -40,6 +41,4 @@ TODO: Write history
 
 Developer: Brandon Wilcox
 
-## License
-
-TODO: Write license
+Property of HEB

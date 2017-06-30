@@ -37,7 +37,7 @@ exports.getPaths = function(callback) {
   var askPaths = [{
       name: "sourcePath",
       type: "input",
-      message: "Please enter the location of the OA Spec (.yml): ",
+      message: "Please enter the location of the OA Spec (.yml/.yaml): ",
       validate: function(val) {
         if (val.length) {
           return true;

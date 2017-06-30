@@ -18,7 +18,6 @@ var files = require("./functions/files.js");
 // Global Variables
 var sourcePath = "";
 var destPath = "";
-var isPathValid = false;
 var serviceName = "";
 var doc = null;
 

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./apix_logo.png" width="100" height="100"/>
+  <img src="./apix_logo.png" width="200" />
 </p>
 
 # APIX or API Expander
@@ -18,17 +18,21 @@ Along with the specifications found on the [Open API Repo](https://github.com/OA
 + All definitions must include a title property with a group attribute
 
 ## Installation
-
-To install, download the APIX project and navigate to its directory. Run:
+# UNIX
+To install locally, download the APIX project and navigate to its directory. Run:
 
     $ npm install
     $ node apix.js
 
 *UNTESTED*
+
 To install globally, download the APIX and navigate to its directory. Run:
 
     $ npm install -g
     $ apix
+
+# WINDOWS
+Not yet supported
 
 ## Features
 + Auto Generates:
@@ -36,10 +40,6 @@ To install globally, download the APIX and navigate to its directory. Run:
     + SQL Tables
     + Java Interface Files
     + Overview of Info (HTML Interface)
-
-## History
-
-TODO: Write history
 
 ## Credits
 

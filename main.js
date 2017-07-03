@@ -25,7 +25,7 @@ var sourceYML = './docs/yml/openapiexample.yml';
 var sourceXML = './docs/xml/data-store.xml';
 
 // Serialize YML document
-var doc = stdfunc.serializeYML('/Users/brandonwilcox/Downloads/openapi.yaml');
+var doc = stdfunc.serializeYML('/Users/brandonwilcox/Desktop/oaspec.yml');
 
 // Create Table based on YML document
 //stdfunc.createTable(doc, './docs/sql/sql_output.sql');
@@ -36,7 +36,7 @@ var doc = stdfunc.serializeYML('/Users/brandonwilcox/Downloads/openapi.yaml');
 
 //stdfunc.createJava(doc);
 
-stdfunc.createJava(doc, '/Users/brandonwilcox/Downloads/');
+stdfunc.createJava(doc, '/Users/brandonwilcox/Desktop/');
 
 //console.log(stdfunc.getServiceName(doc));
 

@@ -18,11 +18,10 @@ Along with the specifications found on the [Open API Repo](https://github.com/OA
 + All definitions must include a title property with a group attribute
 
 ## Installation
-# UNIX
 To install locally, download the APIX project and navigate to its directory. Run:
 
     $ npm install
-    $ node apix.js
+    $ npm start
 
 *UNTESTED*
 
@@ -30,9 +29,6 @@ To install globally, download the APIX and navigate to its directory. Run:
 
     $ npm install -g
     $ apix
-
-# WINDOWS
-Not yet supported
 
 ## Features
 + Auto Generates:

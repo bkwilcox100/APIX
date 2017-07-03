@@ -7,7 +7,9 @@
     "apix": "./apix.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node apix.js",
+    "preinstall": "node ./custom-install/custom-install.js"
   },
   "keywords": [],
   "author": "",

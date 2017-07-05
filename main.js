@@ -36,28 +36,22 @@ var doc = stdfunc.serializeYML('/Users/brandonwilcox/Desktop/oaspec.yml');
 
 //stdfunc.createJava(doc);
 
-stdfunc.createJava(doc, '/Users/brandonwilcox/Desktop/');
+//stdfunc.createJava(doc, '/Users/brandonwilcox/Desktop/');
 
 //console.log(stdfunc.getServiceName(doc));
 
 //console.log(stdfunc.getTLC(doc));
 
 // TESTING PURPOSES: Create Local Server and listen on port 8080
-// http.createServer(function(req, res) {
-//   res.writeHead(200, {
-//     'Content-Type': 'text/html'
-//   });
-//   res.write("API Name: " + doc.info.title + "\n");
-//   if (doc.info.hasOwnProperty('description')) {
-//     res.write("Description: " + doc.info.description + "\n");
-//   }
-//   if (doc.info.hasOwnProperty('contact')) {
-//     if (doc.info.contact.hasOwnProperty('name')) {
-//       res.write("Author: " + doc.info.contact.name + "\n");
-//     }
-//   }
-//   res.write("YML Parse: COMPLETE\n");
-//   res.write("SQL Table Create: COMPLETE\n");
-//   res.write("XML Parse: COMPLETE\n")
-//   res.end("END RESPONSE");
-// }).listen(8080);
+http.createServer(function(req, res) {
+  res.writeHead(200, {
+    'Content-Type': 'text/html'
+  });
+  res.write('<div style="margin-top:40vh;text-align:center">')
+    res.write('  <form method=get action=/ style="font:3em monospace">')
+    res.write('    <span style="color:#F08">$</span> npm repo')
+    res.write('    <input name=pkgName placeholder=pkgname size=10 style="font:1em monospace;color:#777;border:0">')
+    res.write('</form>')
+    res.write('</div>')
+    res.end()
+}).listen(8080);

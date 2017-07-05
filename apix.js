@@ -141,6 +141,7 @@ files.getPaths(function() {
 
       // Generation Functions Below
     });
+
     // END CREATE FILE STRUCTURE
 
   }).catch(function() {

@@ -1,5 +1,3 @@
-// TODO: Make Function ignore some of the definitions
-
 var fs = require('fs');
 var yam = require('js-yaml');
 var xml2js = require('xml2js');
@@ -446,7 +444,7 @@ exports.createJava = function(source, destPath) {
 
   // If there are no groups, return
   if (groupList.length == 0) {
-    console.log('No Groups Detected');
+    console.log('No Interfaces Detected');
   } else {
     // Compile list of top level collections
     var TLC = getTLC(source);

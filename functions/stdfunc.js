@@ -17,17 +17,12 @@ Return: String
 Status: COMPLETE
 */
 exports.getServiceName = function(doc) {
-  if (doc.hasOwnProperty('tags')) {
-    for (i = 0; i < doc['tags'].length; i++) {
-      for (tag in doc['tags'][i]) {
-        if (doc['tags'][i]['name']) {
-          return doc['tags'][i]['description'];
-        }
-        console.log(doc['tags'][i][tag]);
-      }
-    }
+  try {
+    return doc['tags']['description'];
+  } catch (e) {
+    console.error("No Service Name Found");
   }
-  return 'NoN';
+  return "NoN";
 }
 
 /*
@@ -425,38 +420,49 @@ Postconditions:
 Return: None
 Status: COMPLETE
 TODO: Clean Up Logic/Design
-TODO: Ignore definitions with no group
 */
 exports.createJava = function(source, destPath) {
-  var groupList = [];
+  var groupList = getTLC(source);
   var idString = "";
-
-  // Check for Groups
-  for (def in source['definitions']) {
-    if (source['definitions'][def].hasOwnProperty('title')) {
-      if (!(_.contains(groupList, source['definitions'][def]['title'][0]['group']))) {
-        if (source['definitions'][def]['title'][0]['group'] != 'skip') {
-          groupList.push(source['definitions'][def]['title'][0]['group']);
-        }
-      }
-    }
-  }
 
   // If there are no groups, return
   if (groupList.length == 0) {
     console.log('No Interfaces Detected');
   } else {
     // Compile list of top level collections
-    var TLC = getTLC(source);
+    var TLC = groupList;
 
     // Runs once per group/file
     for (group in groupList) {
+      var dataItems = [];
+
       wholeDoc = "// Add any necessary packages.\n\n\n";
       wholeDoc += ("public class " + groupList[group] + "Interface {\n\n");
       wholeDoc += "\tprivate static final String CONTEXT_FILTER = \"AdminPortal\";\n";
       wholeDoc += "\tprivate static final String DEFAULT_PARENT_PROPERTY = \"parent\";\n\n";
+
+      for (path in source['paths']) {
+        var item = "";
+        if (path.indexOf(groupList[group]) != -1) {
+          if (source['paths'][path].hasOwnProperty('get')) {
+            if (source['paths'][path]['get']['responses']['200']['schema'].hasOwnProperty('type')) {
+              item = getArrTableName(source['paths'][path]['get']['responses']['200']['schema']['items']['$ref']);
+              if (!(_.contains(dataItems, item))) {
+                dataItems.push(item);
+              }
+            } else {
+              item = getArrTableName(source['paths'][path]['get']['responses']['200']['schema']['$ref']);
+              if (!(_.contains(dataItems, item))) {
+                dataItems.push(item);
+              }
+            }
+
+          }
+        }
+      }
+
       for (def in source['definitions']) {
-        if (source['definitions'][def]['title'][0]['group'] == groupList[group]) {
+        if (_.contains(dataItems, def)) {
           wholeDoc += ("\tprivate static final String DATA_ITEM_NAME_" + toUnderscoreUpper(def) + " = \"" + toCamelCase(def) + "\";\n");
           for (prop in source['definitions'][def]['properties']) {
             wholeDoc += ("\tprivate static final String APP_PROPERTIES_" + toUnderscoreUpper(prop) + " = \"" + toCamelCase(prop) + "\";\n")
@@ -473,15 +479,16 @@ exports.createJava = function(source, destPath) {
         }
       }
 
-      wholeDoc += "\n";
+      //wholeDoc += "\n";
       wholeDoc += "\tprivate static final String OPERATION_CREATE = \"create\";\n";
       wholeDoc += "\tprivate static final String OPERATION_UPDATE = \"update\";\n";
       wholeDoc += "\tprivate static final String OPERATION_DELETE = \"delete\";\n";
       wholeDoc += "\t//private static final String OPERATION_READ = \"read\";\n";
 
+
       wholeDoc += "\n\t// Create Operations\n\n";
       for (def in source['definitions']) {
-        if (source['definitions'][def]['title'][0]['group'] == groupList[group]) {
+        if (_.contains(dataItems, def)) {
           if (_.contains(TLC, def)) {
             wholeDoc += ("\tpublic Map<String, Object> createBatch" + def + "(JsonElement requestBody) throws ServiceException {\n");
             wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + toUnderscoreUpper(groupList[group]) + ", null, null, requestBody, APP_PROPERTIES_" + toUnderscoreUpper(idString) + ");\n");
@@ -496,7 +503,7 @@ exports.createJava = function(source, destPath) {
 
       wholeDoc += "\n\t// Read Operations\n\n";
       for (def in source['definitions']) {
-        if (source['definitions'][def]['title'][0]['group'] == groupList[group]) {
+        if (_.contains(dataItems, def)) {
           if (_.contains(TLC, def)) {
             wholeDoc += ("\tpublic List<Map<String, Object>> read" + def + "Collection() throws ServiceException {\n");
             wholeDoc += ("\t\treturn ResourceUtils.readCollectionFromQuery(APP_PROPERTIES_COLLECTION_QUERY, DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", CONTEXT_FILTER);\n\t}\n\n");
@@ -515,11 +522,12 @@ exports.createJava = function(source, destPath) {
             wholeDoc += ("\t\treturn ResourceUtils.readResource(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", CONTEXT_FILTER);\n\t}\n\n");
           }
         }
+
       }
 
       wholeDoc += "\n\t// Update Operations\n\n";
       for (def in source['definitions']) {
-        if (source['definitions'][def]['title'][0]['group'] == groupList[group]) {
+        if (_.contains(dataItems, def)) {
           if (_.contains(TLC, def)) {
             wholeDoc += ("\tpublic Map<String, Object> update" + def + "Resource(JsonElement requestBody, String " + idString + ") throws ServiceException {\n");
             wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", requestBody, CONTEXT_FILTER);\n");
@@ -540,7 +548,7 @@ exports.createJava = function(source, destPath) {
 
       wholeDoc += "\n\t// Delete Operations\n\n";
       for (def in source['definitions']) {
-        if (source['definitions'][def]['title'][0]['group'] == groupList[group]) {
+        if (_.contains(dataItems, def)) {
           if (_.contains(TLC, def)) {
             wholeDoc += ("\tpublic Map<String, Object> deleteBatch" + def + "Resource(JsonElement requestBody) throws ServiceException {\n");
             wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.deleteResourceList(requestBody, DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ");\n");
@@ -606,29 +614,25 @@ var getArrTableName = exports.getArrTableName = function(str) {
 }
 
 var getTLC = exports.getTLC = function(doc) {
-  var nList = [];
-  var tList = [];
-  for (def in doc["definitions"]) {
-    if (doc['definitions'][def]['title'][0]['group'] != 'skip') {
-      for (prop in doc["definitions"][def]["properties"]) {
-
-        if (doc["definitions"][def]["properties"][prop]["type"] == "array") {
-          nList.push(getArrTableName(doc["definitions"][def]["properties"][prop]["items"]["$ref"]));
-        }
+  var serviceName = doc['tags']['description'];
+  var TLCSet = [];
+  try {
+    for (path in doc['paths']) {
+      path = path.slice(1, path.length);
+      path = path.slice(serviceName.length, path.length);
+      path = path.slice(1, path.length);
+      path = path.slice(path.indexOf('/'), path.length);
+      path = path.slice(1, path.length);
+      if (path.indexOf('/') != -1) {
+        path = path.slice(0, path.indexOf('/'));
+      }
+      if (!(_.contains(TLCSet, path))) {
+        TLCSet.push(path);
       }
     }
+    //console.log(TLCSet);
+    return TLCSet;
+  } catch (err) {
+    throw "SPEC-ERROR: No Paths found";
   }
-  for (def in doc["definitions"]) {
-    if (doc['definitions'][def]['title'][0]['group'] != 'skip') {
-      for (i in nList) {
-        if (!(_.contains(nList, def)) && !(_.contains(tList, def))) {
-          tList.push(def)
-        }
-      }
-    }
-
-  }
-  //console.log(doc['definitions']);
-  //console.log(nList);
-  return tList;
 }

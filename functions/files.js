@@ -8,7 +8,7 @@ var getCurrentDirectory = exports.getCurrentDirectory = function() {
 
 var directoryExists = exports.directoryExists = function(directoryPath) {
   return new Promise(function(resolve, reject) {
-    directoryPath = directoryPath.replace(/ /g, '');
+    //directoryPath = directoryPath.trim();
     fs.stat(directoryPath, function(err, data) {
       if (err) {
         // Reject on error
@@ -22,7 +22,7 @@ var directoryExists = exports.directoryExists = function(directoryPath) {
 }
 
 var fileExists = exports.fileExists = function(filePath) {
-  filePath = filePath.replace(/ /g, '');
+  //filePath = filePath.trim();
   return new Promise(function(resolve, reject) {
     fs.access(filePath, function(err) {
       if (err) {

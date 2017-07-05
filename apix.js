@@ -1,5 +1,7 @@
 #! usr/bin/env node
 
+'use strict';
+
 // Modules
 var http = require('http');         // For testing on local server
 var fs = require('fs');             // For interacting with file system

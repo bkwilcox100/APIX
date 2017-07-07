@@ -15,6 +15,8 @@ var mkdirp = require('mkdirp');     // For creating multiple directories
 
 // User Defined Functions
 var stdfunc = require("./functions/stdfunc.js");
+var generateJava = require("./functions/createJava.js").create;
+var util = require("./functions/util.js");
 var files = require("./functions/files.js");
 
 // Global Variables
@@ -101,7 +103,7 @@ files.getPaths(function() {
       console.log("/src/main/java/com/heb/liquidsky/endpoints/ created");
 
       // Generation Functions Below
-      stdfunc.createJava(doc, (destPath + 'src/main/java/com/heb/liquidsky/endpoints/'));
+      generateJava(doc, (destPath + 'src/main/java/com/heb/liquidsky/endpoints/'));
     });
 
     mkdirp(destPath + 'src/main/java/com/heb/liquidsky/spring/web/', function(err){
@@ -146,7 +148,7 @@ files.getPaths(function() {
 
     // END CREATE FILE STRUCTURE
 
-  }).catch(function() {
-    console.error("Specified Destination is Invalid");
+  }).catch(function(e) {
+    console.error("Specified Destination is Invalid: ", e);
   });
 });

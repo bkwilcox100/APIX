@@ -3,7 +3,7 @@ var yam = require('js-yaml');
 var xml2js = require('xml2js');
 var _ = require('underscore');
 var path = require('path');
-
+var util = require('./util.js');
 /*
 Name: getServiceName
 Description: Gets service name from OA Spec
@@ -18,7 +18,7 @@ Status: COMPLETE
 */
 exports.getServiceName = function(doc) {
   try {
-    return doc['tags']['description'];
+    return doc['tags'][0]['description'];
   } catch (e) {
     console.error("No Service Name Found");
   }
@@ -113,7 +113,7 @@ exports.createTable = function(doc, destPath) {
 
   // Create Table for each definition
   for (key in doc["definitions"]) {
-    var tableString = "CREATE TABLE IF NOT EXISTS heb_" + toUnderscore(key) + " (\n";
+    var tableString = "CREATE TABLE IF NOT EXISTS heb_" + util.toUnderscore(key) + " (\n";
     primaryKey = null;
     for (prop in doc["definitions"][key]["properties"]) {
       isArray = false;
@@ -256,7 +256,7 @@ exports.createXML = function(sourceDoc, destPath) {
       commentStr += "==========================================================\n-->\n";
       wholeDoc += commentStr;
       wholeDoc += "<data-type "
-      wholeDoc += ("name=\"" + toCamelCase(def) + "\" ");
+      wholeDoc += ("name=\"" + util.toCamelCase(def) + "\" ");
       // Iterates through properties to check for an ID
       for (id in sourceDoc["definitions"][def]["properties"]) {
         var isPrimarySet = false;
@@ -284,7 +284,7 @@ exports.createXML = function(sourceDoc, destPath) {
 
       wholeDoc += ">\n";
 
-      wholeDoc += ("\t<table name=\"heb_" + toUnderscore(def) + "\" ");
+      wholeDoc += ("\t<table name=\"heb_" + util.toUnderscore(def) + "\" ");
 
       // Set to primary if first, else set to reference
       if (!isPrimarySet) {
@@ -293,7 +293,7 @@ exports.createXML = function(sourceDoc, destPath) {
       } else {
         wholeDoc += "type=\"reference\" ";
       }
-      wholeDoc += ("id-column=\"" + toUnderscore(idString) + "\">\n");
+      wholeDoc += ("id-column=\"" + util.toUnderscore(idString) + "\">\n");
 
       // Iterates through properties
       for (prop in sourceDoc["definitions"][def]["properties"]) {
@@ -353,7 +353,7 @@ exports.createXML = function(sourceDoc, destPath) {
             }
           }
 
-          wholeDoc += ("\t\t<column column-name=\"" + toUnderscore(prop) + "\" property=\"" + prop + "\">\n");
+          wholeDoc += ("\t\t<column column-name=\"" + util.toUnderscore(prop) + "\" property=\"" + prop + "\">\n");
 
           // Go back and add conditions for attributes
           wholeDoc += ("\t\t\t<attribute name=\"requiredProperty\" value=\"" + isRequired + "\"/>\n");
@@ -371,8 +371,8 @@ exports.createXML = function(sourceDoc, destPath) {
           for (j in arrayPropList) {
             var tableName = sourceDoc["definitions"][arrayList[i]]["properties"][arrayPropList[j]]["items"]["$ref"];
             if (tableName != null) {
-              tableName = getArrTableName(tableName);
-              var modTableName = toUnderscore(tableName);
+              tableName = util.getArrTableName(tableName);
+              var modTableName = util.toUnderscore(tableName);
               wholeDoc += ("\t<table name=\"heb_" + modTableName + "\" type=\"reference\" id-column=\"" + idString + "\">\n");
               var columnName = "";
               for (x in sourceDoc["definitions"][tableName]["properties"]) {
@@ -381,7 +381,7 @@ exports.createXML = function(sourceDoc, destPath) {
                   break;
                 }
               }
-              wholeDoc += ("\t\t<column column-name=\"" + toUnderscore(columnName) + "\" list-item-type=\"" + toCamelCase(tableName) + "\" ");
+              wholeDoc += ("\t\t<column column-name=\"" + util.toUnderscore(columnName) + "\" list-item-type=\"" + util.toCamelCase(tableName) + "\" ");
               wholeDoc += ("property=\"" + tableName + "s\" read-only=\"true\" cascade=\"true\" />\n");
               wholeDoc += "\t</table>\n\n";
             }
@@ -390,7 +390,7 @@ exports.createXML = function(sourceDoc, destPath) {
       }
       if (isTLC) {
         wholeDoc += ("\t<named-query name=\"getAll" + def + "\">\n");
-        wholeDoc += ("\t\tselect " + toUnderscore(idString) + " from heb_" + toUnderscore(def) + "\n");
+        wholeDoc += ("\t\tselect " + util.toUnderscore(idString) + " from heb_" + util.toUnderscore(def) + "\n");
         wholeDoc += ("\t</named-query>\n");
       }
       wholeDoc += "</data-type>\n\n";
@@ -406,233 +406,4 @@ exports.createXML = function(sourceDoc, destPath) {
     });
   });
 
-}
-
-/*
-Name: createJava
-Description: Creates Java Class from OA Spec
-Parameters:
-- source : Source XML file to be converted
-Preconditions:
-- XML file exists
-Postconditions:
-- destPath exists
-Return: None
-Status: COMPLETE
-TODO: Clean Up Logic/Design
-*/
-exports.createJava = function(source, destPath) {
-  var groupList = getTLC(source);
-  var idString = "";
-
-  // If there are no groups, return
-  if (groupList.length == 0) {
-    console.log('No Interfaces Detected');
-  } else {
-    // Compile list of top level collections
-    var TLC = groupList;
-
-    // Runs once per group/file
-    for (group in groupList) {
-      var dataItems = [];
-
-      wholeDoc = "// Add any necessary packages.\n\n\n";
-      wholeDoc += ("public class " + groupList[group] + "Interface {\n\n");
-      wholeDoc += "\tprivate static final String CONTEXT_FILTER = \"AdminPortal\";\n";
-      wholeDoc += "\tprivate static final String DEFAULT_PARENT_PROPERTY = \"parent\";\n\n";
-
-      for (path in source['paths']) {
-        var item = "";
-        if (path.indexOf(groupList[group]) != -1) {
-          if (source['paths'][path].hasOwnProperty('get')) {
-            if (source['paths'][path]['get']['responses']['200']['schema'].hasOwnProperty('type')) {
-              item = getArrTableName(source['paths'][path]['get']['responses']['200']['schema']['items']['$ref']);
-              if (!(_.contains(dataItems, item))) {
-                dataItems.push(item);
-              }
-            } else {
-              item = getArrTableName(source['paths'][path]['get']['responses']['200']['schema']['$ref']);
-              if (!(_.contains(dataItems, item))) {
-                dataItems.push(item);
-              }
-            }
-
-          }
-        }
-      }
-
-      for (def in source['definitions']) {
-        if (_.contains(dataItems, def)) {
-          wholeDoc += ("\tprivate static final String DATA_ITEM_NAME_" + toUnderscoreUpper(def) + " = \"" + toCamelCase(def) + "\";\n");
-          for (prop in source['definitions'][def]['properties']) {
-            wholeDoc += ("\tprivate static final String APP_PROPERTIES_" + toUnderscoreUpper(prop) + " = \"" + toCamelCase(prop) + "\";\n")
-            if (_.contains(TLC, def)) {
-              if (prop.slice(-2, prop.length).toLowerCase() == "id") {
-                idString = prop;
-              }
-            }
-          }
-          if (_.contains(TLC, def)) {
-            wholeDoc += ("\tprivate static final String APP_PROPERTIES_COLLECTION_QUERY = \"all_" + toUnderscore(def) + "\";\n");
-          }
-          wholeDoc += "\n";
-        }
-      }
-
-      //wholeDoc += "\n";
-      wholeDoc += "\tprivate static final String OPERATION_CREATE = \"create\";\n";
-      wholeDoc += "\tprivate static final String OPERATION_UPDATE = \"update\";\n";
-      wholeDoc += "\tprivate static final String OPERATION_DELETE = \"delete\";\n";
-      wholeDoc += "\t//private static final String OPERATION_READ = \"read\";\n";
-
-
-      wholeDoc += "\n\t// Create Operations\n\n";
-      for (def in source['definitions']) {
-        if (_.contains(dataItems, def)) {
-          if (_.contains(TLC, def)) {
-            wholeDoc += ("\tpublic Map<String, Object> createBatch" + def + "(JsonElement requestBody) throws ServiceException {\n");
-            wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + toUnderscoreUpper(groupList[group]) + ", null, null, requestBody, APP_PROPERTIES_" + toUnderscoreUpper(idString) + ");\n");
-            wholeDoc += "\t\treturn response;\n\t}\n\n";
-          } else {
-            wholeDoc += ("\tpublic Map<String, Object> createBatch" + def + "(JsonElement requestBody, String " + idString + ") throws ServiceException {\n");
-            wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + toUnderscoreUpper(groupList[group]) + ", " + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(groupList[0]) + ", requestBody, null);\n");
-            wholeDoc += "\t\treturn response;\n\t}\n\n";
-          }
-        }
-      }
-
-      wholeDoc += "\n\t// Read Operations\n\n";
-      for (def in source['definitions']) {
-        if (_.contains(dataItems, def)) {
-          if (_.contains(TLC, def)) {
-            wholeDoc += ("\tpublic List<Map<String, Object>> read" + def + "Collection() throws ServiceException {\n");
-            wholeDoc += ("\t\treturn ResourceUtils.readCollectionFromQuery(APP_PROPERTIES_COLLECTION_QUERY, DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", CONTEXT_FILTER);\n\t}\n\n");
-            wholeDoc += ("\tpublic Map<String, Object> read" + def + "Resource(String " + idString + ") throws ServiceException {\n");
-            wholeDoc += ("\t\treturn ResourceUtils.readResource(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", CONTEXT_FILTER);\n\t}\n\n");
-          } else {
-            var altID = "NO ID FOUND";
-            for (prop in source['definitions'][def]['properties']) {
-              if (prop.slice(-2, prop.length).toLowerCase() == 'id') {
-                altID = prop;
-              }
-            }
-            wholeDoc += ("\tpublic List<Map<String, Object>> read" + def + "Collection() throws ServiceException {\n");
-            wholeDoc += ("\t\treturn ResourceUtils.readSubCollection(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", CONTEXT_FILTER);\n\t}\n\n");
-            wholeDoc += ("\tpublic Map<String, Object> read" + def + "Resource(String " + idString + ", String " + altID + ") throws ServiceException {\n");
-            wholeDoc += ("\t\treturn ResourceUtils.readResource(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", CONTEXT_FILTER);\n\t}\n\n");
-          }
-        }
-
-      }
-
-      wholeDoc += "\n\t// Update Operations\n\n";
-      for (def in source['definitions']) {
-        if (_.contains(dataItems, def)) {
-          if (_.contains(TLC, def)) {
-            wholeDoc += ("\tpublic Map<String, Object> update" + def + "Resource(JsonElement requestBody, String " + idString + ") throws ServiceException {\n");
-            wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", requestBody, CONTEXT_FILTER);\n");
-            wholeDoc += ("\t\treturn response;\n\t}\n\n");
-          } else {
-            var altID = "NO ID FOUND";
-            for (prop in source['definitions'][def]['properties']) {
-              if (prop.slice(-2, prop.length).toLowerCase() == 'id') {
-                altID = prop;
-              }
-            }
-            wholeDoc += ("\tpublic Map<String, Object> update" + def + "Resource(JsonElement requestBody, String " + idString + ", String " + altID + ") throws ServiceException {\n");
-            wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + altID + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", " + idString + ", DEFAULT_PARENT_PROPERTY, requestBody, CONTEXT_FILTER);\n");
-            wholeDoc += ("\t\treturn response;\n\t}\n\n");
-          }
-        }
-      }
-
-      wholeDoc += "\n\t// Delete Operations\n\n";
-      for (def in source['definitions']) {
-        if (_.contains(dataItems, def)) {
-          if (_.contains(TLC, def)) {
-            wholeDoc += ("\tpublic Map<String, Object> deleteBatch" + def + "Resource(JsonElement requestBody) throws ServiceException {\n");
-            wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.deleteResourceList(requestBody, DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ");\n");
-            wholeDoc += ("\t\treturn response;\n\t}\n\n");
-
-            wholeDoc += ("\tpublic Map<String, Object> delete" + def + "Resource(String " + idString + ") throws ServiceException {\n");
-            wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.deleteResource(" + idString + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ");\n");
-            wholeDoc += "return response;\n\t}\n\n";
-          } else {
-            var altID = "NO ID FOUND";
-            for (prop in source['definitions'][def]['properties']) {
-              if (prop.slice(-2, prop.length).toLowerCase() == 'id') {
-                altID = prop;
-              }
-            }
-            wholeDoc += ("\tpublic Map<String, Object> deleteBatch" + def + "Resource(JsonElement requestBody) throws ServiceException {\n");
-            wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.deleteResourceList(requestBody, DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ");\n");
-            wholeDoc += ("\t\treturn response;\n\t}\n\n");
-
-            wholeDoc += ("\tpublic Map<String, Object> delete" + def + "Resource(String " + idString + ", String " + altID + ") throws ServiceException {\n");
-            wholeDoc += ("\t\tMap<String, Object> response = ResourceUtils.deleteResource(" + altID + ", DATA_ITEM_NAME_" + toUnderscoreUpper(def) + ", " + idString + ", DEFAULT_PARENT_PROPERTY);\n");
-            wholeDoc += "\t\treturn response;\n\t}\n\n";
-          }
-        }
-      }
-      wholeDoc += "}";
-      var fileName = destPath + groupList[group] + "Interface.java";
-      fs.writeFile(fileName, wholeDoc, function(err) {
-        if (err) {
-          throw err;
-        }
-        console.log("Java Interface Written Successfully");
-      });
-      //console.log(wholeDoc);
-    }
-  }
-}
-
-// Utility Functions
-var toUnderscore = exports.toUnderscore = function(string) {
-  var newString = string.replace(/\.?([A-Z]+)/g, function(x, y) {
-    return "_" + y.toLowerCase()
-  }).replace(/^_/, "");
-  return newString;
-}
-
-var toUnderscoreUpper = exports.toUnderscore = function(string) {
-  var newString = string.replace(/\.?([A-Z]+)/g, function(x, y) {
-    return "_" + y.toLowerCase()
-  }).replace(/^_/, "");
-  return newString.toUpperCase();
-}
-
-var toCamelCase = exports.toCamelCase = function capitalizeFirstLetter(string) {
-  return string.charAt(0).toLowerCase() + string.slice(1);
-}
-
-var getArrTableName = exports.getArrTableName = function(str) {
-  var lastIndex = str.lastIndexOf('/');
-  lastIndex++;
-  var newStr = str.slice(lastIndex, str.length);
-  return newStr;
-}
-
-var getTLC = exports.getTLC = function(doc) {
-  var serviceName = doc['tags']['description'];
-  var TLCSet = [];
-  try {
-    for (path in doc['paths']) {
-      path = path.slice(1, path.length);
-      path = path.slice(serviceName.length, path.length);
-      path = path.slice(1, path.length);
-      path = path.slice(path.indexOf('/'), path.length);
-      path = path.slice(1, path.length);
-      if (path.indexOf('/') != -1) {
-        path = path.slice(0, path.indexOf('/'));
-      }
-      if (!(_.contains(TLCSet, path))) {
-        TLCSet.push(path);
-      }
-    }
-    //console.log(TLCSet);
-    return TLCSet;
-  } catch (err) {
-    throw "SPEC-ERROR: No Paths found";
-  }
 }

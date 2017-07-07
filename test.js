@@ -20,14 +20,16 @@ var _ = require('underscore');
 
 // User Defined Functions
 var stdfunc = require("./functions/stdfunc.js");
-
+var generateJava = require("./functions/createJava.js").create;
 // User Defined Variables
 var sourceYML = './docs/yml/openapiexample.yml';
 var sourceXML = './docs/xml/data-store.xml';
 
 // Serialize YML document
-var doc = stdfunc.serializeYML('./docs/yml/openapi.yaml');
-stdfunc.createJava(doc, '/Users/brandonwilcox/Desktop/')
+var doc = stdfunc.serializeYML('/Users/brandonwilcox/Desktop/openapi-example.yaml');
+
+generateJava(doc, '/Users/brandonwilcox/Desktop/');
+
 
 // TESTING PURPOSES: Create Local Server and listen on port 8080
 // http.createServer(function(req, res) {

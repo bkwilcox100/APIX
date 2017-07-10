@@ -31,14 +31,15 @@ exports.create = function(source, destination) {
   } else {
     // Turn path names into proper interface names if possible
     interfaceNames = replaceInterfaceNames(source, interfaceNames);
-
     // Create one file for each interface
     for (group in groups) {
+      output = "";
       // Add Static Content
       output = generateStaticTop(output, interfaceNames[group]);
-      // Compile list of defintions for each interface
-      groupDefinitions = getPathDefinitions(source, groups[group]);
 
+      // Compile list of definitions for each interface
+      groupDefinitions = getPathDefinitions(source, groups[group]);
+      //console.log(groupDefinitions);
       // Creates each data item
       for (def in groupDefinitions) {
         output = addDataItem(output, source, groupDefinitions[def]);
@@ -53,17 +54,15 @@ exports.create = function(source, destination) {
 
       // Add closing bracket
       output = closeBracket(output);
-
       var fileName = interfaceNames[group] + "Interface.java";
-      fs.writeFile(node_path.join(destination, fileName), output, function(err){
-        if(err){
+      fs.writeFile(node_path.join(destination, fileName), output, function(err) {
+        if (err) {
           console.error("Could not write Java file");
           throw err;
         }
-        console.log(fileName + " Created.");
-        });
+      });
+      console.log(fileName + " Created.");
     }
-
   }
 }
 
@@ -91,11 +90,10 @@ function generateStaticCRUD(output_str) {
 function replaceInterfaceNames(doc, groupList) {
   for (def in doc['definitions']) {
     for (item in groupList) {
-      if (def.toLowerCase() == groupList[item].toLowerCase()) {
+      if ((def.toLowerCase()).search(groupList[item].toLowerCase()) != -1 ) {
         groupList[item] = def;
       } else {
-        def += 's';
-        if (def.toLowerCase() == groupList[item].toLowerCase()) {
+        if (((def + 's').toLowerCase()).search(groupList[item].toLowerCase()) != -1) {
           groupList[item] = def;
         }
       }
@@ -224,7 +222,7 @@ function generateUpdateOP(output_str, doc, group, definitions) {
 // Generates Delete operations
 function generateDeleteOP(output_str, doc, group, definitions) {
   output_str += "\n\t// Delete Operations\n\n";
-  if (util.isTLC(doc, definitions[def])){
+  if (util.isTLC(doc, definitions[def])) {
     output_str += ("\tpublic Map<String, Object> deleteBatch" + definitions[def] + "Resource(JsonElement requestBody) throws ServiceException {\n");
     output_str += ("\t\tMap<String, Object> response = ResourceUtils.deleteResourceList(requestBody, DATA_ITEM_NAME_" + util.toUnderscoreUpper(definitions[def]) + ");\n");
     output_str += ("\t\treturn response;\n\t}\n\n");
@@ -245,7 +243,7 @@ function generateDeleteOP(output_str, doc, group, definitions) {
 }
 
 // Adds closing bracket to file
-function closeBracket(output_str){
+function closeBracket(output_str) {
   output_str += "\n}";
   return output_str;
 }

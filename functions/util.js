@@ -26,7 +26,7 @@ exports.getArrTableName = function(str) {
 }
 
 exports.getTLC = function(doc) {
-  var serviceName = doc['tags'][0]['description'];
+  var serviceName = exports.getServiceName(doc);
   var TLCSet = [];
   try {
     for (path in doc['paths']) {
@@ -65,4 +65,25 @@ exports.getID = function(doc, def){
     }
   }
   return "NO_ID";
+}
+
+/*
+Name: getServiceName
+Description: Gets service name from OA Spec
+Parameters:
+- doc : JSON object of OA Spec
+Preconditions:
+- doc exists
+Postconditions:
+- None
+Return: String
+Status: COMPLETE
+*/
+exports.getServiceName = function(doc) {
+  try {
+    return doc['tags'][0]['description'];
+  } catch (e) {
+    console.error("No Service Name Found");
+  }
+  return "NoN";
 }

@@ -1,32 +1,12 @@
-var fs = require('fs');
-var yam = require('js-yaml');
-var xml2js = require('xml2js');
-var _ = require('underscore');
-var path = require('path');
-var util = require('./util.js');
-var files = require('./files.js');
-var generateJava = require('./createJava.js').create;
+const fs = require('fs');
+const yam = require('js-yaml');
+const xml2js = require('xml2js');
+const _ = require('underscore');
+const path = require('path');
+const util = require('./util.js');
+const files = require('./files.js');
+const generateJava = require('./createJava.js').create;
 const mkdirp = require('mkdirp');
-/*
-Name: getServiceName
-Description: Gets service name from OA Spec
-Parameters:
-- doc : JSON object of OA Spec
-Preconditions:
-- doc exists
-Postconditions:
-- None
-Return: String
-Status: COMPLETE
-*/
-exports.getServiceName = function(doc) {
-  try {
-    return doc['tags'][0]['description'];
-  } catch (e) {
-    console.error("No Service Name Found");
-  }
-  return "NoN";
-}
 
 /*
 Name: serializeYML
@@ -429,7 +409,7 @@ exports.execute = function(source, dest) {
     }
     console.log(source + " is Valid");
     doc = module.exports.serializeYML(source);
-    serviceName = ('heb-liquidsky-' + module.exports.getServiceName(doc));
+    serviceName = ('heb-liquidsky-' + util.getServiceName(doc));
 
     files.directoryExists(dest).then(function(msg) {
       console.log(dest + " is Valid");
@@ -549,7 +529,7 @@ exports.executeWithInquirer = function(){
       }
       console.log(sourcePath + " is Valid");
       doc = exports.serializeYML(sourcePath);
-      serviceName = ('heb-liquidsky-' + exports.getServiceName(doc));
+      serviceName = ('heb-liquidsky-' + util.getServiceName(doc));
     }).catch(function(msg) {
       console.error("Specified Source is Invalid: ", msg);
     });

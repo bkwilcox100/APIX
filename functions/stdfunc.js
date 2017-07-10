@@ -4,6 +4,9 @@ var xml2js = require('xml2js');
 var _ = require('underscore');
 var path = require('path');
 var util = require('./util.js');
+var files = require('./files.js');
+var generateJava = require('./createJava.js').create;
+const mkdirp = require('mkdirp');
 /*
 Name: getServiceName
 Description: Gets service name from OA Spec
@@ -405,5 +408,243 @@ exports.createXML = function(sourceDoc, destPath) {
       console.log("XML Write and Conversion Successful");
     });
   });
+}
 
+exports.execute = function(source, dest) {
+  var serviceName;
+  var doc;
+
+  // Eliminate Whitespace
+  source = source.replace(/ /g, '');
+  dest = dest.replace(/ /g, '');
+
+  // In add / to end of path if not already there
+  if (dest.substr(-1, 1) != "/") {
+    dest += '/';
+  }
+
+  files.fileExists(source).then(function(msg) {
+    if (path.extname(source) != '.yml' && path.extname(source) != '.yaml') {
+      throw new Error("Source is not a YML file");
+    }
+    console.log(source + " is Valid");
+    doc = module.exports.serializeYML(source);
+    serviceName = ('heb-liquidsky-' + module.exports.getServiceName(doc));
+
+    files.directoryExists(dest).then(function(msg) {
+      console.log(dest + " is Valid");
+      // Create Output Folder
+      if (!(fs.existsSync(dest + serviceName))) {
+        fs.mkdirSync(dest + serviceName);
+      }
+      dest += (serviceName + "/");
+      console.log('Created Output Folder | New Path: ' + dest);
+
+      console.log('\nGenerating File Hierarchy...\n');
+
+      module.exports.createTable(doc, dest);
+      fs.writeFileSync(dest + 'oaspec.yml', fs.readFileSync(source));
+
+      // BEGIN CREATING FILE STRUCTURE
+      mkdirp(dest + 'src/main/appengine/', function(err) {
+        if (err) {
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/main/appengine/ created");
+
+        // Generation Functions Below
+      });
+
+      mkdirp(dest + 'src/main/java/com/heb/liquidsky/data/', function(err) {
+        if (err) {
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/main/java/com/heb/liquidsky/data/ created");
+
+        // Generation Functions Below
+        module.exports.createXML(doc, dest + 'src/main/java/com/heb/liquidsky/data/');
+      });
+
+      mkdirp(dest + 'src/main/java/com/heb/liquidsky/endpoints/', function(err) {
+        if (err) {
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/main/java/com/heb/liquidsky/endpoints/ created");
+
+        // Generation Functions Below
+        generateJava(doc, (dest + 'src/main/java/com/heb/liquidsky/endpoints/'));
+      });
+
+      mkdirp(dest + 'src/main/java/com/heb/liquidsky/spring/web/', function(err) {
+        if (err) {
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/main/java/com/heb/liquidsky/spring/web/ created");
+
+        // Generation Functions Below
+      });
+
+      mkdirp(dest + 'src/main/resources/', function(err) {
+        if (err) {
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/main/resources/ created");
+
+        // Generation Functions Below
+      });
+
+      mkdirp(dest + 'src/test/java/com/heb/liquidsky/data/', function(err) {
+        if (err) {
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/test/java/com/heb/liquidsky/data/ created");
+
+        // Generation Functions Below
+      });
+
+      mkdirp(dest + 'src/test/resources/', function(err) {
+        if (err) {
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/test/resources/ created");
+
+        // Generation Functions Below
+      });
+
+      // END CREATE FILE STRUCTURE
+
+    }).catch(function(e) {
+      console.error(e);
+    });
+  }).catch(function(msg) {
+    console.error(msg);
+  });
+}
+
+exports.executeWithInquirer = function(){
+  files.getPaths(function() {
+    sourcePath = arguments['0']['sourcePath'];
+    destPath = arguments['0']['destPath'];
+
+    // Eliminate Whitespace
+    sourcePath = sourcePath.replace(/ /g, '');
+    destPath = destPath.replace(/ /g, '');
+
+    // In add / to end of path if not already there
+    if (destPath.substr(-1, 1) != "/") {
+      destPath += '/';
+    }
+
+    // Validate Paths
+    files.fileExists(sourcePath).then(function(msg) {
+      if (path.extname(sourcePath) != '.yml' && path.extname(sourcePath) != '.yaml') {
+        throw new Error("Source is not a YML file");
+      }
+      console.log(sourcePath + " is Valid");
+      doc = exports.serializeYML(sourcePath);
+      serviceName = ('heb-liquidsky-' + exports.getServiceName(doc));
+    }).catch(function(msg) {
+      console.error("Specified Source is Invalid: ", msg);
+    });
+
+    files.directoryExists(destPath).then(function(msg) {
+      console.log(destPath + " is Valid");
+      // Create Output Folder
+      if (!(fs.existsSync(destPath + serviceName))) {
+        fs.mkdirSync(destPath + serviceName);
+      }
+      destPath += (serviceName + "/");
+      console.log('Created Output Folder | New Path: ' + destPath);
+
+      console.log('\nGenerating File Hierarchy...\n');
+
+      exports.createTable(doc, destPath);
+      fs.writeFileSync(destPath + 'oaspec.yml', fs.readFileSync(sourcePath));
+
+      // BEGIN CREATING FILE STRUCTURE
+      mkdirp(destPath + 'src/main/appengine/', function(err){
+        if (err){
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/main/appengine/ created");
+
+        // Generation Functions Below
+      });
+
+      mkdirp(destPath + 'src/main/java/com/heb/liquidsky/data/', function(err){
+        if (err){
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/main/java/com/heb/liquidsky/data/ created");
+
+        // Generation Functions Below
+        exports.createXML(doc, destPath + 'src/main/java/com/heb/liquidsky/data/');
+      });
+
+      mkdirp(destPath + 'src/main/java/com/heb/liquidsky/endpoints/', function(err){
+        if (err){
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/main/java/com/heb/liquidsky/endpoints/ created");
+
+        // Generation Functions Below
+        generateJava(doc, (destPath + 'src/main/java/com/heb/liquidsky/endpoints/'));
+      });
+
+      mkdirp(destPath + 'src/main/java/com/heb/liquidsky/spring/web/', function(err){
+        if (err){
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/main/java/com/heb/liquidsky/spring/web/ created");
+
+        // Generation Functions Below
+      });
+
+      mkdirp(destPath + 'src/main/resources/', function(err){
+        if (err){
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/main/resources/ created");
+
+        // Generation Functions Below
+      });
+
+      mkdirp(destPath + 'src/test/java/com/heb/liquidsky/data/', function(err){
+        if (err){
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/test/java/com/heb/liquidsky/data/ created");
+
+        // Generation Functions Below
+      });
+
+      mkdirp(destPath + 'src/test/resources/', function(err){
+        if (err){
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/test/resources/ created");
+
+        // Generation Functions Below
+      });
+
+      // END CREATE FILE STRUCTURE
+
+    }).catch(function(e) {
+      console.error("Specified Destination is Invalid: ", e);
+    });
+  });
 }

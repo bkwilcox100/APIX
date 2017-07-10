@@ -6,8 +6,7 @@
 
 A simple tool to expand Open API definitions into useful documentation and resources.
 
-## Usage
-### Requirements
+## Requirements
 + NodeJS
 + NPM
 
@@ -21,7 +20,7 @@ Along with the specifications found on the [Open API Repo](https://github.com/OA
 To install locally, download the APIX project and navigate to its directory. Run:
 
     $ npm install
-    $ npm start
+    $ node apix -g
 
 *UNTESTED*
 
@@ -29,6 +28,17 @@ To install globally, download the APIX and navigate to its directory. Run:
 
     $ npm install -g
     $ apix
+
+## Usage
+To run with a graphical interface:
+
+    $ node apix -g
+
+To run with a specified source and destination:
+
+    $ node apix -s <source> -d <destination>
+
+If no destination is specified, the current directory will be default
 
 ## Features
 + Auto Generates:

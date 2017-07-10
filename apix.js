@@ -3,15 +3,24 @@
 'use strict';
 
 // Modules
-var http = require('http');         // For testing on local server
 var fs = require('fs');             // For interacting with file system
 var path = require('path');         // For interacting with file system
-var yam = require('js-yaml');       // For parsing the YML files
-var xml2js = require('xml2js');     // For parsing XML files (Remove)
 var _ = require('underscore');      // Utility Functions Library
 var clear = require('clear');       // Clears screen before start of program
 var chalk = require('chalk');       // For colorful UI
 var mkdirp = require('mkdirp');     // For creating multiple directories
+var program = require('commander');
+
+// Commander Argument Settings
+program
+    .version('1.0.0')
+    .option('-g --graphic', 'Run with Graphical Interface');
+
+program
+    .option('-s, --source <src>', 'Run with specified source (Defaults to current directory)')
+    .option('-d, --dest <dest>', 'Run with destination (Requires source)');
+
+program.parse(process.argv);
 
 // User Defined Functions
 var stdfunc = require("./functions/stdfunc.js");
@@ -25,130 +34,19 @@ var destPath = "";
 var serviceName = "";
 var doc = null;
 
-// Clear Terminal Window
-clear();
+if (program.graphic){
+  // Clear Terminal Window
+  clear();
+  // Display Welcome Message
+  console.log(chalk.green("Welcome to APIX!"));
 
-// Display Welcome Message
-console.log(chalk.green("Welcome to APIX!"));
+  // Execute
+  stdfunc.executeWithInquirer();
 
-// TODO: Redesign Path/Validation process
-
-// Recieve Input and Output Paths and Validate
-files.getPaths(function() {
-  sourcePath = arguments['0']['sourcePath'];
-  destPath = arguments['0']['destPath'];
-
-  // Eliminate Whitespace
-  sourcePath = sourcePath.replace(/ /g, '');
-  destPath = destPath.replace(/ /g, '');
-
-  // In add / to end of path if not already there
-  if (destPath.substr(-1, 1) != "/") {
-    destPath += '/';
-  }
-
-  // Validate Paths
-  files.fileExists(sourcePath).then(function(msg) {
-    if (path.extname(sourcePath) != '.yml' && path.extname(sourcePath) != '.yaml') {
-      throw new Error("Source is not a YML file");
-    }
-    console.log(sourcePath + " is Valid");
-    doc = stdfunc.serializeYML(sourcePath);
-    serviceName = ('heb-liquidsky-' + stdfunc.getServiceName(doc));
-  }).catch(function(msg) {
-    console.error("Specified Source is Invalid: ", msg);
-  });
-
-  files.directoryExists(destPath).then(function(msg) {
-    console.log(destPath + " is Valid");
-    // Create Output Folder
-    if (!(fs.existsSync(destPath + serviceName))) {
-      fs.mkdirSync(destPath + serviceName);
-    }
-    destPath += (serviceName + "/");
-    console.log('Created Output Folder | New Path: ' + destPath);
-
-    console.log('\nGenerating File Hierarchy...\n');
-
-    stdfunc.createTable(doc, destPath);
-    fs.writeFileSync(destPath + 'oaspec.yml', fs.readFileSync(sourcePath));
-
-    // BEGIN CREATING FILE STRUCTURE
-    mkdirp(destPath + 'src/main/appengine/', function(err){
-      if (err){
-        throw err;
-      }
-      // Confirm directories were created
-      console.log("/src/main/appengine/ created");
-
-      // Generation Functions Below
-    });
-
-    mkdirp(destPath + 'src/main/java/com/heb/liquidsky/data/', function(err){
-      if (err){
-        throw err;
-      }
-      // Confirm directories were created
-      console.log("/src/main/java/com/heb/liquidsky/data/ created");
-
-      // Generation Functions Below
-      stdfunc.createXML(doc, destPath + 'src/main/java/com/heb/liquidsky/data/');
-    });
-
-    mkdirp(destPath + 'src/main/java/com/heb/liquidsky/endpoints/', function(err){
-      if (err){
-        throw err;
-      }
-      // Confirm directories were created
-      console.log("/src/main/java/com/heb/liquidsky/endpoints/ created");
-
-      // Generation Functions Below
-      generateJava(doc, (destPath + 'src/main/java/com/heb/liquidsky/endpoints/'));
-    });
-
-    mkdirp(destPath + 'src/main/java/com/heb/liquidsky/spring/web/', function(err){
-      if (err){
-        throw err;
-      }
-      // Confirm directories were created
-      console.log("/src/main/java/com/heb/liquidsky/spring/web/ created");
-
-      // Generation Functions Below
-    });
-
-    mkdirp(destPath + 'src/main/resources/', function(err){
-      if (err){
-        throw err;
-      }
-      // Confirm directories were created
-      console.log("/src/main/resources/ created");
-
-      // Generation Functions Below
-    });
-
-    mkdirp(destPath + 'src/test/java/com/heb/liquidsky/data/', function(err){
-      if (err){
-        throw err;
-      }
-      // Confirm directories were created
-      console.log("/src/test/java/com/heb/liquidsky/data/ created");
-
-      // Generation Functions Below
-    });
-
-    mkdirp(destPath + 'src/test/resources/', function(err){
-      if (err){
-        throw err;
-      }
-      // Confirm directories were created
-      console.log("/src/test/resources/ created");
-
-      // Generation Functions Below
-    });
-
-    // END CREATE FILE STRUCTURE
-
-  }).catch(function(e) {
-    console.error("Specified Destination is Invalid: ", e);
-  });
-});
+} else if (program.source && program.dest){
+  stdfunc.execute(program.source, program.dest);
+} else if (program.source){
+  stdfunc.execute(program.source, __dirname);
+} else {
+  console.log("No Options Selected");
+}

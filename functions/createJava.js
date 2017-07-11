@@ -22,6 +22,7 @@ exports.create = function(source, destination) {
   // Get Top Level Collection from Source Doc
   var groups = util.getTLC(source);
   var interfaceNames = util.getTLC(source);
+
   // Initialize output string
   var output = "";
   var groupDefinitions = [];
@@ -46,7 +47,6 @@ exports.create = function(source, destination) {
       }
 
       // Static CRUD operations
-      output = generateStaticCRUD(output);
       output = generateCreateOP(output, source, groups[group], groupDefinitions);
       output = generateReadOP(output, source, groups[group], groupDefinitions);
       output = generateUpdateOP(output, source, groups[group], groupDefinitions);
@@ -72,7 +72,7 @@ exports.create = function(source, destination) {
 function generateStaticTop(output_str, interface_name) {
   output_str += "// Add any necessary packages.\n\n\n";
   output_str += ("public class " + interface_name + "Interface {\n\n");
-  output_str += "\tprivate static final String CONTEXT_FILTER = \"AdminPortal\";\n";
+  output_str += "\tprivate static final String CONTEXT_FILTER = \"default\";\n";
   output_str += "\tprivate static final String DEFAULT_PARENT_PROPERTY = \"parent\";\n\n";
   return output_str;
 }

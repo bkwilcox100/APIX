@@ -1,5 +1,5 @@
 #! usr/bin/env node
-
+// TODO: Create output directory if it doesn't exist
 'use strict';
 
 // Modules

@@ -1,4 +1,5 @@
 const _ = require('underscore');
+
 // Utility Functions
 exports.toUnderscore = function(string) {
   var newString = string.replace(/\.?([A-Z]+)/g, function(x, y) {
@@ -53,6 +54,8 @@ exports.isTLC = function(doc, def){
   var list = this.getTLC(doc);
   if (_.contains(list, def)){
     return true;
+  } else if (_.contains(list, def.toLowerCase())){
+    return true;
   }
   return false;
 }
@@ -64,7 +67,26 @@ exports.getID = function(doc, def){
       return prop;
     }
   }
-  return "NO_ID";
+  return "id";
+}
+
+exports.isRequired = function(doc, def, prop){
+  if (doc['definitions'][def].hasOwnProperty('required')){
+    if (doc['definitions'][def]['required'].hasOwnProperty(prop)){
+      return true;
+    }
+  }
+  return false;
+}
+
+exports.getSQLTimeStamp = function(name){
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = date.getMonth();
+  let day = date.getDate();
+  let time = date.getHours() + "" + date.getMinutes();
+  var timestamp = ("V" + String(year).slice(-2) + String('0' + month).slice(-2) + day + "." + time);
+  return timestamp;
 }
 
 /*

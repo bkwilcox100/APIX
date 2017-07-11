@@ -13,23 +13,29 @@ NOTES:
 */
 
 // Modules
-var http = require('http');
-var fs = require('fs');
-var yam = require('js-yaml');
-var _ = require('underscore');
-var files = require('./functions/files.js');
+const http = require('http');
+const fs = require('fs');
+const yam = require('js-yaml');
+const _ = require('underscore');
+const files = require('./functions/files.js');
+const serialize = require('./functions/serialize.js');
+const util = require('./functions/util.js');
 
 // User Defined Functions
 var stdfunc = require("./functions/stdfunc.js");
 var generateJava = require("./functions/createJava.js").create;
+var generateXML = require('./functions/createXML.js').create;
+var generateSQL = require('./functions/createSQL.js').create;
+
 // User Defined Variables
-var src = '/Users/brandonwilcox/Desktop/openapi-example.yaml';
+var src = '/Users/brandonwilcox/Downloads/openapi-example-1.yaml';
 var dest = '/Users/brandonwilcox/Desktop';
 
 // Serialize YML document
-var doc = stdfunc.serializeYML('/Users/brandonwilcox/Desktop/openapi-example.yaml');
+var doc = serialize.YML(src);
 
-stdfunc.executeWithInquirer();
+generateSQL(doc, dest);
+
 
 // TESTING PURPOSES: Create Local Server and listen on port 8080
 // http.createServer(function(req, res) {

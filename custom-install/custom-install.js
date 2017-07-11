@@ -10,7 +10,7 @@ if (operatingSystem == 'win32'){
   console.log('Please wait...');
   exec('npm install chalk commander clear inquirer js-yaml mkdirp underscore xml2js', function(err, stdout, stderr){
     if (err) {
-      console.error('exec error: ${err}');
+      console.error('Execution Error: ' + err);
       return;
     }
     console.log('Preinstall Complete');

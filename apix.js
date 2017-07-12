@@ -1,5 +1,6 @@
 #! usr/bin/env node
 // TODO: Create output directory if it doesn't exist
+// TODO: Address issue with paths with spaces ("/Open Source/")
 'use strict';
 
 // Modules

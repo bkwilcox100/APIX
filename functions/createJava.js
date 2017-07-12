@@ -17,6 +17,7 @@ Postconditions:
 - destination is valid
 Return: None
 Status: COMPLETE
+// TODO: Create java functions based on operationId
 */
 exports.create = function(source, destination) {
   // Get Top Level Collection from Source Doc
@@ -47,13 +48,11 @@ exports.create = function(source, destination) {
       }
 
       // Static CRUD operations
-      output = generateCreateOP(output, source, groups[group], groupDefinitions);
-      output = generateReadOP(output, source, groups[group], groupDefinitions);
-      output = generateUpdateOP(output, source, groups[group], groupDefinitions);
-      output = generateDeleteOP(output, source, groups[group], groupDefinitions);
+      output = generateMethods(source, output);
 
       // Add closing bracket
       output = closeBracket(output);
+      
       var fileName = interfaceNames[group] + "Interface.java";
       fs.writeFile(node_path.join(destination, fileName), output, function(err) {
         if (err) {
@@ -166,81 +165,106 @@ function addDataItem(output_str, doc, definition) {
   return output_str;
 }
 
-// Generates Create operations
-function generateCreateOP(output_str, doc, group, definitions) {
-  output_str += "\n\t// Create Operations\n\n";
-  for (def in definitions) {
-    if (util.isTLC(doc, definitions[def])) {
-      output_str += ("\tpublic Map<String, Object> createBatch" + definitions[def] + "(JsonElement requestBody) throws ServiceException {\n");
-      output_str += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + util.toUnderscoreUpper(group) + ", null, null, requestBody, APP_PROPERTIES_" + util.toUnderscoreUpper("InsertID") + ");\n");
-      output_str += "\t\treturn response;\n\t}\n\n";
-    } else {
-      output_str += ("\tpublic Map<String, Object> createBatch" + definitions[def] + "(JsonElement requestBody, String " + util.getID(doc, definitions[def]) + ") throws ServiceException {\n");
-      output_str += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + util.toUnderscoreUpper(group) + ", " + util.getID(doc, definitions[def]) + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(group) + ", requestBody, null);\n");
-      output_str += "\t\treturn response;\n\t}\n\n";
+function generateMethods(doc, output){
+  try {
+    var opID;
+    var defName;
+    var idString;
+    output += "\n\t// Read Operations\n\n";
+    for (path in doc['paths']){
+      if (doc['paths'][path].hasOwnProperty('get')){
+        opID = doc['paths'][path]['get']['operationId'];
+        if (opID.search(/collection/i) != -1){
+          output += ("\tpublic List<Map<String, Object>> " + opID + "() throws ServiceException {\n");
+          output += ("\t\treturn ResourceUtils.readCollectionFromQuery(" + util.toUnderscoreUpper(util.getServiceName(doc)) + "_COLLECTION_QUERY, DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.trimReadCollection(opID)) + ", CONTEXT_FILTER);\n\t}\n\n");
+        } else if (opID.search(/resource/i) != -1) {
+          defName = util.matchWithDefinition(doc, util.trimReadResource(opID));
+          idString = util.getID(doc, defName);
+          output += ("\tpublic Map<String, Object> " + opID + "(String " + idString + ") throws ServiceException {\n");
+          output += ("\t\treturn ResourceUtils.readResource(" + idString + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.trimReadResource(opID)) + ", CONTEXT_FILTER);\n\t}\n\n");
+        } else {
+          output += ("\tpublic List<Map<String, Object>> " + opID + "() throws ServiceException {\n");
+          output += ("\t\t // This method does not match the expected format and only a stub was created for it.\n\t}\n\n");
+        }
+      }
     }
-  }
-  return output_str;
-}
 
-// Generates Read operations
-function generateReadOP(output_str, doc, group, definitions) {
-  output_str += "\n\t// Read Operations\n\n";
-  for (def in definitions) {
-    if (util.isTLC(doc, definitions[def])) {
-      wholeDoc += ("\tpublic List<Map<String, Object>> read" + definitions[def] + "Collection() throws ServiceException {\n");
-      wholeDoc += ("\t\treturn ResourceUtils.readCollectionFromQuery(APP_PROPERTIES_COLLECTION_QUERY, DATA_ITEM_NAME_" + util.toUnderscoreUpper(definitions[def]) + ", CONTEXT_FILTER);\n\t}\n\n");
-      wholeDoc += ("\tpublic Map<String, Object> read" + definitions[def] + "Resource(String " + util.getID(doc, definitions[def]) + ") throws ServiceException {\n");
-      wholeDoc += ("\t\treturn ResourceUtils.readResource(" + util.getID(doc, definitions[def]) + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(definitions[def]) + ", CONTEXT_FILTER);\n\t}\n\n");
-    } else {
-      output_str += ("\tpublic List<Map<String, Object>> read" + definitions[def] + "Collection() throws ServiceException {\n");
-      output_str += ("\t\treturn ResourceUtils.readSubCollection(" + util.getID(doc, definitions[def]) + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(definitions[def]) + ", CONTEXT_FILTER);\n\t}\n\n");
-      output_str += ("\tpublic Map<String, Object> read" + definitions[def] + "Resource(String " + util.getID(doc, definitions[def]) + ", String " + util.getID(doc, definitions[def]) + ") throws ServiceException {\n");
-      output_str += ("\t\treturn ResourceUtils.readResource(" + util.getID(doc, definitions[def]) + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(definitions[def]) + ", CONTEXT_FILTER);\n\t}\n\n");
+    output += "\n\t// Create Operations\n\n";
+    for (path in doc['paths']){
+      if (doc['paths'][path].hasOwnProperty('post')){
+        opID = doc['paths'][path]['post']['operationId'];
+        defName = util.matchWithDefinition(doc, util.trimCreateBatch(opID));
+        if (opID.search(/createBatch/i) != -1){
+          if (util.isTLC(doc, defName)){
+            output += ("\tpublic Map<String, Object> " + opID + "(JsonElement requestBody) throws ServiceException {\n");
+            output += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + util.getServiceName(doc) + ", null, null, requestBody, APP_PROPERTIES_" + util.toUnderscoreUpper("InsertID") + ");\n");
+            output += ("\t\treturn response;\n\t}\n\n");
+          } else {
+            idString = util.getID(doc, defName);
+            output += ("\tpublic Map<String, Object> " + opID + "(JsonElement requestBody, String " + idString + ") throws ServiceException {\n");
+            output += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.getServiceName(doc)) + ", " + idString + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.getServiceName(doc)) + ", requestBody, null);\n");
+            output += ("\t\treturn response;\n\t}\n\n");
+          }
+        } else {
+          output += ("\tpublic Map<String, Object> " + opID + "() throws ServiceException {\n");
+          output += ("\t\t// This method does not match the expected format and only a stub was created for it.\n\t}\n\n");
+        }
+      }
     }
-  }
-  return output_str;
-}
 
-// Generates Update operations
-function generateUpdateOP(output_str, doc, group, definitions) {
-  output_str += "\n\t// Update Operations\n\n";
-  for (def in definitions) {
-    if (util.isTLC(doc, definitions[def])) {
-      output_str += ("\tpublic Map<String, Object> update" + definitions[def] + "Resource(JsonElement requestBody, String " + util.getID(doc, definitions[def]) + ") throws ServiceException {\n");
-      output_str += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + util.getID(doc, definitions[def]) + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(definitions[def]) + ", requestBody, CONTEXT_FILTER);\n");
-      output_str += ("\t\treturn response;\n\t}\n\n");
-    } else {
-      output_str += ("\tpublic Map<String, Object> update" + definitions[def] + "Resource(JsonElement requestBody, String " + util.getID(doc, definitions[def]) + ", String " + util.getID(doc, definitions[def]) + ") throws ServiceException {\n");
-      output_str += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + util.getID(doc, definitions[def]) + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(definitions[def]) + ", " + util.getID(doc, definitions[def]) + ", DEFAULT_PARENT_PROPERTY, requestBody, CONTEXT_FILTER);\n");
-      output_str += ("\t\treturn response;\n\t}\n\n");
+    output += "\n\t// Update Operations\n\n";
+    for (path in doc['paths']){
+      if (doc['paths'].hasOwnProperty(path)){
+        if (doc['paths'][path].hasOwnProperty('put')){
+          opID = doc['paths'][path]['put']['operationId'];
+          defName = util.matchWithDefinition(doc, util.trimUpdateResource(opID));
+          idString = util.getID(doc, defName);
+          if (opID.search(/update/i) != -1){
+            if (util.isTLC(doc, defName)){
+              idString = util.getID(doc, defName);
+              output += ("\tpublic Map<String, Object> " + opID + "(JsonElement requestBody, String " + idString + ") throws ServiceException {\n");
+              output += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + idString + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.getServiceName(doc)) + ", requestBody, CONTEXT_FILTER);\n");
+              output += ("\t\treturn response;\n\t}\n\n");
+            } else {
+              idString = util.getID(doc, defName);
+              output += ("\tpublic Map<String, Object> " + opID + "(JsonElement requestBody, String " + idString + ", String " + idString + ") throws ServiceException {\n");
+              output += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + idString + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.getServiceName(doc)) + ", " + idString + ", DEFAULT_PARENT_PROPERTY, requestBody, CONTEXT_FILTER);\n");
+              output += ("\t\treturn response;\n\t}\n\n");
+            }
+          }
+        }
+      }
     }
+
+    output += "\n\t// Delete Operations\n\n";
+    for (path in doc['paths']){
+      if (doc['paths'].hasOwnProperty(path)){
+        if (doc['paths'][path].hasOwnProperty('delete')){
+          opID = doc['paths'][path]['delete']['operationId'];
+          if (opID.search(/deleteBatch/i) != -1){
+            output += ("\tpublic Map<String, Object> " + opID + "(JsonElement requestBody) throws ServiceException {\n");
+            output += ("\t\tMap<String, Object> response = ResourceUtils.deleteResourceList(requestBody, DATA_ITEM_NAME_" + util.toUnderscoreUpper(defName) + ");\n");
+            output += ("\t\treturn response;\n\t}\n\n");
+          } else if (opID.search(/delete/i) != -1) {
+            defName = util.matchWithDefinition(doc, util.trimDeleteResource(opID));
+            idString = util.getID(doc, defName);
+            output += ("\tpublic Map<String, Object> " + opID + "(String " + idString + ") throws ServiceException {\n");
+            output += ("\t\tMap<String, Object> response = ResourceUtils.deleteResource(" + idString + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(defName) + ");\n");
+            output += "\t\treturn response;\n\t}\n\n";
+          } else {
+            output += ("\tpublic List<Map<String, Object>> " + opID + "() throws ServiceException {\n");
+            output += ("\t\t // This method does not match the expected format and only a stub was created for it.\n\t}\n\n");
+          }
+        }
+      }
+
+    }
+    return output;
+  } catch (e) {
+    console.error('ERROR: Operation ID Missing');
   }
-  return output_str;
 }
 
-// Generates Delete operations
-function generateDeleteOP(output_str, doc, group, definitions) {
-  output_str += "\n\t// Delete Operations\n\n";
-  if (util.isTLC(doc, definitions[def])) {
-    output_str += ("\tpublic Map<String, Object> deleteBatch" + definitions[def] + "Resource(JsonElement requestBody) throws ServiceException {\n");
-    output_str += ("\t\tMap<String, Object> response = ResourceUtils.deleteResourceList(requestBody, DATA_ITEM_NAME_" + util.toUnderscoreUpper(definitions[def]) + ");\n");
-    output_str += ("\t\treturn response;\n\t}\n\n");
-
-    output_str += ("\tpublic Map<String, Object> delete" + definitions[def] + "Resource(String " + util.getID(doc, definitions[def]) + ") throws ServiceException {\n");
-    output_str += ("\t\tMap<String, Object> response = ResourceUtils.deleteResource(" + util.getID(doc, definitions[def]) + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(definitions[def]) + ");\n");
-    output_str += "return response;\n\t}\n\n";
-  } else {
-    output_str += ("\tpublic Map<String, Object> deleteBatch" + definitions[def] + "Resource(JsonElement requestBody) throws ServiceException {\n");
-    output_str += ("\t\tMap<String, Object> response = ResourceUtils.deleteResourceList(requestBody, DATA_ITEM_NAME_" + util.toUnderscoreUpper(definitions[def]) + ");\n");
-    output_str += ("\t\treturn response;\n\t}\n\n");
-
-    output_str += ("\tpublic Map<String, Object> delete" + definitions[def] + "Resource(String " + util.getID(doc, definitions[def]) + ", String " + util.getID(doc, definitions[def]) + ") throws ServiceException {\n");
-    output_str += ("\t\tMap<String, Object> response = ResourceUtils.deleteResource(" + util.getID(doc, definitions[def]) + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(definitions[def]) + ", " + util.getID(doc, definitions[def]) + ", DEFAULT_PARENT_PROPERTY);\n");
-    output_str += "\t\treturn response;\n\t}\n\n";
-  }
-  return output_str;
-}
 
 // Adds closing bracket to file
 function closeBracket(output_str) {

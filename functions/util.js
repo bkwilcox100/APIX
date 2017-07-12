@@ -109,3 +109,61 @@ exports.getServiceName = function(doc) {
   }
   return "NoN";
 }
+
+exports.getPathName = function(doc, path) {
+  var serviceName = exports.getServiceName(doc);
+  path = path.slice(1, path.length);
+  path = path.slice(serviceName.length, path.length);
+  path = path.slice(1, path.length);
+  path = path.slice(path.indexOf('/'), path.length);
+  path = path.slice(1, path.length);
+  if (path.indexOf('/') != -1) {
+    path = path.slice(0, path.indexOf('/'));
+  }
+  return path;
+}
+
+exports.matchWithDefinition = function(doc, name){
+  for (def in doc['definitions']){
+    //console.log(def + " vs " + name);
+    if (def.toLowerCase() == name.toLowerCase()){
+      return def;
+    }
+  }
+  return "NO_MATCH";
+}
+
+exports.trimReadCollection = function(str) {
+  str = str.slice(4, -10);
+  return str;
+}
+
+exports.trimReadResource = function(str) {
+  str = str.slice(4, -8);
+  return str;
+}
+
+exports.trimCreateBatch = function(str) {
+  if (str.search(/createbatch/i) != -1){
+    str = str.slice(11, str.length);
+    if (str.slice(-1) == 's'){
+      str = str.slice(0, str.length - 1)
+    }
+  }
+  return str;
+}
+
+exports.trimUpdateResource = function(str){
+  str = str.slice(6, -8)
+  return str;
+}
+
+exports.trimDeleteResource = function(str){
+  str = str.slice(6, -8)
+  return str;
+}
+
+exports.trimDeleteBatch = function(str){
+  str = str.slice(11, -9)
+  return str;
+}

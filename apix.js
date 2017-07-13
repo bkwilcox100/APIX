@@ -11,6 +11,7 @@ var clear = require('clear');       // Clears screen before start of program
 var chalk = require('chalk');       // For colorful UI
 var mkdirp = require('mkdirp');     // For creating multiple directories
 var program = require('commander');
+var exec = require('child_process').exec;
 
 // User Defined Functions
 var stdfunc = require("./functions/stdfunc.js");
@@ -62,8 +63,6 @@ if (program.graphic){
   stdfunc.execute(program.source, program.dest);
 } else if (program.source){
   stdfunc.execute(program.source, __dirname);
+} else {
+  console.log('use --help for instructions');
 }
-
-// else {
-//   console.log("No Options Selected");
-// }

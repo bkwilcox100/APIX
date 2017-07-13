@@ -28,7 +28,7 @@ exports.create = function(source, destination) {
 }
 
 function generateStatic() {
-  let tempPath = node_path.join('.', 'docs', 'xml', 'xml_ls_template.xml');
+  var tempPath = node_path.join('.', 'docs', 'xml', 'xml_ls_template.xml');
   return fs.readFileSync(tempPath, 'utf8');
 }
 

@@ -80,11 +80,11 @@ exports.isRequired = function(doc, def, prop){
 }
 
 exports.getSQLTimeStamp = function(name){
-  let date = new Date();
-  let year = date.getFullYear();
-  let month = date.getMonth();
-  let day = date.getDate();
-  let time = date.getHours() + "" + date.getMinutes();
+  var date = new Date();
+  var year = date.getFullYear();
+  var month = date.getMonth();
+  var day = date.getDate();
+  var time = date.getHours() + "" + date.getMinutes();
   var timestamp = ("V" + String(year).slice(-2) + String('0' + month).slice(-2) + day + "." + time);
   return timestamp;
 }

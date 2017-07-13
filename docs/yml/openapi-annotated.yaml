@@ -1,0 +1,429 @@
+# Within this example, the notation [something] indicates that some variable value should be replaced within the brackets and the brackets should not be incuded.
+# Here you will find a textual description and example of the variable as well as places that this value is used within the micro service implementation
+# Definitions:
+# [Proper Service Name] - This is the proper name of the microservice.  An example might be "Message Repository Service".  This is for human readable purposes.
+# [Version Number] - The spec's contracted version number.  Do not confuse this with the running build version of the implementation as it is the spec version only
+# [Confluence Page URL] - A fully qualified URL with protocol to documentation in HEB's internal confluence site where details of this api are stored.
+# [serviceId] - The short name of the microservice.  This is heavily used programatically.  example: messagerepo
+# [TopLevelResourceCollection] - The name of the top level resource collection.  Since this is a collection, it will typically end with "s". example "messages"
+# [ResourceName] - The name of the resource type that a path operates on.  This is typically formatted with CamelCase.  Example: Message
+# [ResourceId] - The name of the resources id property.  This MUST always end in "Id" and is typically formatted with lowerCamelCase Example: messageId
+# [SubCollectionName] - A collection of resources that has a parent resource.  Example: a message opbject may have an array of localized messages in different languages, i.e. localizations
+# [SubResourceName] - Same as [ResourceName], as this is just indicating a different type of resource, but used in this doc to differentiate in path examples.
+# [SubResourceId] - Same as [ResourceId] but used to differentiate a top level resource and a sub resource in the path examples below
+# [PropertyName] - this appears in the definitions tag to indicate that other property names can be used also
+#
+#
+# Tag Notes:
+# Information in some tags is used in other places.  This section explains the use of the values of some tags
+# paths -> operation -> operationId - operationId is used when creating the interface and servlet files.
+#                                     The value here determines the name of the methods in these generated Java
+#                                     classes and can also be a reference for finding the implementation of this particular operation..
+#
+#
+
+# OpenApi (formerly swagger) spec version number.  This is required and should always be "2.0"
+swagger: "2.0"
+
+# Info block.  This is used by Google Endpoints for display purposes, but also for human readable purposes.
+info:
+  title: "HEB Cloud Services - [Proper Service Name]"
+  description: "HEB Cloud Services - [Proper Service Name]"
+  version: "[Version Number]"
+externalDocs:
+  description: Internal Confluence page
+  url: [Confluence Page URL]
+
+# This part is not used by Google Endpoints, but is used in implemenation generation scripts.
+tags:
+  - name: serviceName
+    description: [serviceId]
+
+# leave everything from this point to the "paths:" field as is
+# For now, this should LITERALLY remain as is until our custom domains are set up.  This indicates the URL of the API and is filtered in with Maven
+host: adminrest-dot-${appengine.app.id}.appspot.com
+
+x-google-endpoints:
+  - name: adminrest-dot-${appengine.app.id}.appspot.com
+    allowCors: true
+
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - https
+
+
+paths:
+
+# Typically, the first path should be to the top level resource collection.  This is the top most collection of all resources of a particular type.
+# Example: /messagerepo/v1/messages
+  /[serviceId]/v[Version Number]/[TopLevelResourceCollection]:
+
+# The Liquid Sky framework only allows for creation of resources from the collection level
+    post:
+      description: Creates [ResourceName] resources
+      operationId: createBatch[ResourceName]s
+      parameters:
+        - name: body
+          in: body
+          description: Array of [ResourceName] resources to create
+          required: true
+          schema:
+# Google Endpoints does not have a good way to specify a list of objects as a body parameter, so just use the generic "object" type here
+            type: object
+      responses:
+ # All batch operations will always return a Liquid Sky Standard Batch response
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        207:
+          description: Some resources created successfully and others unsuccessfully
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        default:
+          description: Some Error
+          schema:
+            $ref: '#/definitions/BatchResponse'
+    get:
+      description: Reads all resources from the [ResourceName] collection
+      operationId: read[ResourceName]Collection
+      responses:
+        200:
+          description: A successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/[ResourceName]'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Deletes [ResourceName] resources based on a list of [ResourceId]'s sent in an array
+      operationId: deleteBatch[ResourceName]Resources
+      parameters:
+        - name: body
+          in: body
+          description: Array of [ResourceName] resource [ResourceId]s to delete. (array of strings)
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+# This shows how operations on a specific resource should be specified.
+# Example: /messagerepo/v1/messages/{messageId}
+  /[serviceId]/v[Version Number]/[TopLevelResourceCollection]/{[ResourceId]}:
+    get:
+      description: Reads the [ResourceName] resource with the given [ResourceId]
+      operationId: read[ResourceName]Resource
+      parameters:
+        - name: [ResourceId]
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/[ResourceName]'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    put:
+      description: Updates the [ResourceName] resource with the given [ResourceId]
+      operationId: update[ResourceName]Resource
+      parameters:
+        - name: [ResourceId]
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Full or partial [ResourceName] object containing values to update the specified resource with.
+          required: true
+          schema:
+            type: object
+            #$ref: '#/definitions/[ResourceName]'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/[ResourceName]'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Deletes the [ResourceName] resource with the given [ResourceId]
+      operationId: delete[ResourceName]Resource
+      parameters:
+        - name: [ResourceId]
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/SuccessMessage'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+# This shows batch operations on a subcollection
+# Example: /messagerepo/v1/messages/{messageId}/localizations
+  /[serviceId]/v[Version Number]/[TopLevelResourceCollection]/{[ResourceId]}/[SubCollectionName]:
+    post:
+      description: Creates [SubResourceName] resources
+      operationId: createBatch[SubResourceName]
+      parameters:
+        - name: [ResourceId]
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Array of [SubResourceName] resources to create
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: All resources were created successfully
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        207:
+          description: Some resources created successfully and others unsuccessfully
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    get:
+      description: Reads all [SubResourceName] resources in the collection
+      operationId: read[SubResourceName]Collection
+      parameters:
+        - name: [ResourceId]
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/[SubResourceName]'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Deletes [SubResourceName] resources based on a list of [SubResourceId]s sent in a list
+      operationId: deleteBatchAppVersionResource
+      parameters:
+        - name: [ResourceId]
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Array of [SubResourceName] resource [SubResourceId]'s to delete. (array of strings)
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+# This shows operations on individual resources contained within a sub collection
+# Example: /messagerepo/v1/messages/{messageId}/localizations/{localizationId}
+  /[serviceId]/v[Version Number]/[TopLevelResourceCollection]/{[ResourceId]}/[SubCollectionName]/{[SubResourceId]}:
+    get:
+      description: Reads the [SubResourceName] resource with the given [SubResourceId]
+      operationId: read[SubResourceName]Resource
+      parameters:
+        - name: [ResourceId]
+          in: path
+          required: true
+          type: string
+        - name: [SubResourceId]
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/[SubResourceName]'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    put:
+      description: Updates the [SubResourceName] resource with the given [SubResourceId]
+      operationId: update[SubResourceName]Resource
+      parameters:
+        - name: [ResourceId]
+          in: path
+          required: true
+          type: string
+        - name: [SubResourceId]
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: A complete or partial [SubResourceName] object containing fields to update
+          required: true
+          schema:
+            $ref: '#/definitions/[SubResourceName]'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/[SubResourceName]'
+        default:
+          description: Some error occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Deletes the [SubResourceName] resource with the given [SubResourceId]
+      operationId: delete[SubResourceName]Resource
+      parameters:
+        - name: [ResourceId]
+          in: path
+          required: true
+          type: string
+        - name: [SubResourceId]
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/SuccessMessage'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+# paths can continue on with the same repeating format of:
+# /[serviceId]/v[Version Number]/[TopLevelResourceCollection]/{[ResourceId]}/[SubCollectionName]/{[SubResourceId]}/[SubSubCollectionName]/{[SubSubResourceId]}/[SubSubSubCollectionName]/{[SubSubSubResourceId]}
+# and so on and so on as far as needed.
+
+# This section instructs Google Endpoints to require all requests that are not specifically overridden to send an api key
+security:
+- api_key: []
+securityDefinitions:
+  # This section configures basic authentication with an API key.
+  api_key:
+    type: apiKey
+    name: key
+    in: query
+
+# The defintions section defines shared objects that are used in requests/responses.  Above, these are called out in the paths section under the
+# schema: tag when there is a reference made like: $ref: '#/definitions/[ResourceName]'
+# the APIX project generation scripts also use these definitions to generate database table creation scripts and data-store.xml definition files.
+
+definitions:
+
+  [ResourceName]:
+    type: object
+    required:
+    - [ResourceId]
+    - [PropertyName1]
+    properties:
+      [ResourceId]:
+        type: string
+      [PropertyName1]:
+        type: string
+      [PropertyName2]:
+        type: string
+      [SubCollectionName]:
+        type: array
+        items:
+          $ref: '#/definitions/[SubResourceName]'
+
+  [SubResourceName]:
+    type: object
+    required:
+    - [SubResourceId]
+    - [PropertyName1]
+    - [PropertyName2]
+    properties:
+      [SubResourceId]:
+        type: string
+      [PropertyName1]:
+        type: string
+      [PropertyName2]:
+        type: string
+      [PropertyName3]:
+        type: string
+      [PropertyName4]:
+        type: string
+
+
+# Below here, standard infrastructure objects are defined.  These are shared across all Liquid Sky based microservices and should always be included in an openapi spec.
+  SuccessMessage:
+    type: object
+    properties:
+      success:
+        type: array
+        items:
+          type: string
+
+  Message:
+    type: object
+    properties:
+      code:
+        type: string
+      text:
+        type: string
+
+  ErrorResponse:
+    type: object
+    properties:
+      id:
+        type: string
+      status:
+        type: string
+      object:
+        type: object
+      message:
+          $ref: '#/definitions/Message'
+
+  BatchResponse:
+    type: object
+    properties:
+      success:
+        type: array
+        items:
+          type: string
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/AppVersion'
+
+  JsonMap: {}

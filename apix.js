@@ -12,6 +12,12 @@ var chalk = require('chalk');       // For colorful UI
 var mkdirp = require('mkdirp');     // For creating multiple directories
 var program = require('commander');
 
+// User Defined Functions
+var stdfunc = require("./functions/stdfunc.js");
+var generateJava = require("./functions/createJava.js").create;
+var util = require("./functions/util.js");
+var files = require("./functions/files.js");
+var generateOA = require('./functions/createInitial.js').create;
 // Commander Argument Settings
 program
     .version('1.0.0')
@@ -21,13 +27,21 @@ program
     .option('-s, --source <src>', 'Run with specified source (Defaults to current directory)')
     .option('-d, --dest <dest>', 'Run with destination (Requires source)');
 
-program.parse(process.argv);
+program
+    .command('init')
+    .description('Generate a starter OpenApi Spec')
+    .action(function(){
+      files.getInitialSpec(function(){
+        var title = arguments['0']['title'];
+        var description = arguments['0']['description'];
+        var version = arguments['0']['version'];
+        var serviceName = arguments['0']['serviceName'];
 
-// User Defined Functions
-var stdfunc = require("./functions/stdfunc.js");
-var generateJava = require("./functions/createJava.js").create;
-var util = require("./functions/util.js");
-var files = require("./functions/files.js");
+        generateOA(title, description, version, serviceName);
+      });
+    });
+
+program.parse(process.argv);
 
 // Global Variables
 var sourcePath = "";
@@ -48,6 +62,8 @@ if (program.graphic){
   stdfunc.execute(program.source, program.dest);
 } else if (program.source){
   stdfunc.execute(program.source, __dirname);
-} else {
-  console.log("No Options Selected");
 }
+
+// else {
+//   console.log("No Options Selected");
+// }

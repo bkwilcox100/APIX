@@ -1,0 +1,410 @@
+# This example file uses a simple AppMessage Repository service as an example related to the openapi-annotated.yaml file.
+
+swagger: "2.0"
+
+# Info block.  This is used by Google Endpoints for display purposes, but also for human readable purposes.
+info:
+  title: "HEB Cloud Services - App Message Repository Service"
+  description: "HEB Cloud Services - App Message Repository Service"
+  version: "1"
+externalDocs:
+  description: Internal Confluence page
+  url: https://confluence.heb.com:8443/display/middleLayerServices/App+Message+Repository
+  
+# This part is not used by Google Endpoints, but is used in implemenation generation scripts.
+tags:
+  - name: serviceName
+    description: appmessagerepo
+
+# leave everything from this point to the "paths:" field as is
+# For now, this should LITERALLY remain as is until our custom domains are set up.  This indicates the URL of the API and is filtered in with Maven
+host: adminrest-dot-${appengine.app.id}.appspot.com
+
+x-google-endpoints:
+  - name: adminrest-dot-${appengine.app.id}.appspot.com
+    allowCors: true
+
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - https
+
+
+paths:
+  /appmessagerepo/v1/appmessages:
+    post:
+      description: Creates AppMessage resources
+      operationId: createBatchAppMessages
+      parameters:
+        - name: body
+          in: body
+          description: Array of AppMessage resources to create
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        207:
+          description: Some resources created successfully and others unsuccessfully
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        default:
+          description: Some Error
+          schema:
+            $ref: '#/definitions/BatchResponse'
+    get:
+      description: Reads all resources from the AppMessage collection
+      operationId: readAppMessageCollection
+      responses:
+        200:
+          description: A successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AppMessage'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Deletes AppMessage resources based on a list of appMessageId's sent in an array
+      operationId: deleteBatchAppMessageResources
+      parameters:
+        - name: body
+          in: body
+          description: Array of AppMessage resource appMessageIds to delete. (array of strings)
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /appmessagerepo/v1/appmessages/{appMessageId}:
+    get:
+      description: Reads the AppMessage resource with the given appMessageId
+      operationId: readAppMessageResource
+      parameters:
+        - name: appMessageId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/AppMessage'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    put:
+      description: Updates the AppMessage resource with the given appMessageId
+      operationId: updateAppMessageResource
+      parameters:
+        - name: appMessageId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Full or partial AppMessage object containing values to update the specified resource with.
+          required: true
+          schema:
+            type: object
+            #$ref: '#/definitions/AppMessage'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/AppMessage'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Deletes the AppMessage resource with the given appMessageId
+      operationId: deleteAppMessageResource
+      parameters:
+        - name: appMessageId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/SuccessMessage'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /appmessagerepo/v1/appmessages/{appMessageId}/localizations:
+    post:
+      description: Creates Localization resources
+      operationId: createBatchLocalization
+      parameters:
+        - name: appMessageId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Array of Localization resources to create
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: All resources were created successfully
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        207:
+          description: Some resources created successfully and others unsuccessfully
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    get:
+      description: Reads all Localization resources in the collection
+      operationId: readLocalizationCollection
+      parameters:
+        - name: appMessageId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Localization'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Deletes Localization resources based on a list of localizationIds sent in a list
+      operationId: deleteBatchLocalizationResource
+      parameters:
+        - name: appMessageId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Array of Localization resource localizationId's to delete. (array of strings)
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/BatchResponse'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+# This shows operations on individual resources contained within a sub collection
+# Example: /appmessagerepo/v1/appmessages/{appMessageId}/localizations/{localizationId}
+  /appmessagerepo/v1/appmessages/{appMessageId}/localizations/{localizationId}:
+    get:
+      description: Reads the Localization resource with the given localizationId
+      operationId: readLocalizationResource
+      parameters:
+        - name: appMessageId
+          in: path
+          required: true
+          type: string
+        - name: localizationId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/Localization'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    put:
+      description: Updates the Localization resource with the given localizationId
+      operationId: updateLocalizationResource
+      parameters:
+        - name: appMessageId
+          in: path
+          required: true
+          type: string
+        - name: localizationId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: A complete or partial Localization object containing fields to update
+          required: true
+          schema:
+            $ref: '#/definitions/Localization'
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/Localization'
+        default:
+          description: Some error occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Deletes the Localization resource with the given localizationId
+      operationId: deleteLocalizationResource
+      parameters:
+        - name: appMessageId
+          in: path
+          required: true
+          type: string
+        - name: localizationId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: A successful response
+          schema:
+            $ref: '#/definitions/SuccessMessage'
+        default:
+          description: Some Error Occured
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+            
+  /echo/v1/echo:
+    post:
+      operationId: EchoTestEcho
+      parameters:
+      - in: body
+        name: body
+        required: false
+        schema:
+          "$ref": "#/definitions/JsonMap"
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            "$ref": "#/definitions/JsonMap"
+
+security:
+- api_key: []
+securityDefinitions:
+  # This section configures basic authentication with an API key.
+  api_key:
+    type: apiKey
+    name: key
+    in: query
+    
+definitions:
+
+  AppMessage:
+    type: object
+    required:
+    - appMessageId
+    - siteId
+    - defaultAppMessage
+    properties:
+      appMessageId:
+        type: string
+        maxLength: 64
+        minLength: 1
+      siteId:
+        type: string
+        maxLength: 64
+        minLength: 1
+      appmessageCode:
+        type: string
+        maxLength: 64
+        minLength: 0
+      defaultAppMessage:
+        type: string
+        maxLength: 2048
+        minLength: 1
+      localizations:
+        type: array
+        items:
+          $ref: '#/definitions/Localization'
+
+  Localization:
+    type: object
+    required:
+    - localizationId
+    - localizationLanguage
+    properties:
+      localizationId:
+        type: string
+        maxLength: 64
+        minLength: 1
+      localizationLanguage:
+        type: string
+        maxLength: 6
+        minLength: 1
+      localizationAppMessage:
+        type: string
+        maxLength: 2048
+        minLength: 1
+
+# Below here, standard infrastructure objects are defined.
+  SuccessMessage:
+    type: object
+    properties:
+      success:
+        type: array
+        items:
+          type: string
+
+  Message:
+    type: object
+    properties:
+      code:
+        type: string
+      text:
+        type: string
+
+  ErrorResponse:
+    type: object
+    properties:
+      id:
+        type: string
+      status:
+        type: string
+      object:
+        type: object
+      message:
+          $ref: '#/definitions/Message'
+
+  BatchResponse:
+    type: object
+    properties:
+      success:
+        type: array
+        items:
+          type: string
+      errors:
+        type: array
+
+  JsonMap: {}

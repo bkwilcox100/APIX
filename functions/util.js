@@ -133,6 +133,8 @@ exports.matchWithDefinition = function(doc, name){
   return "NO_MATCH";
 }
 
+
+// For Use with Java Method Generation
 exports.trimReadCollection = function(str) {
   str = str.slice(4, -10);
   return str;

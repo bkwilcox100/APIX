@@ -26,25 +26,25 @@ var stdfunc = require("./functions/stdfunc.js");
 var generateJava = require("./functions/createJava.js").create;
 var generateXML = require('./functions/createXML.js').create;
 var generateSQL = require('./functions/createSQL.js').create;
-
+var generateServlet = require('./functions/createJavaServlet.js').create;
+var generateAE = require('./functions/createAppEngineSpec.js').create;
 // User Defined Variables
-var src = '/Users/brandonwilcox/Downloads/openapi-example-1.yaml';
+var src = './docs/yml/openapi-example.yaml';
 var dest = '/Users/brandonwilcox/Desktop';
 
 // Serialize YML document
 var doc = serialize.YML(src);
 
-
-// TESTING PURPOSES: Create Local Server and listen on port 8080
+//TESTING PURPOSES: Create Local Server and listen on port 8080
 // http.createServer(function(req, res) {
 //   res.writeHead(200, {
 //     'Content-Type': 'text/html'
 //   });
-//   res.write('<div style="margin-top:40vh;text-align:center">')
-//     res.write('  <form method=get action=/ style="font:3em monospace">')
-//     res.write('    <span style="color:#F08">$</span> npm repo')
-//     res.write('    <input name=pkgName placeholder=pkgname size=10 style="font:1em monospace;color:#777;border:0">')
-//     res.write('</form>')
-//     res.write('</div>')
-//     res.end()
+//   res.write('<div style="margin-top:40vh;text-align:center">');
+//   res.write('  <form method=get action=/ style="font:3em monospace">');
+//   res.write('    <span style="color:#F08">$</span> npm repo');
+//   res.write('    <input name=pkgName placeholder=pkgname size=10 style="font:1em monospace;color:#777;border:0">');
+//   res.write('  </form>');
+//   res.write('</div>');
+//   res.end();
 // }).listen(8080);

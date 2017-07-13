@@ -30,6 +30,10 @@ To install globally, download the APIX and navigate to its directory. Run:
     $ apix
 
 ## Usage
+To generate a starter Open API spec:
+
+    $ node apix init
+
 To run with a graphical interface:
 
     $ node apix -g
@@ -42,6 +46,8 @@ If no destination is specified, the current directory will be default
 
 ## Features
 + Auto Generates:
+    + Open API Spec
+    + App Engine Spec
     + XML Datastore
     + SQL Tables
     + Java Interface Files

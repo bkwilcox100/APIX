@@ -6,6 +6,7 @@ const files = require('./files.js');
 const generateJava = require('./createJava.js').create;
 const generateXML = require('./createXML.js').create;
 const generateSQL = require('./createSQL.js').create;
+const generateAE = require('./createAppEngineSpec.js').create;
 const mkdirp = require('mkdirp');
 const serialize = require('./serialize.js');
 
@@ -379,6 +380,7 @@ exports.execute = function(source, dest) {
         console.log("/src/main/appengine/ created");
 
         // Generation Functions Below
+        generateAE(doc, dest + 'src/main/appengine/');
       });
 
       mkdirp(dest + 'src/main/java/com/heb/liquidsky/data/', function(err) {

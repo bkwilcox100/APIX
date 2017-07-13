@@ -1,0 +1,32 @@
+service: {{serviceName}}
+
+runtime: {{runtime}}
+env: {{environment}}
+
+runtime_config:
+   jdk: {{jdk}}
+
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+  secure: always
+
+threadsafe: {{isThreadSafe}}
+
+resources:
+  memory_gb: ${appengine.app.modules.{{serviceName}}.specs.memory_gb}
+
+automatic_scaling:
+  min_num_instances: ${appengine.app.modules.{{serviceName}}.specs.min-num-instances}
+  max_num_instances: ${appengine.app.modules.{{serviceName}}.specs.max-num-instances}
+
+health_check:
+  check_interval_sec: ${appengine.app.modules.{{serviceName}}.check_interval_sec}
+
+endpoints_api_service:
+  name: {{serviceName}}-dot-${appengine.app.id}.appspot.com
+  config_id: ${appengine.app.modules.{{serviceName}}.endpoints.config.id}
+
+beta_settings:
+  # don't scan for annotations at every startup
+  java_quickstart: true

@@ -5,5 +5,5 @@
 .DS_STORE
 
 # Files #
-heb-liquidsky-service-adminrest/
+middle-layer/
 node_modules/

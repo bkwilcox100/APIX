@@ -1,0 +1,38 @@
+# OpenApi (formerly swagger) spec version number.  This is required and should always be "2.0"
+swagger: "2.0"
+
+# Info block.  This is used by Google Endpoints for display purposes, but also for human readable purposes.
+info:
+  title: "HEB Cloud Services - {{title}}"
+  description: "HEB Cloud Services - {{description}}"
+  version: "{{version}}"
+externalDocs:
+  description: Internal Confluence page
+  url: [Confluence Page URL]
+
+# This part is not used by Google Endpoints, but is used in implemenation generation scripts.
+tags:
+  - name: serviceName
+    description: {{serviceName}}
+
+# leave everything from this point to the "paths:" field as is
+# For now, this should LITERALLY remain as is until our custom domains are set up.  This indicates the URL of the API and is filtered in with Maven
+host: {{serviceName}}-dot-${appengine.app.id}.appspot.com
+
+x-google-endpoints:
+  - name: {{serviceName}}-dot-${appengine.app.id}.appspot.com
+    allowCors: true
+
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - https
+
+
+paths:
+
+
+
+definitions:

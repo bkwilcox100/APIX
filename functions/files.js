@@ -61,3 +61,58 @@ exports.getPaths = function(callback) {
   ];
   inquirer.prompt(askPaths).then(callback);
 }
+
+exports.getInitialSpec = function(callback) {
+  var options = [{
+      name: "title",
+      type: "input",
+      message: "Enter a title: ",
+      validate: function(val) {
+        if (val.length) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
+    {
+      name: "description",
+      type: "input",
+      message: "Enter a description: ",
+      validate: function(val) {
+        if (val.length) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
+    {
+      name: "version",
+      type: "input",
+      message: "Enter a version number: ",
+      validate: function(val) {
+        if (val.length) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      default: "1.0.0"
+    },
+    {
+      name: "serviceName",
+      type: "input",
+      message: "Enter a service name: ",
+      validate: function(val) {
+        if (val.length) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  ];
+
+  inquirer.prompt(options).then(callback);
+}

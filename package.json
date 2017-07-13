@@ -21,6 +21,7 @@
     "inquirer": "^3.1.1",
     "js-yaml": "^3.8.4",
     "mkdirp": "^0.5.1",
+    "mustache": "^2.3.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {},

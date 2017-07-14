@@ -12,7 +12,10 @@ var chalk = require('chalk');       // For colorful UI
 var mkdirp = require('mkdirp');     // For creating multiple directories
 var program = require('commander');
 var exec = require('child_process').exec;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 85df5adccd578a6c127e07f33602c91bbf0d7cdf
 // User Defined Functions
 var stdfunc = require("./functions/stdfunc.js");
 var generateJava = require("./functions/createJava.js").create;

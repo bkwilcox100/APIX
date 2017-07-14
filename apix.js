@@ -8,14 +8,7 @@ var clear = require('clear');       // Clears screen before start of program
 var chalk = require('chalk');       // For colorful UI
 var mkdirp = require('mkdirp');     // For creating multiple directories
 var program = require('commander');
-<<<<<<< HEAD
-=======
-var exec = require('child_process').exec;
-<<<<<<< HEAD
->>>>>>> b832925fad2141e968f70fb85e5593feac3c5edd
 
-=======
->>>>>>> 85df5adccd578a6c127e07f33602c91bbf0d7cdf
 // User Defined Functions
 var stdfunc = require("./functions/stdfunc.js");
 var files = require("./functions/files.js");

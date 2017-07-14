@@ -29,11 +29,13 @@ var generateSQL = require('./functions/createSQL.js').create;
 var generateServlet = require('./functions/createJavaServlet.js').create;
 var generateAE = require('./functions/createAppEngineSpec.js').create;
 // User Defined Variables
-var src = './docs/yml/openapi-example.yaml';
+var src = './middle-layer/heb-liquidsky-service-adminrest/openapi.yaml';
 var dest = '/Users/brandonwilcox/Desktop';
 
 // Serialize YML document
 var doc = serialize.YML(src);
+
+generateServlet(doc, dest);
 
 //TESTING PURPOSES: Create Local Server and listen on port 8080
 // http.createServer(function(req, res) {

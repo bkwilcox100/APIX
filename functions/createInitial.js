@@ -3,12 +3,12 @@ const node_path = require('path');
 const fs = require('fs');
 const mustache = require('mustache');
 
-exports.create = function(titleV, descriptionV, versionV, serviceNameV){
+exports.create = function(title_var, description_var, version_var, service_name_var){
   var mustache_vars = {
-    title: titleV,
-    description: descriptionV,
-    version: versionV,
-    serviceName: serviceNameV
+    title: title_var,
+    description: description_var,
+    version: version_var,
+    serviceName: service_name_var
   };
 
   fs.readFile('./docs/mustache/init_template.yaml', 'utf8', function(err, data){

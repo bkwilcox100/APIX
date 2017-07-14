@@ -52,19 +52,25 @@ exports.getTLC = function(doc) {
 
 exports.isTLC = function(doc, def){
   var list = this.getTLC(doc);
-  if (_.contains(list, def)){
-    return true;
-  } else if (_.contains(list, def.toLowerCase())){
-    return true;
+  if (def){
+    if (_.contains(list, def)){
+      return true;
+    } else if (_.contains(list, def.toLowerCase())){
+      return true;
+    }
   }
   return false;
 }
 
 exports.getID = function(doc, def){
   var foundID = false;
-  for (prop in doc['definitions'][def]['properties']){
-    if (prop.slice(-2, prop.length).toLowerCase() == "id"){
-      return prop;
+  if (doc['definitions'].hasOwnProperty(def)){
+    if (doc['definitions'][def].hasOwnProperty('properties')){
+      for (prop in doc['definitions'][def]['properties']){
+        if (prop.slice(-2, prop.length).toLowerCase() == "id"){
+          return prop;
+        }
+      }
     }
   }
   return "id";

@@ -44,12 +44,6 @@ program
 
 program.parse(process.argv);
 
-// Global Variables
-var sourcePath = "";
-var destPath = "";
-var serviceName = "";
-var doc = null;
-
 if (program.graphic){
   // Clear Terminal Window
   clear();

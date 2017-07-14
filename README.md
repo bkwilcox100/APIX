@@ -51,6 +51,7 @@ If no destination is specified, the current directory will be default
     + XML Datastore
     + SQL Tables
     + Java Interface Files
+    + Java Servlet Files
 
 ## Example
     swagger: "2.0"

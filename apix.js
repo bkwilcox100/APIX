@@ -57,6 +57,4 @@ if (program.graphic){
   stdfunc.execute(program.source, program.dest);
 } else if (program.source){
   stdfunc.execute(program.source, __dirname);
-} else {
-  console.log('use --help for instructions');
 }

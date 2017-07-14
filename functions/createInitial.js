@@ -1,4 +1,3 @@
-const util = require('./util.js');
 const node_path = require('path');
 const fs = require('fs');
 const mustache = require('mustache');

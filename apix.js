@@ -4,21 +4,17 @@
 'use strict';
 
 // Modules
-var fs = require('fs');             // For interacting with file system
-var path = require('path');         // For interacting with file system
-var _ = require('underscore');      // Utility Functions Library
 var clear = require('clear');       // Clears screen before start of program
 var chalk = require('chalk');       // For colorful UI
 var mkdirp = require('mkdirp');     // For creating multiple directories
 var program = require('commander');
-var exec = require('child_process').exec;
 
 // User Defined Functions
 var stdfunc = require("./functions/stdfunc.js");
-var generateJava = require("./functions/createJava.js").create;
-var util = require("./functions/util.js");
 var files = require("./functions/files.js");
+var generateJava = require("./functions/createJavaInterface.js").create;
 var generateOA = require('./functions/createInitial.js').create;
+
 // Commander Argument Settings
 program
     .version('1.0.0')

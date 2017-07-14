@@ -23,7 +23,7 @@ const util = require('./functions/util.js');
 
 // User Defined Functions
 var stdfunc = require("./functions/stdfunc.js");
-var generateJava = require("./functions/createJava.js").create;
+var generateJava = require("./functions/createJavaInterface.js").create;
 var generateXML = require('./functions/createXML.js').create;
 var generateSQL = require('./functions/createSQL.js').create;
 var generateServlet = require('./functions/createJavaServlet.js').create;

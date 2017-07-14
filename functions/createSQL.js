@@ -1,6 +1,5 @@
 const fs = require('fs');
 const _ = require('underscore');
-const path = require('path');
 const util = require('./util.js');
 
 exports.create = function(source, destination) {

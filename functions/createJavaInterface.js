@@ -2,6 +2,7 @@ const util = require('./util.js');
 const _ = require('underscore');
 const node_path = require('path');
 const fs = require('fs');
+const mustache = require('mustache');
 
 // Create Functions
 
@@ -24,7 +25,7 @@ exports.create = function(source, destination) {
   var interfaceNames = util.getTLC(source);
 
   // Initialize output string
-  var output = "";
+  var output;
   var groupDefinitions = [];
 
   if (groups.length == 0) {
@@ -34,7 +35,9 @@ exports.create = function(source, destination) {
     interfaceNames = replaceInterfaceNames(source, interfaceNames);
     // Create one file for each interface
     for (group in groups) {
-      output = "";
+      output = fs.readFileSync('./docs/mustache/interface_imports_template.java', 'utf8');
+      var options = {Author: "Insert Author"};
+      output = mustache.render(output, options);
       // Add Static Content
       output = generateStaticTop(output, interfaceNames[group]);
 
@@ -68,8 +71,7 @@ exports.create = function(source, destination) {
 
 // Generates Static Content at beginning of file
 function generateStaticTop(output_str, interface_name) {
-  output_str += "// Add any necessary packages.\n\n\n";
-  output_str += ("public class " + interface_name + "Interface {\n\n");
+  output_str += ("\n\npublic class " + interface_name + "Interface {\n\n");
   output_str += "\tprivate static final String CONTEXT_FILTER = \"default\";\n";
   output_str += "\tprivate static final String DEFAULT_PARENT_PROPERTY = \"parent\";\n\n";
   return output_str;

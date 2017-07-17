@@ -2,7 +2,7 @@ const util = require('./util.js');
 const _ = require('underscore');
 const node_path = require('path');
 const fs = require('fs');
-
+const mustache = require('mustache');
 exports.create = function(doc, destination) {
   var output = "";
 
@@ -17,7 +17,9 @@ exports.create = function(doc, destination) {
     interfaceNames = replaceInterfaceNames(doc, interfaceNames);
 
     for (group in groups) {
-      output = "";
+      output = fs.readFileSync('./docs/mustache/servlet_imports_template.java', 'utf8');
+      var options = {interfaceName: (interfaceNames[group] + "Interface"), Author: "Insert Author"};
+      output = mustache.render(output, options);
       output = generateHeader(doc, output, interfaceNames[group]);
       output = generateMethods(doc, output, groups[group]);
       output += ('}');
@@ -48,7 +50,7 @@ function getBaseURL(doc) {
 }
 
 function generateHeader(doc, str, name) {
-  str += "@RestController\n";
+  str += "\n@RestController\n";
   str += ("@RequestMapping(value=\"" + getBaseURL(doc) + "\")\n");
   str += ("public class " + name + "Servlet {\n\n");
   str += ("private static final " + name + " INTERFACE_OBJECT = new " + name + "Interface();\n\n");

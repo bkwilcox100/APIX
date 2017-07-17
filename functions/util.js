@@ -116,6 +116,15 @@ exports.getServiceName = function(doc) {
   return "NoN";
 }
 
+exports.getServiceVersion = function(doc){
+  try {
+    return doc['info']['version'];
+  } catch(e){
+    console.error("No Service Version Found");
+    return "NoN";
+  }
+}
+
 exports.getPathName = function(doc, path) {
   var serviceName = exports.getServiceName(doc);
   path = path.slice(1, path.length);

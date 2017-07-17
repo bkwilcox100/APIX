@@ -8,6 +8,9 @@ const generateServlet = require('./createJavaServlet').create;
 const generateXML = require('./createXML.js').create;
 const generateSQL = require('./createSQL.js').create;
 const generateAE = require('./createAppEngineSpec.js').create;
+const generateJAR = require('./createJarApplication.js').create;
+const generatePOM = require('./createPOM.js').create;
+const generateAppProp = require('./createAppProp.js').create;
 const mkdirp = require('mkdirp');
 const serialize = require('./serialize.js');
 
@@ -44,6 +47,7 @@ exports.execute = function(source, dest) {
       console.log('\nGenerating File Hierarchy...\n');
 
       generateSQL(doc, dest);
+      generatePOM(doc, dest);
       fs.writeFileSync(dest + 'openapi.yaml', fs.readFileSync(source));
 
       // BEGIN CREATING FILE STRUCTURE
@@ -89,6 +93,7 @@ exports.execute = function(source, dest) {
 
         // Generation Functions Below
         generateServlet(doc, (dest + 'src/main/java/com/heb/liquidsky/spring/web/'));
+        generateJAR(doc, (dest + 'src/main/java/com/heb/liquidsky/spring/'));
       });
 
       mkdirp(dest + 'src/main/resources/', function(err) {
@@ -99,6 +104,8 @@ exports.execute = function(source, dest) {
         console.log("/src/main/resources/ created");
 
         // Generation Functions Below
+
+        generateAppProp(dest + 'src/main/resources/');
       });
 
       mkdirp(dest + 'src/test/java/com/heb/liquidsky/data/', function(err) {
@@ -169,6 +176,7 @@ exports.executeWithInquirer = function(){
       console.log('\nGenerating File Hierarchy...\n');
 
       generateSQL(doc, destPath);
+      generatePOM(doc, destPath);
       fs.writeFileSync(destPath + 'openapi.yaml', fs.readFileSync(sourcePath));
 
       // BEGIN CREATING FILE STRUCTURE
@@ -214,6 +222,7 @@ exports.executeWithInquirer = function(){
 
         // Generation Functions Below
         generateServlet(doc, (destPath + 'src/main/java/com/heb/liquidsky/spring/web/'));
+        generateJAR(doc, (destPath + 'src/main/java/com/heb/liquidsky/spring/'));
       });
 
       mkdirp(destPath + 'src/main/resources/', function(err){
@@ -224,6 +233,7 @@ exports.executeWithInquirer = function(){
         console.log("/src/main/resources/ created");
 
         // Generation Functions Below
+        generateAppProp(destPath + 'src/main/resources/');
       });
 
       mkdirp(destPath + 'src/test/java/com/heb/liquidsky/data/', function(err){

@@ -13,7 +13,6 @@ A simple tool to expand Open API definitions into useful documentation and resou
 Along with the specifications found on the [Open API Repo](https://github.com/OAI/OpenAPI-Specification), here are some things to keep in mind:
 + Must include a tags field with a name and description item (See Example)
 + The ID in every definition MUST end in "ID" (case-insensitive)
-+ Any Date objects must end in "Date" (case-insensitive)
 + The primary key must be required and be the first property listed
 
 ## Installation
@@ -52,6 +51,8 @@ If no destination is specified, the current directory will be default
     + SQL Tables
     + Java Interface Files
     + Java Servlet Files
+    + Java Application Properties File
+    + Maven POM File
 
 ## Example
     swagger: "2.0"

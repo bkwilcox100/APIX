@@ -37,9 +37,17 @@ function generateTable(str, doc, defName) {
   for (propName in doc['definitions'][defName]['properties']) {
     size = getPropSize(doc, defName, propName);
     if (util.isRequired(doc, defName, propName) || _.contains(doc['definitions'][defName]['required'], propName)) {
-      str += ("\t" + propName + " varchar(" + size + ") not null,\n");
+      if(propName.toLowerCase().search('date') != -1){
+        str += ("\t" + propName + " datetime default current_timestamp not null,\n");
+      } else {
+        str += ("\t" + propName + " varchar(" + size + ") not null,\n");
+      }
     } else {
-      str += ("\t" + propName + " varchar(" + size + "),\n");
+      if(propName.toLowerCase().search('date') != -1){
+        str += ("\t" + propName + " datetime default current_timestamp,\n");
+      } else {
+        str += ("\t" + propName + " varchar(" + size + "),\n");
+      }
     }
   }
   str += ("\tprimary key (" + util.getID(doc, defName) + ")\n");

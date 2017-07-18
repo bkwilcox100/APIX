@@ -90,7 +90,12 @@ exports.getSQLTimeStamp = function(name){
   var year = date.getFullYear();
   var month = date.getMonth();
   var day = date.getDate();
-  var time = date.getHours() + "" + date.getMinutes();
+  if (date.getHours() < 10){
+    var time = "0" + date.getHours() + "" + date.getMinutes();
+  } else {
+    var time = date.getHours() + "" + date.getMinutes();
+  }
+
   var timestamp = ("V" + String(year).slice(-2) + String('0' + month).slice(-2) + day + "." + time);
   return timestamp;
 }

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const _ = require('underscore');
 const path = require('path');
+const mkdirp = require('mkdirp');
 const util = require('./util.js');
 const files = require('./files.js');
 const generateInterface = require('./createJavaInterface.js').create;
@@ -11,7 +12,6 @@ const generateAE = require('./createAppEngineSpec.js').create;
 const generateJAR = require('./createJarApplication.js').create;
 const generatePOM = require('./createPOM.js').create;
 const generateAppProp = require('./createAppProp.js').create;
-const mkdirp = require('mkdirp');
 const serialize = require('./serialize.js');
 
 exports.execute = function(source, dest) {

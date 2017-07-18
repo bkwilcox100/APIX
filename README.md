@@ -21,7 +21,7 @@ To install locally, download the APIX project and navigate to its directory. Run
     $ npm install
     $ node apix -g
 
-*UNTESTED*
+*GLOBAL INSTALL NOT WORKING*
 
 To install globally, download the APIX and navigate to its directory. Run:
 

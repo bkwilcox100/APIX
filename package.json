@@ -1,7 +1,7 @@
 {
   "name": "APIX",
   "version": "1.0.0",
-  "description": "A tool to expand Open API definitions into useful documentation",
+  "description": "A tool to expand Open API definitions into useful resources",
   "main": "apix.js",
   "bin": {
     "apix": "./apix.js"
@@ -22,7 +22,8 @@
     "js-yaml": "^3.8.4",
     "mkdirp": "^0.5.1",
     "mustache": "^2.3.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "widdershins": "^1.1.1"
   },
   "devDependencies": {},
   "repository": {

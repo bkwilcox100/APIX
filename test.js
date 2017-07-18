@@ -35,8 +35,6 @@ var dest = '/Users/brandonwilcox/Desktop';
 // Serialize YML document
 var doc = serialize.YML(src);
 
-generateServlet(doc, dest);
-
 //TESTING PURPOSES: Create Local Server and listen on port 8080
 // http.createServer(function(req, res) {
 //   res.writeHead(200, {

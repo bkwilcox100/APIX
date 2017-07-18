@@ -12,6 +12,9 @@ const generateAE = require('./createAppEngineSpec.js').create;
 const generateJAR = require('./createJarApplication.js').create;
 const generatePOM = require('./createPOM.js').create;
 const generateAppProp = require('./createAppProp.js').create;
+const generateLogProp = require('./createLogProp.js').create;
+const generateTestCase = require('./createTestCase.js').create;
+const generateReadMe = require('./createReadMe.js').create;
 const serialize = require('./serialize.js');
 
 exports.execute = function(source, dest) {
@@ -48,6 +51,7 @@ exports.execute = function(source, dest) {
 
       generateSQL(doc, dest);
       generatePOM(doc, dest);
+      generateReadMe(doc, dest);
       fs.writeFileSync(dest + 'openapi.yaml', fs.readFileSync(source));
 
       // BEGIN CREATING FILE STRUCTURE
@@ -116,6 +120,7 @@ exports.execute = function(source, dest) {
         console.log("/src/test/java/com/heb/liquidsky/data/ created");
 
         // Generation Functions Below
+        generateTestCase(doc, dest + 'src/test/java/com/heb/liquidsky/data/');
       });
 
       mkdirp(dest + 'src/test/resources/', function(err) {
@@ -126,6 +131,7 @@ exports.execute = function(source, dest) {
         console.log("/src/test/resources/ created");
 
         // Generation Functions Below
+        generateLogProp(dest + 'src/test/resources/');
       });
 
       // END CREATE FILE STRUCTURE
@@ -244,6 +250,7 @@ exports.executeWithInquirer = function(){
         console.log("/src/test/java/com/heb/liquidsky/data/ created");
 
         // Generation Functions Below
+        generateTestCase(doc, destPath + 'src/test/java/com/heb/liquidsky/data/');
       });
 
       mkdirp(destPath + 'src/test/resources/', function(err){
@@ -254,6 +261,7 @@ exports.executeWithInquirer = function(){
         console.log("/src/test/resources/ created");
 
         // Generation Functions Below
+        generateLogProp(destPath + 'src/test/resources/');
       });
 
       // END CREATE FILE STRUCTURE

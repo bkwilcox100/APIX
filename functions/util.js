@@ -100,18 +100,6 @@ exports.getSQLTimeStamp = function(name){
   return timestamp;
 }
 
-/*
-Name: getServiceName
-Description: Gets service name from OA Spec
-Parameters:
-- doc : JSON object of OA Spec
-Preconditions:
-- doc exists
-Postconditions:
-- None
-Return: String
-Status: COMPLETE
-*/
 exports.getServiceName = function(doc) {
   try {
     return doc['tags'][0]['description'];

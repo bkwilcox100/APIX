@@ -10,7 +10,7 @@ if (operatingSystem == 'win32'){
   console.log('Switching to Custom Windows Install');
   console.log('Please wait...');
   if (_.contains(process.argv, '-g') || _.contains(process.argv, '--global')){
-    exec('npm install chalk commander clear inquirer js-yaml mkdirp underscore xml2js -g', function(err, stdout, stderr){
+    exec('npm install chalk commander clear inquirer js-yaml mkdirp underscore xml2js pug -g', function(err, stdout, stderr){
       if (err) {
         console.error('Execution Error: ' + err);
         return;
@@ -18,7 +18,7 @@ if (operatingSystem == 'win32'){
       console.log('Global Preinstall Complete');
     });
   } else {
-    exec('npm install chalk commander clear inquirer js-yaml mkdirp underscore xml2js', function(err, stdout, stderr){
+    exec('npm install chalk commander clear inquirer js-yaml mkdirp underscore xml2js pug', function(err, stdout, stderr){
       if (err) {
         console.error('Execution Error: ' + err);
         return;

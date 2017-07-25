@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <title>{{service_name}}</title>
+    <style media="screen">
+    html {
+      height: 100%;
+    }
+
+    body {
+    font-family: "Open Sans";
+    }
+
+    ul {
+      list-style-type: none;
+    }
+
+    table {
+      border-collapse: collapse;
+      color: #0052CC;
+    }
+
+    td, th {
+      border: 1px solid #0052CC;
+      text-align: left;
+      padding: 8px;
+    }
+
+    #logo {
+      height: auto;
+      width: 100px;
+      display: inline-block;
+    }
+
+    .title-sub {
+      display: inline-block;
+      margin-left: 20px;
+    }
+
+    #site-title {
+      margin: 0;
+    }
+
+    #site-subtitle {
+      margin: 0;
+    }
+
+    .header {
+      padding-left: 20px;
+    }
+
+    .main-content h1 {
+      margin-bottom: 0;
+      padding: 0;
+      margin-left: 40px;
+    }
+
+    .main-content a {
+      text-decoration: none;
+    }
+
+    .main-content pre {
+      color: green;
+      font-size: 13px;
+    }
+
+    .main-content li {
+      font-size: 18px;
+    }
+
+    .main-content b {
+      color: #EE2E24;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img src="./resources/heb_logo.png" alt="HEB Logo" id="logo">
+      <div class="title-sub">
+        <h2 id="site-title">APIX (aka API Expander)</h2>
+        <h5 id="site-subtitle">A simple tool for expanding an Open API defintion into useful documentation</h5>
+      </div>
+    </div>
+    <div class="main-content">
+      <h1 id="api-name">heb-liquidsky-service-{{service_name}}</h1>
+      <p>
+        <ul>
+          <li id="api-description">{{description}}</li>
+          <li id="api-author">{{author}}</li>
+          <li id="api-ex-doc">{{ex_doc}}</li>
+          <li id="api-host">{{host}}</li>
+          <br>
+          <li>
+            <b>Open API Paths:</b>
+            <p id="OATable-paths">
+
+            </p>
+          </li>
+          <li>
+            <b>Open API Definitions:</b>
+            <p id="OATable-definitions">
+            </p>
+          </li>
+          <li>
+            Open API Spec:
+            <p>
+            </p>
+          </li>
+        </ul>
+      </p>
+    </div>
+  </body>
+</html>

@@ -1,5 +1,7 @@
 # heb-liquidsky-service-{{serviceName}} Module
 
+### Auto-Generated with APIX
+
 # Description
 This module contains rest endpoints for the {{serviceName}} service that provides all of the REST interactions for the Admin Portal
 

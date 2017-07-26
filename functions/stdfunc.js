@@ -37,7 +37,7 @@ exports.execute = function(source, dest) {
     }
     console.log(source + " is Valid");
     doc = serialize.YML(source);
-    serviceName = ('heb-liquidsky-' + util.getServiceName(doc));
+    serviceName = ('heb-liquidsky-service-' + util.getServiceName(doc));
 
     files.directoryExists(dest).then(function(msg) {
       console.log(dest + " is Valid");
@@ -167,7 +167,7 @@ exports.executeWithInquirer = function(){
       }
       console.log(sourcePath + " is Valid");
       doc = serialize.YML(sourcePath);
-      serviceName = ('heb-liquidsky-' + util.getServiceName(doc));
+      serviceName = ('heb-liquidsky-service-' + util.getServiceName(doc));
     }).catch(function(msg) {
       console.error("Specified Source is Invalid: ", msg);
     });

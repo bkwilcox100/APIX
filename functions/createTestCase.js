@@ -8,7 +8,7 @@ exports.create = function(doc, destination){
     if (err) {
       throw (err);
     }
-    var fileName = util.getServiceName(doc) + 'Test.java';
+    var fileName = 'AdminRestTest.java';
     fs.writeFile(node_path.join(destination, fileName), data, function(err){
       if (err){
         throw (err);

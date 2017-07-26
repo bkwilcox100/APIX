@@ -23,7 +23,6 @@ exports.create = function(source, destination) {
   // Get Top Level Collection from Source Doc
   var groups = util.getTLC(source);
   var interfaceNames = util.getTLC(source);
-
   // Initialize output string
   var output;
   var groupDefinitions = [];
@@ -161,6 +160,7 @@ function addDataItem(output_str, doc, definition) {
   }
   if (util.isTLC(doc, definition)) {
     output_str += ("\tprivate static final String APP_PROPERTIES_COLLECTION_QUERY = \"all_" + util.toUnderscore(definition) + "\";\n");
+    output_str = generateNamedQuery(output_str, doc, definition);
   }
   output_str += "\n";
   return output_str;
@@ -178,7 +178,7 @@ function generateMethods(doc, output, pathName){
           opID = doc['paths'][path]['get']['operationId'];
           if (opID.search(/collection/i) != -1){
             output += ("\tpublic List<Map<String, Object>> " + opID + "() throws ServiceException {\n");
-            output += ("\t\treturn ResourceUtils.readCollectionFromQuery(" + util.toUnderscoreUpper(util.getServiceName(doc)) + "_COLLECTION_QUERY, DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.trimReadCollection(opID)) + ", CONTEXT_FILTER);\n\t}\n\n");
+            output += ("\t\treturn ResourceUtils.readCollectionFromQuery(" + util.toUnderscoreUpper(util.getServiceName(doc)) + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.trimReadCollection(opID)) + ", CONTEXT_FILTER);\n\t}\n\n");
           } else if (opID.search(/resource/i) != -1) {
             defName = util.matchWithDefinition(doc, util.trimReadResource(opID));
             idString = util.getID(doc, defName);
@@ -201,12 +201,12 @@ function generateMethods(doc, output, pathName){
           if (opID.search(/createBatch/i) != -1){
             if (util.isTLC(doc, defName)){
               output += ("\tpublic Map<String, Object> " + opID + "(JsonElement requestBody) throws ServiceException {\n");
-              output += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + util.getServiceName(doc) + ", null, null, requestBody, APP_PROPERTIES_" + util.toUnderscoreUpper("InsertID") + ");\n");
+              output += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.trimCreateBatch(opID)) + ", requestBody);\n");
               output += ("\t\treturn response;\n\t}\n\n");
             } else {
               idString = util.getID(doc, defName);
               output += ("\tpublic Map<String, Object> " + opID + "(JsonElement requestBody, String " + idString + ") throws ServiceException {\n");
-              output += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.getServiceName(doc)) + ", " + idString + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.getServiceName(doc)) + ", requestBody, null);\n");
+              output += ("\t\tMap<String, Object> response = ResourceUtils.createResources(DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.trimCreateBatch(opID)) + ", " + idString + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.trimCreateBatch(opID)) + ", requestBody, null);\n");
               output += ("\t\treturn response;\n\t}\n\n");
             }
           } else {
@@ -229,12 +229,12 @@ function generateMethods(doc, output, pathName){
               if (util.isTLC(doc, defName)){
                 idString = util.getID(doc, defName);
                 output += ("\tpublic Map<String, Object> " + opID + "(JsonElement requestBody, String " + idString + ") throws ServiceException {\n");
-                output += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + idString + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.getServiceName(doc)) + ", requestBody, CONTEXT_FILTER);\n");
+                output += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + idString + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.trimUpdateResource(opID)) + ", requestBody, CONTEXT_FILTER);\n");
                 output += ("\t\treturn response;\n\t}\n\n");
               } else {
                 idString = util.getID(doc, defName);
-                output += ("\tpublic Map<String, Object> " + opID + "(JsonElement requestBody, String " + idString + ", String " + idString + ") throws ServiceException {\n");
-                output += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + idString + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.getServiceName(doc)) + ", " + idString + ", DEFAULT_PARENT_PROPERTY, requestBody, CONTEXT_FILTER);\n");
+                output += ("\tpublic Map<String, Object> " + opID + "(JsonElement requestBody, String " + idString + ") throws ServiceException {\n");
+                output += ("\t\tMap<String, Object> response = ResourceUtils.updateResource(" + idString + ", DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.trimUpdateResource(opID)) + ", " + idString + ", DEFAULT_PARENT_PROPERTY, requestBody, CONTEXT_FILTER);\n");
                 output += ("\t\treturn response;\n\t}\n\n");
               }
             }
@@ -272,6 +272,11 @@ function generateMethods(doc, output, pathName){
     //console.error('ERROR: Operation ID Missing');
     console.error(e);
   }
+}
+
+function generateNamedQuery(output_str, doc, def){
+  output_str += "\tprivate static final String " + util.toUnderscoreUpper(def) + "_QUERY = \"getAll" + def +  "\";\n";
+  return output_str;
 }
 
 // Adds closing bracket to file

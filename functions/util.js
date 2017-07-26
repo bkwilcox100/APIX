@@ -31,33 +31,42 @@ exports.getTLC = function(doc) {
   var TLCSet = [];
   try {
     for (path in doc['paths']) {
-      path = path.slice(1, path.length);
-      path = path.slice(serviceName.length, path.length);
-      path = path.slice(1, path.length);
-      path = path.slice(path.indexOf('/'), path.length);
-      path = path.slice(1, path.length);
-      if (path.indexOf('/') != -1) {
-        path = path.slice(0, path.indexOf('/'));
-      }
-      if (!(_.contains(TLCSet, path))) {
-        TLCSet.push(path);
+      if (path.search(serviceName) != -1){
+        path = path.slice(1, path.length);
+        path = path.slice(serviceName.length, path.length);
+        path = path.slice(1, path.length);
+        path = path.slice(path.indexOf('/'), path.length);
+        path = path.slice(1, path.length);
+        if (path.indexOf('/') != -1) {
+          path = path.slice(0, path.indexOf('/'));
+        }
+        if (!(_.contains(TLCSet, path))) {
+          TLCSet.push(path);
+        }
       }
     }
     //console.log(TLCSet);
     return TLCSet;
   } catch (err) {
-    throw "SPEC-ERROR: No Paths found";
+    throw (err);
   }
 }
 
 exports.isTLC = function(doc, def){
   var list = this.getTLC(doc);
   if (def){
-    if (_.contains(list, def)){
-      return true;
-    } else if (_.contains(list, def.toLowerCase())){
-      return true;
+    for (x in list){
+      if (list[x].search(def) != -1){
+        return true;
+      } else if (list[x].search(def.toLowerCase()) != -1){
+        return true;
+      }
     }
+    // if (_.contains(list, def)){
+    //   return true;
+    // } else if (_.contains(list, def.toLowerCase())){
+    //   return true;
+    // }
   }
   return false;
 }

@@ -4,19 +4,23 @@ const node_path = require('path');
 const fs = require('fs');
 
 exports.create = function(source, destination) {
+  // List of definitions to ignore
+  var ignoreList = ['successmessage', 'message', 'errorresponse', 'batchresponse', 'auditlogentry', 'jsonmap'];
+
   var output = "";
   output = generateStatic();
-
   for (def in source['definitions']) {
-    output = generateCommentBlock(output, def);
-    output = generateDataTypeRow(output, source, def);
-    output = generateTableNameRow(output, source, def);
-    if (source['definitions'][def].hasOwnProperty('properties')){
-      for (prop in source['definitions'][def]['properties']){
-          output = generateColumnNameRow(output, source, def, prop);
+    if (!(_.contains(ignoreList, def.toLowerCase()))){
+      output = generateCommentBlock(output, def);
+      output = generateDataTypeRow(output, source, def);
+      output = generateTableNameRow(output, source, def);
+      if (source['definitions'][def].hasOwnProperty('properties')){
+        for (prop in source['definitions'][def]['properties']){
+            output = generateColumnNameRow(output, source, def, prop);
+        }
       }
+      output = endTableDataType(output, source, def);
     }
-    output = endTableDataType(output);
   }
   output = endDataStore(output);
   fs.writeFile(node_path.join(destination, 'data-store.xml'), output, function(err){
@@ -83,8 +87,13 @@ function generateColumnNameRow(str, doc, defName, propName){
   return str;
 }
 
-function endTableDataType(str){
+function endTableDataType(str, doc, defName){
   str += "\t</table>\n\n";
+  if (util.isTLC(doc, defName)){
+    str += "\t<named-query name=\"all_" + util.toUnderscore(defName) + "\">\n";
+    str += "\t\tselect " + util.getID(doc, defName) + " from heb_" + util.toUnderscore(defName) + "\n";
+    str += "\t</named-query>\n\n"
+  }
   str += "</data-type>\n";
   return str;
 }

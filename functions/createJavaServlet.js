@@ -53,7 +53,7 @@ function generateHeader(doc, str, name) {
   str += "\n@RestController\n";
   str += ("@RequestMapping(value=\"" + getBaseURL(doc) + "\")\n");
   str += ("public class " + name + "Servlet {\n\n");
-  str += ("private static final " + name + " INTERFACE_OBJECT = new " + name + "Interface();\n\n");
+  str += ("private static final " + name + "Interface INTERFACE_OBJECT = new " + name + "Interface();\n\n");
   return str;
 }
 
@@ -71,7 +71,7 @@ function generateMethods(doc, str, groupName) {
         opID = doc['paths'][path]['post']['operationId'];
         idString = util.getID(doc, util.getPathName(doc, path));
         str += ("\t@PostMapping(value=\"" + trimPathName(doc, path) + "\")\n");
-        if (path.search('{') == -1) {
+        if (path.slice(-1) != '}') {
           str += ("\tpublic Map<String, Object> " + opID + "(@RequestBody String body) throws ServiceException {\n");
           str += ("\t\treturn INTERFACE_OBJECT." + opID + "(EndpointUtils.getRequestBodyAsJsonElement(body));\n");
           str += ("\t}\n\n");
@@ -98,12 +98,12 @@ function generateMethods(doc, str, groupName) {
         opID = doc['paths'][path]['get']['operationId'];
         idString = util.getID(doc, util.getPathName(doc, path));
         str += ("\t@GetMapping(value=\"" + trimPathName(doc, path) + "\")\n");
-        if (path.search('{') == -1) {
+        if (path.slice(-1) != '}') {
           str += ("\tpublic List<Map<String, Object>> " + opID + "() throws ServiceException {\n");
           str += ("\t\treturn INTERFACE_OBJECT." + opID + "();\n");
           str += ("\t}\n\n");
         } else {
-          str += ("\tpublic List<Map<String, Object>> " + opID + "(@PathVariable String " + idString + ") throws ServiceException {\n");
+          str += ("\tpublic Map<String, Object> " + opID + "(@PathVariable String " + idString + ") throws ServiceException {\n");
           str += ("\t\treturn INTERFACE_OBJECT." + opID + "(" + idString + ");\n");
           str += ("\t}\n\n");
         }
@@ -125,7 +125,7 @@ function generateMethods(doc, str, groupName) {
         opID = doc['paths'][path]['put']['operationId'];
         idString = util.getID(doc, util.getPathName(doc, path));
         str += ("\t@PutMapping(value=\"" + trimPathName(doc, path) + "\")\n");
-        str += ("\tpublic List<Map<String, Object>> " + opID + "((@PathVariable String " + idString + ", @RequestBody String body)) throws ServiceException {\n");
+        str += ("\tpublic Map<String, Object> " + opID + "(@PathVariable String " + idString + ", @RequestBody String body) throws ServiceException {\n");
         str += ("\t\treturn INTERFACE_OBJECT." + opID + "(EndpointUtils.getRequestBodyAsJsonElement(body), " + idString + ");\n");
         str += ("\t}\n\n");
       }
@@ -146,7 +146,7 @@ function generateMethods(doc, str, groupName) {
         opID = doc['paths'][path]['delete']['operationId'];
         idString = util.getID(doc, util.getPathName(doc, path));
         str += ("\t@DeleteMapping(value=\"" + trimPathName(doc, path) + "\")\n");
-        if (path.search('{') == -1) {
+        if (path.slice(-1) != '}') {
           str += ("\tpublic Map<String, Object> " + opID + "(@RequestBody String body) throws ServiceException {\n");
           str += ("\t\treturn INTERFACE_OBJECT." + opID + "(EndpointUtils.getRequestBodyAsJsonElement(body));\n");
           str += ("\t}\n\n");

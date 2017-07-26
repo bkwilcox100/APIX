@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <title>{{service_name}}</title>
+    <title>{{{service_name}}}</title>
     <style media="screen">
     html {
       height: 100%;
@@ -77,35 +77,29 @@
   </head>
   <body>
     <div class="header">
-      <img src="./resources/heb_logo.png" alt="HEB Logo" id="logo">
+      <img src="./heb_logo.png" alt="HEB Logo" id="logo">
       <div class="title-sub">
         <h2 id="site-title">APIX (aka API Expander)</h2>
         <h5 id="site-subtitle">A simple tool for expanding an Open API defintion into useful documentation</h5>
       </div>
     </div>
     <div class="main-content">
-      <h1 id="api-name">heb-liquidsky-service-{{service_name}}</h1>
+      <h1 id="api-name">heb-liquidsky-service-{{{service_name}}}</h1>
       <p>
         <ul>
-          <li id="api-description">{{description}}</li>
-          <li id="api-author">{{author}}</li>
-          <li id="api-ex-doc">{{ex_doc}}</li>
-          <li id="api-host">{{host}}</li>
+          <li id="api-description">{{{description}}}</li>
+          <li id="api-host">{{{host}}}</li>
           <br>
           <li>
             <b>Open API Paths:</b>
             <p id="OATable-paths">
-
+              {{{paths}}}
             </p>
           </li>
           <li>
             <b>Open API Definitions:</b>
             <p id="OATable-definitions">
-            </p>
-          </li>
-          <li>
-            Open API Spec:
-            <p>
+              {{{definitions}}}
             </p>
           </li>
         </ul>

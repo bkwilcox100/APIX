@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -9,12 +8,13 @@
 		<version>1.0.0</version>
 	</parent>
 	<artifactId>heb-liquidsky-service-{{serviceName}}</artifactId>
-	<version>{{serviceVersion}}-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>{{serviceTitle}}</name>
 
 	<properties>
 		<project.root.dir>${project.parent.basedir}</project.root.dir>
+		<liquidsky.core.version>1.0.0-SNAPSHOT</liquidsky.core.version>
 	</properties>
 
 	<dependencies>
@@ -28,6 +28,11 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>heb-liquidsky-spring-base</artifactId>
 			<version>${liquidsky.spring.base.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>heb-liquidsky-spring-swagger</artifactId>
+			<version>${liquidsky.spring.swagger.version}</version>
 		</dependency>
 
 		<!-- Test Dependencies -->

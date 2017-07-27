@@ -87,8 +87,10 @@ exports.getID = function(doc, def){
 
 exports.isRequired = function(doc, def, prop){
   if (doc['definitions'][def].hasOwnProperty('required')){
-    if (doc['definitions'][def]['required'].hasOwnProperty(prop)){
-      return true;
+    for (x in doc['definitions'][def]['required']){
+      if (doc['definitions'][def]['required'][x] == prop){
+        return true;
+      }
     }
   }
   return false;

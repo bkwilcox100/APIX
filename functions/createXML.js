@@ -76,8 +76,8 @@ function generateTableNameRow(str, doc, name){
 
 function generateColumnNameRow(str, doc, defName, propName){
   // Default values
-  var maxLength = 64;
-  var minLength = 0;
+  var maxLength = getMaxSize(doc, defName, propName);
+  var minLength = getMinSize(doc, defName, propName);
   str += ("\t\t<column column-name=\"" + util.toUnderscore(propName) + "\" property=\"" + propName + "\">\n");
   str += ("\t\t\t<attribute name=\"requiredProperty\" value=\"" + util.isRequired(doc, defName, propName) + "\"/>\n");
   str += ("\t\t\t<attribute name=\"restrictedProperty\" value=\"false\"/>\n");
@@ -101,4 +101,56 @@ function endTableDataType(str, doc, defName){
 function endDataStore(str){
   str += "</data-store>";
   return str;
+}
+
+function getMaxSize(doc, def, prop) {
+
+  if (doc['definitions'][def]['properties'][prop].hasOwnProperty('maxLength')) {
+    return doc['definitions'][def]['properties'][prop]['maxLength'];
+
+  } else if (doc['definitions'][def]['properties'][prop].hasOwnProperty('type')) {
+    var type = doc['definitions'][def]['properties'][prop]['type'];
+    var size;
+
+    switch (type) {
+      case "string":
+        size = 1024;
+        break;
+
+      case "integer":
+        size = 64;
+        break;
+
+      case "number":
+        size = 64;
+        break;
+
+      case "float":
+        size = 64;
+        break;
+
+      case "boolean":
+        size = 1;
+        break;
+
+      default:
+        size = 64;
+
+    }
+    return size;
+  } else {
+    return 1024;
+  }
+
+}
+
+function getMinSize(doc, def, prop) {
+
+  if (doc['definitions'][def]['properties'][prop].hasOwnProperty('minLength')) {
+    return doc['definitions'][def]['properties'][prop]['minLength'];
+
+  } else {
+    return 0;
+  }
+
 }

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import com.heb.liquidsky.test.HEBTestCase;
 
-public class AdminRestTest extends HEBTestCase {
+public class {{service_name}} extends HEBTestCase {
 
 	@Test
 	public void testAdminRest() {

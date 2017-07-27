@@ -16,6 +16,7 @@ const generateLogProp = require('./createLogProp.js').create;
 const generateTestCase = require('./createTestCase.js').create;
 const generateReadMe = require('./createReadMe.js').create;
 const generateHTML = require('./createHTML.js').create;
+const generateENV = require('./createEnvironment.js').create;
 const serialize = require('./serialize.js');
 
 exports.execute = function(source, dest) {
@@ -54,6 +55,7 @@ exports.execute = function(source, dest) {
       generatePOM(doc, dest);
       generateReadMe(doc, dest);
       generateHTML(doc, dest);
+      generateENV(doc, dest);
       fs.writeFileSync(dest + 'openapi.yaml', fs.readFileSync(source));
 
       // BEGIN CREATING FILE STRUCTURE
@@ -186,6 +188,7 @@ exports.executeWithInquirer = function(){
       generateSQL(doc, destPath);
       generatePOM(doc, destPath);
       generateHTML(doc, destPath);
+      generateENV(doc, destPath);
       fs.writeFileSync(destPath + 'openapi.yaml', fs.readFileSync(sourcePath));
 
       // BEGIN CREATING FILE STRUCTURE

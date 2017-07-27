@@ -4,7 +4,7 @@ const mustache = require('mustache');
 const util = require('./util.js');
 
 exports.create = function(doc, destination){
-  fs.readFile('./functions/functions/incorporateNewProject.sh', 'utf8', function(err, data){
+  fs.readFile('./functions/incorporateNewProject.sh', 'utf8', function(err, data){
     if (err) {
       throw (err);
     }

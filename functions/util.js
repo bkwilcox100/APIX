@@ -102,9 +102,17 @@ exports.getSQLTimeStamp = function(name){
   var month = date.getMonth();
   var day = date.getDate();
   if (date.getHours() < 10){
-    var time = "0" + date.getHours() + "" + date.getMinutes();
+    if (dat.getMinutes() < 10){
+      var time = "0" + date.getHours() + "" + "0" + date.getMinutes();
+    } else {
+      var time = "0" + date.getHours() + "" + date.getMinutes();
+    }
   } else {
-    var time = date.getHours() + "" + date.getMinutes();
+    if (date.getMinutes() < 10){
+      var time = date.getHours() + "" + "0" + date.getMinutes();
+    } else {
+      var time = date.getHours() + "" + date.getMinutes();
+    }
   }
 
   var timestamp = ("V" + String(year).slice(-2) + String('0' + month).slice(-2) + day + "." + time);

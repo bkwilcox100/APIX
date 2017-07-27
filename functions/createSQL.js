@@ -9,7 +9,7 @@ exports.create = function(source, destination) {
     output = generateTable(output, source, definitions[def]);
   }
 
-  var fileName = destination + util.getSQLTimeStamp() + "_" + util.getServiceName(source) + ".sql";
+  var fileName = destination + util.getSQLTimeStamp() + "__" + util.getServiceName(source) + ".sql";
   fs.writeFile(fileName, output, function(error) {
     if (error) {
       throw error;

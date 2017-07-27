@@ -17,6 +17,8 @@ const generateTestCase = require('./createTestCase.js').create;
 const generateReadMe = require('./createReadMe.js').create;
 const generateHTML = require('./createHTML.js').create;
 const generateENV = require('./createEnvironment.js').create;
+const generateIncorpScript = require('./createIncorpScript.js').create;
+const runSetup = require('./setup.js').runSetup;
 const serialize = require('./serialize.js');
 
 exports.execute = function(source, dest) {
@@ -54,11 +56,23 @@ exports.execute = function(source, dest) {
       generateSQL(doc, dest);
       generatePOM(doc, dest);
       generateReadMe(doc, dest);
-      generateHTML(doc, dest);
       generateENV(doc, dest);
+      generateIncorpScript(doc, dest);
+      runSetup();
       fs.writeFileSync(dest + 'openapi.yaml', fs.readFileSync(source));
 
       // BEGIN CREATING FILE STRUCTURE
+      mkdirp(dest + 'src/docs/', function(err){
+        if (err){
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/docs/ created");
+
+        // Generation Functions Below
+        generateHTML(doc, dest + 'src/docs/');
+      });
+
       mkdirp(dest + 'src/main/appengine/', function(err) {
         if (err) {
           throw err;
@@ -187,11 +201,22 @@ exports.executeWithInquirer = function(){
 
       generateSQL(doc, destPath);
       generatePOM(doc, destPath);
-      generateHTML(doc, destPath);
       generateENV(doc, destPath);
+      generateIncorpScript(doc, dest);
       fs.writeFileSync(destPath + 'openapi.yaml', fs.readFileSync(sourcePath));
 
       // BEGIN CREATING FILE STRUCTURE
+      mkdirp(destPath + 'src/docs/', function(err){
+        if (err){
+          throw err;
+        }
+        // Confirm directories were created
+        console.log("/src/docs/ created");
+
+        // Generation Functions Below
+        generateHTML(doc, destPath + 'src/docs/');
+      });
+
       mkdirp(destPath + 'src/main/appengine/', function(err){
         if (err){
           throw err;

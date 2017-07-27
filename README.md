@@ -19,14 +19,12 @@ Along with the specifications found on the [Open API Repo](https://github.com/OA
 To install locally, download the APIX project and navigate to its directory. Run:
 
     $ npm install
-    $ node apix -g
 
 *GLOBAL INSTALL NOT WORKING*
 
 To install globally, download the APIX and navigate to its directory. Run:
 
     $ npm install -g
-    $ apix
 
 ## Usage
 To generate a starter Open API spec:

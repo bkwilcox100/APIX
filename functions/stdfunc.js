@@ -202,7 +202,7 @@ exports.executeWithInquirer = function(){
       generateSQL(doc, destPath);
       generatePOM(doc, destPath);
       generateENV(doc, destPath);
-      generateIncorpScript(doc, dest);
+      generateIncorpScript(doc, destPath);
       fs.writeFileSync(destPath + 'openapi.yaml', fs.readFileSync(sourcePath));
 
       // BEGIN CREATING FILE STRUCTURE

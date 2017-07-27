@@ -71,7 +71,8 @@ function generateMethods(doc, str, groupName) {
         opID = doc['paths'][path]['post']['operationId'];
         idString = util.getID(doc, util.getPathName(doc, path));
         str += ("\t@PostMapping(value=\"" + trimPathName(doc, path) + "\")\n");
-        if (path.slice(-1) != '}') {
+        var splitPath = path.split('/');
+        if (splitPath[3] == splitPath[splitPath.length - 1]) {
           str += ("\tpublic Map<String, Object> " + opID + "(@RequestBody String body) throws ServiceException {\n");
           str += ("\t\treturn INTERFACE_OBJECT." + opID + "(EndpointUtils.getRequestBodyAsJsonElement(body));\n");
           str += ("\t}\n\n");

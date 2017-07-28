@@ -1,14 +1,15 @@
 const exec = require('child_process').exec;
+const process = require('process');
 const os = require('os');
-exports.runSetup = function(){
-  if (os.platform() == "win32"){
+exports.runSetup = function(destination) {
+  if (os.platform() == "win32") {
     console.log("Cannot run incorpScript on windows machine");
   } else {
-    exec('cd functions && chmod 0764 incorporateNewProject.sh', function(err){
-      if (err){
+    console.log(process.cwd());
+    exec('chmod 0764 ' + destination, function(err, stdout, stderr) {
+      if (err) {
         throw (err);
       }
-      console.log("Setup Successful");
     });
   }
 }

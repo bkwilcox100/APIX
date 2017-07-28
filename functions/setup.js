@@ -4,7 +4,7 @@ exports.runSetup = function(){
   if (os.platform() == "win32"){
     console.log("Cannot run incorpScript on windows machine");
   } else {
-    exec('chmod 0764 incorporateNewProject.sh', function(err){
+    exec('cd functions && chmod 0764 incorporateNewProject.sh', function(err){
       if (err){
         throw (err);
       }

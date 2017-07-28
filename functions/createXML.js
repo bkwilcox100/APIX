@@ -10,25 +10,35 @@ exports.create = function(source, destination) {
   var output = "";
   output = generateStatic();
   for (def in source['definitions']) {
-    if (!(_.contains(ignoreList, def.toLowerCase()))){
+    if (!(_.contains(ignoreList, def.toLowerCase()))) {
       output = generateCommentBlock(output, def);
       output = generateDataTypeRow(output, source, def);
       output = generateTableNameRow(output, source, def);
-      if (source['definitions'][def].hasOwnProperty('properties')){
-        for (prop in source['definitions'][def]['properties']){
+      if (source['definitions'][def].hasOwnProperty('properties')) {
+        for (prop in source['definitions'][def]['properties']) {
+          if (source['definitions'][def]['properties'][prop]['type'] != "array") {
             output = generateColumnNameRow(output, source, def, prop);
+          }
+        }
+      }
+      output = endTable(output);
+      if (source['definitions'][def].hasOwnProperty('properties')) {
+        for (prop in source['definitions'][def]['properties']) {
+          if (source['definitions'][def]['properties'][prop]['type'] == "array") {
+            output = generateReferenceTable(output, source, def, prop);
+          }
         }
       }
       output = endTableDataType(output, source, def);
     }
   }
   output = endDataStore(output);
-  fs.writeFile(node_path.join(destination, 'data-store.xml'), output, function(err){
-    if (err){
+  fs.writeFile(node_path.join(destination, 'data-store.xml'), output, function(err) {
+    if (err) {
       throw (err);
     }
     console.log('Data Store Written Successfully');
-    });
+  });
 }
 
 function generateStatic() {
@@ -62,19 +72,14 @@ function generateDataTypeRow(str, doc, name) {
   return str;
 }
 
-function generateTableNameRow(str, doc, name){
+function generateTableNameRow(str, doc, name) {
   str += ("\t<table name=\"heb_" + util.toUnderscore(name) + "\" ");
-  // Check if TLC, if so set to primary, else reference
-  if (util.isTLC(doc, name)){
-    str += "type=\"primary\" ";
-  } else {
-    str += "type=\"reference\" ";
-  }
+  str += "type=\"primary\" ";
   str += ("id-column=\"" + util.toUnderscore(util.getID(doc, name)) + "\">\n");
   return str;
 }
 
-function generateColumnNameRow(str, doc, defName, propName){
+function generateColumnNameRow(str, doc, defName, propName) {
   // Default values
   var maxLength = getMaxSize(doc, defName, propName);
   var minLength = getMinSize(doc, defName, propName);
@@ -87,9 +92,14 @@ function generateColumnNameRow(str, doc, defName, propName){
   return str;
 }
 
-function endTableDataType(str, doc, defName){
+function endTable(str) {
   str += "\t</table>\n\n";
-  if (util.isTLC(doc, defName)){
+  return str;
+}
+
+function endTableDataType(str, doc, defName) {
+  str += "\t</table>\n\n";
+  if (util.isTLC(doc, defName)) {
     str += "\t<named-query name=\"all_" + util.toUnderscore(defName) + "\">\n";
     str += "\t\tselect " + util.getID(doc, defName) + " from heb_" + util.toUnderscore(defName) + "\n";
     str += "\t</named-query>\n\n"
@@ -98,8 +108,21 @@ function endTableDataType(str, doc, defName){
   return str;
 }
 
-function endDataStore(str){
+function endDataStore(str) {
   str += "</data-store>";
+  return str;
+}
+//TODO: Combine EndTable with generateReferenceTable
+function generateReferenceTable(str, doc, def, prop) {
+  var child = doc['definitions'][def]['properties'][prop]['items']['$ref'];
+  child = child.slice(child.lastIndexOf('/') + 1, child.length);
+  var primaryChildKey = util.getID(doc, child);
+
+  var dataType =  doc['definitions'][def]['type'];
+  str += ("\t<table name=\"heb_" + util.toUnderscore(prop) + "\" ");
+  str += "type=\"reference\" ";
+  str += ("id-column=\"" + util.toUnderscore(util.getID(doc, def)) + "\">\n");
+  str += ("<column column-name=\"" + util.toUnderscore(primaryChildKey) + "\" list-item-type=\"" + dataType + "\" property=\"" + prop + "\" read-only=\"true\" cascade=\"true\" />\n")
   return str;
 }
 

@@ -58,7 +58,6 @@ exports.execute = function(source, dest) {
       generateReadMe(doc, dest);
       generateENV(doc, dest);
       generateIncorpScript(doc, dest);
-      runSetup(dest + 'incorporateNewProject.sh');
       fs.writeFileSync(dest + 'openapi.yaml', fs.readFileSync(source));
 
       // BEGIN CREATING FILE STRUCTURE

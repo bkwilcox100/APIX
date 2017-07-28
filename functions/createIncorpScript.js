@@ -13,7 +13,7 @@ exports.create = function(doc, destination) {
         throw (err);
       }
       runSetup(destination + 'incorporateNewProject.sh');
-      console.log("Incorpate Script Created.");
+      console.log("Incorporate Script Created.");
     });
   });
 }

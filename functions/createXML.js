@@ -3,10 +3,18 @@ const _ = require('underscore');
 const node_path = require('path');
 const fs = require('fs');
 
+var createXmlGlobals = {
+		debugMode: false,
+		parentLinks: {}
+};
+	
 exports.create = function(source, destination) {
   // List of definitions to ignore
   var ignoreList = ['successmessage', 'message', 'errorresponse', 'batchresponse', 'auditlogentry', 'jsonmap'];
 
+  // this will hold strings of reference tables that need to be created.
+  var referenceTableList = [];
+  
   var output = "";
   output = generateStatic();
   for (def in source['definitions']) {
@@ -24,11 +32,11 @@ exports.create = function(source, destination) {
       if (source['definitions'][def].hasOwnProperty('properties')) {
         for (prop in source['definitions'][def]['properties']) {
           if (source['definitions'][def]['properties'][prop]['type'] == "array") {
-            output = generateReferenceTable(output, source, def, prop);
+            referenceTableList.push(generateReferenceTable(source, def, prop));
           }
         }
       }
-      output = endTableDataType(output, source, def);
+      output = endTableDataType(output, source, def,referenceTableList);
     }
   }
   output = endDataStore(output);
@@ -96,12 +104,21 @@ function endTable(str) {
   return str;
 }
 
-function endTableDataType(str, doc, defName) {
+function endTableDataType(str, doc, defName, referenceTableList) {
   str += "\t</table>\n\n";
   if (util.isTLC(doc, defName)) {
-    str += "\t<named-query name=\"all_" + util.toUnderscore(defName) + "\">\n";
+    str += "\t<named-query name=\"get_all_" + util.toUnderscore(defName) + "\">\n";
     str += "\t\tselect " + util.toUnderscore(util.getID(doc, defName)) + " from heb_" + util.toUnderscore(defName) + ";\n";
-    str += "\t</named-query>\n\n"
+    str += "\t</named-query>\n\n";
+
+    str += "\t<named-query name=\"get_limit_" + util.toUnderscore(defName) + "\">\n";
+    str += "\t\tselect " + util.toUnderscore(util.getID(doc, defName)) + " from heb_" + util.toUnderscore(defName) + " order by creation_date desc limit ?;\n";
+    str += "\t</named-query>\n";
+    
+    // output all of the reference tables for child collections.
+    for (i = 0; i < referenceTableList.length; i++) {   	  
+  	  str += referenceTableList[i]; 
+    }
   }
   str += "</data-type>\n";
   return str;
@@ -112,7 +129,8 @@ function endDataStore(str) {
   return str;
 }
 //TODO: Combine EndTable with generateReferenceTable
-function generateReferenceTable(str, doc, def, prop) {
+function generateReferenceTable(doc, def, prop) {
+  var str = "";
   var child = doc['definitions'][def]['properties'][prop]['items']['$ref'];
   child = child.slice(child.lastIndexOf('/') + 1, child.length);
   var primaryChildKey = util.getID(doc, child);
@@ -121,8 +139,10 @@ function generateReferenceTable(str, doc, def, prop) {
   str += ("\n\t<table name=\"heb_" + util.toUnderscore(prop) + "\" ");
   str += "type=\"reference\" ";
   str += ("id-column=\"" + util.toUnderscore(util.getID(doc, def)) + "\">\n");
+  //  "dataType" is not set right.   this should be the data Type name like data-type name="appMessage" 
   str += ("\t\t<column column-name=\"" + util.toUnderscore(primaryChildKey) + "\" list-item-type=\"" + dataType + "\" property=\"" + prop + "\" read-only=\"true\" cascade=\"true\" />\n");
-  str += ("\t\t<column column-name=\"" + util.toUnderscore(util.getID(doc, def)) + "\" item-type=\"" + def + "\" property=\"parent\" />\n");
+  // make the parent backlink and store it for later use. (this needs to use the same value as what is incorrectly "dataType" above
+  //createXmlGlobals.parentLinks.add({"parentName": "\t\t<column column-name=\"" + util.toUnderscore(util.getID(doc, def)) + "\" item-type=\"" + def + "\" property=\"parent\" />\n"});
   str = endTable(str);
   return str;
 }

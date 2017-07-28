@@ -21,7 +21,6 @@ exports.create = function(source, destination) {
           }
         }
       }
-      output = endTable(output);
       if (source['definitions'][def].hasOwnProperty('properties')) {
         for (prop in source['definitions'][def]['properties']) {
           if (source['definitions'][def]['properties'][prop]['type'] == "array") {
@@ -101,7 +100,7 @@ function endTableDataType(str, doc, defName) {
   str += "\t</table>\n\n";
   if (util.isTLC(doc, defName)) {
     str += "\t<named-query name=\"all_" + util.toUnderscore(defName) + "\">\n";
-    str += "\t\tselect " + util.getID(doc, defName) + " from heb_" + util.toUnderscore(defName) + "\n";
+    str += "\t\tselect " + util.toUnderscore(util.getID(doc, defName)) + " from heb_" + util.toUnderscore(defName) + ";\n";
     str += "\t</named-query>\n\n"
   }
   str += "</data-type>\n";
@@ -118,11 +117,13 @@ function generateReferenceTable(str, doc, def, prop) {
   child = child.slice(child.lastIndexOf('/') + 1, child.length);
   var primaryChildKey = util.getID(doc, child);
 
-  var dataType =  doc['definitions'][def]['type'];
-  str += ("\t<table name=\"heb_" + util.toUnderscore(prop) + "\" ");
+  var dataType =  doc['definitions'][child]['type'];
+  str += ("\n\t<table name=\"heb_" + util.toUnderscore(prop) + "\" ");
   str += "type=\"reference\" ";
   str += ("id-column=\"" + util.toUnderscore(util.getID(doc, def)) + "\">\n");
-  str += ("<column column-name=\"" + util.toUnderscore(primaryChildKey) + "\" list-item-type=\"" + dataType + "\" property=\"" + prop + "\" read-only=\"true\" cascade=\"true\" />\n")
+  str += ("\t\t<column column-name=\"" + util.toUnderscore(primaryChildKey) + "\" list-item-type=\"" + dataType + "\" property=\"" + prop + "\" read-only=\"true\" cascade=\"true\" />\n");
+  str += ("\t\t<column column-name=\"" + util.toUnderscore(util.getID(doc, def)) + "\" item-type=\"" + def + "\" property=\"parent\" />\n");
+  str = endTable(str);
   return str;
 }
 

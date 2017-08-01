@@ -2,6 +2,8 @@ const fs = require('fs');
 const _ = require('underscore');
 const util = require('./util.js');
 
+var debugMode = true;
+
 exports.create = function(source, destination) {
   var definitions = getFinalDefinitionList(source);
   var output = "use middle_layer;\n\n";
@@ -36,6 +38,10 @@ function getFinalDefinitionList(doc) {
 
 function generateTable(str, doc, defName, parent) {
   var size = 1024;
+  //  since this is always making new tables, drop them if they are already there
+  str += "drop table if exists " + util.toUnderscore(defName) +";\n";
+  
+  // create the new table
   str += "CREATE TABLE IF NOT EXISTS heb_" + util.toUnderscore(defName) + " (\n";
   if (parent.child == defName) {
     var childID = 'id';
@@ -45,7 +51,9 @@ function generateTable(str, doc, defName, parent) {
       }
     }
     str += ("\t" + util.toUnderscore(childID) + " varchar(" + getPropSize(doc, defName, childID) + ") not null,\n");
+    // TODO: add a check to see if the parent back link is in the spec.  If it is, skip it and just use this one.
     str += ("\t" + util.toUnderscore(util.getID(doc, parent.reference)) + " varchar(" + getPropSize(doc, parent.reference, util.getID(doc, parent.reference)) + ") not null,\n");
+    
     for (propName in doc['definitions'][defName]['properties']) {
       if (doc['definitions'][defName]['properties'][propName].hasOwnProperty('type')) {
         if (doc['definitions'][defName]['properties'][propName]['type'] == 'array') {
@@ -57,18 +65,19 @@ function generateTable(str, doc, defName, parent) {
 
       if (propName.search(/id/i) == -1) {
         size = getPropSize(doc, defName, propName);
-        if (util.isRequired(doc, defName, propName) || _.contains(doc['definitions'][defName]['required'], propName)) {
-          if (propName.toLowerCase().search('date') != -1) {
-            str += ("\t" + util.toUnderscore(propName) + " datetime default current_timestamp not null,\n");
-          } else {
+        // completely ignore any creation or last modified date that is defined in the input spec 
+        // because they are always required in the database despite if they are used in the spec.
+        if (propName.toLowerCase().indexOf('creationdate') < 0 && 
+          		propName.toLowerCase().indexOf('creation_date')  < 0 &&
+          		propName.toLowerCase().indexOf('lastmodifieddate')  < 0 &&
+          		propName.toLowerCase().indexOf('last_modified_date')  < 0) {
+          if (util.isRequired(doc, defName, propName) || _.contains(doc['definitions'][defName]['required'], propName)) {
             str += ("\t" + util.toUnderscore(propName) + " varchar(" + size + ") not null,\n");
-          }
-        } else {
-          if (propName.toLowerCase().search('date') != -1) {
-            str += ("\t" + util.toUnderscore(propName) + " datetime default current_timestamp,\n");
           } else {
             str += ("\t" + util.toUnderscore(propName) + " varchar(" + size + "),\n");
           }
+        } else {
+        	console.log("createSQL: creation_date or last_modified_date found in spec, but skipped to be added to flyway script explicitly");
         }
       }
     }
@@ -82,22 +91,27 @@ function generateTable(str, doc, defName, parent) {
         }
       }
       size = getPropSize(doc, defName, propName);
-      if (util.isRequired(doc, defName, propName) || _.contains(doc['definitions'][defName]['required'], propName)) {
-        if (propName.toLowerCase().search('date') != -1) {
-          str += ("\t" + util.toUnderscore(propName) + " datetime default current_timestamp not null,\n");
-        } else {
+      // completely ignore any creation or last modified date that is defined in the input spec 
+      // because they are always required in the database despite if they are used in the spec.
+      if (propName.toLowerCase().indexOf('creationdate') < 0 && 
+      		propName.toLowerCase().indexOf('creation_date')  < 0 &&
+      		propName.toLowerCase().indexOf('lastmodifieddate')  < 0 &&
+      		propName.toLowerCase().indexOf('last_modified_date')  < 0) {
+        if (util.isRequired(doc, defName, propName) || _.contains(doc['definitions'][defName]['required'], propName)) {
           str += ("\t" + util.toUnderscore(propName) + " varchar(" + size + ") not null,\n");
-        }
-      } else {
-        if (propName.toLowerCase().search('date') != -1) {
-          str += ("\t" + util.toUnderscore(propName) + " datetime default current_timestamp,\n");
         } else {
           str += ("\t" + util.toUnderscore(propName) + " varchar(" + size + "),\n");
-        }
+        }    	  
+      } else {
+      	console.log("createSQL: creation_date or last_modified_date found in spec, but skipped to be added to flyway script explicitly");
       }
     }
   }
 
+  //  These are required at all times for all Liquid Sky tables.
+  str += ("\tcreation_date datetime default current_timestamp,\n");
+  str += ("\tlast_modified_date datetime default current_timestamp on update current_timestamp,\n");
+	
   str += ("\tprimary key (" + util.toUnderscore(util.getID(doc, defName)) + ")\n");
 
   str += ");\n\n";

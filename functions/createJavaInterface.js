@@ -275,7 +275,7 @@ function generateMethods(doc, output, pathName){
 }
 
 function generateNamedQuery(output_str, doc, def, pathName){
-  output_str += "\tprivate static final String " + util.toUnderscoreUpper(pathName) + "_QUERY = \"getAll" + def +  "\";\n";
+  output_str += "\tprivate static final String " + util.toUnderscoreUpper(pathName) + "_QUERY = \"get_all_" + util.toUnderscore(def) +  "\";\n";
   return output_str;
 }
 

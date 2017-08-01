@@ -148,8 +148,8 @@ function generateReferenceTable(doc, def, prop) {
   var child = doc['definitions'][def]['properties'][prop]['items']['$ref'];
   child = child.slice(child.lastIndexOf('/') + 1, child.length);
   var primaryChildKey = util.getID(doc, child);
-  var dataType = util.toCamelCase(def);
-  str += ("\n\t<table name=\"heb_" + util.toUnderscore(prop) + "\" ");
+  var dataType = util.toCamelCase(child);
+  str += ("\n\t<table name=\"heb_" + util.toUnderscore(child) + "\" ");
   str += "type=\"reference\" ";
   str += ("id-column=\"" + util.toUnderscore(util.getID(doc, def)) + "\">\n");
   //  "dataType" is not set right.   this should be the data Type name like data-type name="appMessage"

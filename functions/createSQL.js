@@ -86,7 +86,6 @@ function generateTable(str, doc, defName, parent) {
       if (doc['definitions'][defName]['properties'][propName].hasOwnProperty('type')) {
         if (doc['definitions'][defName]['properties'][propName]['type'] == 'array') {
           parent.child = doc['definitions'][defName]['properties'][propName]['items']['$ref'];
-          console.log(defName);
           parent.child = parent.child.slice(parent.child.lastIndexOf('/') + 1, parent.child.length);
           parent.reference = defName;
         }

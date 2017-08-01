@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <data-store>
 
-	<!--
-		==========================================================
-		Definitions of resources for Liquid Sky Context Filters
-		==========================================================
-	-->
+<!--
+	==========================================================
+	Definitions of resources for Liquid Sky Context Filters
+	==========================================================
+-->
 	<!-- Liquid Sky Translation Repository Definition -->
 	<data-type name="contextFilters" id-property="dataTypeName" pub-sub-enabled="false" fcm-enabled="false">
 		<table name="ls_context_filters" type="primary" id-column="data_type_name">

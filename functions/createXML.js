@@ -6,7 +6,7 @@ const fs = require('fs');
 exports.create = function(source, destination) {
   // List of definitions to ignore
   var ignoreList = ['successmessage', 'message', 'errorresponse', 'batchresponse', 'auditlogentry', 'jsonmap'];
-
+  var watchList = [];
   var output = "";
   output = generateStatic();
   for (def in source['definitions']) {
@@ -62,7 +62,7 @@ function generateDataTypeRow(str, doc, name) {
   } else {
     idString = "id";
   }
-  str += ("id-property=\"" + idString + "\" ");
+  str += ("id-property=\"" + util.toUnderscore(idString) + "\" ");
   str += ("id-generator-prefix=\"\" ");
   str += ("use-id-generator=\"" + true + "\" ");
   str += ("pub-sub-enabled=\"" + false + "\" ");
@@ -101,6 +101,9 @@ function endTableDataType(str, doc, defName) {
   if (util.isTLC(doc, defName)) {
     str += "\t<named-query name=\"all_" + util.toUnderscore(defName) + "\">\n";
     str += "\t\tselect " + util.toUnderscore(util.getID(doc, defName)) + " from heb_" + util.toUnderscore(defName) + ";\n";
+    str += "\t</named-query>\n\n"
+    str += "\t<named-query name=\"get_limit_" + util.toUnderscore(defName) + "\">\n";
+    str += "\t\tselect " + util.toUnderscore(util.getID(doc, defName)) + " from heb_" + util.toUnderscore(defName) + " order by creation_date desc limit ?;\n";
     str += "\t</named-query>\n\n"
   }
   str += "</data-type>\n";

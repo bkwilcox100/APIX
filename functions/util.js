@@ -1,5 +1,5 @@
 const _ = require('underscore');
-
+const fs = require('fs');
 // Utility Functions
 exports.toUnderscore = function(string) {
   var newString = string.replace(/\.?([A-Z]+)/g, function(x, y) {
@@ -160,10 +160,9 @@ exports.matchWithDefinition = function(doc, name){
   return "NO_MATCH";
 }
 
-exports.getParentName = function(doc, prop){
-  
+exports.getIgnoreList = function(list){
+  return fs.readFileSync('./docs/ignore.txt', 'utf8').split('\n');
 }
-
 
 // For Use with Java Method Generation
 exports.trimReadCollection = function(str) {

@@ -2,9 +2,9 @@
 <data-store>
 
 <!--
-	==========================================================
-	Definitions of resources for Liquid Sky Context Filters
-	==========================================================
+==========================================================
+Definitions of resources for Liquid Sky Context Filters
+==========================================================
 -->
 	<!-- Liquid Sky Translation Repository Definition -->
 	<data-type name="contextFilters" id-property="dataTypeName" pub-sub-enabled="false" fcm-enabled="false">

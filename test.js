@@ -12,7 +12,6 @@ const _ = require('underscore');
 const files = require('./functions/files.js');
 const serialize = require('./functions/serialize.js');
 const util = require('./functions/util.js');
-const pug = require('pug');
 
 // User Defined Functions
 var stdfunc = require("./functions/stdfunc.js");
@@ -28,7 +27,9 @@ var src = './middle-layer/heb-liquidsky-service-adminrest/openapi.yaml';
 var dest = '/Users/brandonwilcox/Desktop';
 
 var object = serialize.YML(src);
-generateHTML(object);
+
+var list = util.getIgnoreList();
+console.log(list);
 
 
 // http.createServer(function(req, res) {
@@ -36,7 +37,6 @@ generateHTML(object);
 //     'Content-Type': 'text/html'
 //     'Content-Type': 'text/html'
 //   });
-//   res.write(pug.renderFile('./docs/pug/html_template.pug'));
 //   res.write('<div style="margin-top:40vh;text-align:center">');
 //   res.write('  <form method=get action=/ style="font:3em monospace">');
 //   res.write('    <span style="color:#F08">$</span> npm repo');

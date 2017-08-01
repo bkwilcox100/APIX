@@ -10,7 +10,7 @@ var createXmlGlobals = {
 
 exports.create = function(source, destination) {
   // List of definitions to ignore
-  var ignoreList = ['successmessage', 'message', 'errorresponse', 'batchresponse', 'auditlogentry', 'jsonmap'];
+  var ignoreList = util.getIgnoreList();
 
   // this will hold strings of reference tables that need to be created.
   var referenceTableList = [];
@@ -134,8 +134,7 @@ function generateReferenceTable(doc, def, prop) {
   var child = doc['definitions'][def]['properties'][prop]['items']['$ref'];
   child = child.slice(child.lastIndexOf('/') + 1, child.length);
   var primaryChildKey = util.getID(doc, child);
-
-  var dataType =  doc['definitions'][child]['type'];
+  var dataType = util.toCamelCase(def);
   str += ("\n\t<table name=\"heb_" + util.toUnderscore(prop) + "\" ");
   str += "type=\"reference\" ";
   str += ("id-column=\"" + util.toUnderscore(util.getID(doc, def)) + "\">\n");

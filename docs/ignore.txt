@@ -1,0 +1,4 @@
+lsresponsemessage
+lsresponseerror
+lsresponse
+jsonmap

@@ -156,10 +156,10 @@ function getPathDefinitions(doc, group) {
 function addDataItem(output_str, doc, definition, pathName) {
   output_str += ("\tprivate static final String DATA_ITEM_NAME_" + util.toUnderscoreUpper(definition) + " = \"" + util.toCamelCase(definition) + "\";\n");
   for (prop in doc['definitions'][definition]['properties']) {
-    output_str += ("\tprivate static final String APP_PROPERTIES_" + util.toUnderscoreUpper(prop) + " = \"" + util.toCamelCase(prop) + "\";\n");
+    output_str += ("\tprivate static final String " + util.toUnderscoreUpper(definition) + "_" + util.toUnderscoreUpper(prop) + " = \"" + util.toCamelCase(prop) + "\";\n");
   }
   if (util.isTLC(doc, definition)) {
-    output_str += ("\tprivate static final String APP_PROPERTIES_COLLECTION_QUERY = \"all_" + util.toUnderscore(definition) + "\";\n");
+    output_str += ("\tprivate static final String " + util.toUnderscoreUpper(definition) + "_COLLECTION_QUERY = \"all_" + util.toUnderscore(definition) + "\";\n");
     output_str = generateNamedQuery(output_str, doc, definition, pathName);
   }
   output_str += "\n";
@@ -167,6 +167,7 @@ function addDataItem(output_str, doc, definition, pathName) {
 }
 
 function generateMethods(doc, output, pathName){
+  var newPathName = util.matchWithDefinition(doc, pathName) || pathName;
   try {
     var opID;
     var defName;
@@ -176,9 +177,9 @@ function generateMethods(doc, output, pathName){
       if (path.search(pathName) != -1){
         if (doc['paths'][path].hasOwnProperty('get')){
           opID = doc['paths'][path]['get']['operationId'];
-          if (opID.search(/collection/i) != -1){
+          if (opID.search(/collection/i) != -1 && path.slice(-1) != '}'){
             output += ("\tpublic List<Map<String, Object>> " + opID + "() throws ServiceException {\n");
-            output += ("\t\treturn ResourceUtils.readCollectionFromQuery(" + util.toUnderscoreUpper(pathName) + "_QUERY, DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.trimReadCollection(opID)) + ", CONTEXT_FILTER);\n\t}\n\n");
+            output += ("\t\treturn ResourceUtils.readCollectionFromQuery(" + util.toUnderscoreUpper(newPathName) + "_QUERY, DATA_ITEM_NAME_" + util.toUnderscoreUpper(util.trimReadCollection(opID)) + ", CONTEXT_FILTER);\n\t}\n\n");
           } else if (opID.search(/resource/i) != -1) {
             defName = util.matchWithDefinition(doc, util.trimReadResource(opID));
             idString = util.getID(doc, defName);
@@ -275,7 +276,8 @@ function generateMethods(doc, output, pathName){
 }
 
 function generateNamedQuery(output_str, doc, def, pathName){
-  output_str += "\tprivate static final String " + util.toUnderscoreUpper(pathName) + "_QUERY = \"get_all_" + util.toUnderscore(def) +  "\";\n";
+  var newPathName = util.matchWithDefinition(doc, pathName);
+  output_str += "\tprivate static final String " + util.toUnderscoreUpper(newPathName) + "_QUERY = \"get_all_" + util.toUnderscore(def) +  "\";\n";
   return output_str;
 }
 

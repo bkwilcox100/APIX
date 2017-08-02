@@ -29,6 +29,7 @@ exports.getArrTableName = function(str) {
 exports.getTLC = function(doc) {
   var serviceName = exports.getServiceName(doc);
   var TLCSet = [];
+  var ignoreList = exports.getIgnoreList(doc);
   try {
     for (path in doc['paths']) {
       if (path.search(serviceName) != -1){
@@ -41,7 +42,9 @@ exports.getTLC = function(doc) {
           path = path.slice(0, path.indexOf('/'));
         }
         if (!(_.contains(TLCSet, path))) {
-          TLCSet.push(path);
+          if (!(_.contains(ignoreList, path))){
+            TLCSet.push(path);
+          }
         }
       }
     }
@@ -157,7 +160,7 @@ exports.matchWithDefinition = function(doc, name){
       return def;
     }
   }
-  return "NO_MATCH";
+  return false;
 }
 
 exports.getIgnoreList = function(list){
@@ -171,15 +174,16 @@ exports.trimReadCollection = function(str) {
 }
 
 exports.trimReadResource = function(str) {
-  str = str.slice(4, -8);
-  return str;
+  val = str;
+  val = val.slice(4, -8);
+  return val;
 }
 
 exports.trimCreateBatch = function(str) {
   if (str.search(/createbatch/i) != -1){
     str = str.slice(11, str.length);
     if (str.slice(-1) == 's'){
-      str = str.slice(0, str.length - 1)
+      str = str.slice(0, str.length)
     }
   }
   return str;

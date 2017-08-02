@@ -23,13 +23,12 @@ var generateAE = require('./functions/createAppEngineSpec.js').create;
 var generateHTML = require('./functions/createHTML.js').create;
 
 // User Defined Variables
-var src = './middle-layer/heb-liquidsky-service-adminrest/openapi.yaml';
+var src = '/Users/brandonwilcox/Downloads/openapi.yml';
 var dest = '/Users/brandonwilcox/Desktop';
 
 var object = serialize.YML(src);
 
-var list = util.getIgnoreList();
-console.log(list);
+console.log(util.getTLC(object));
 
 
 // http.createServer(function(req, res) {

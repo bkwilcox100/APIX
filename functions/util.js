@@ -102,7 +102,7 @@ exports.getSQLTimeStamp = function(name){
   var month = date.getMonth();
   var day = date.getDate();
   if (date.getHours() < 10){
-    if (dat.getMinutes() < 10){
+    if (date.getMinutes() < 10){
       var time = "0" + date.getHours() + "" + "0" + date.getMinutes();
     } else {
       var time = "0" + date.getHours() + "" + date.getMinutes();

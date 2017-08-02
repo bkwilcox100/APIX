@@ -85,9 +85,11 @@ function generateTable(str, doc, defName, parent) {
     for (propName in doc['definitions'][defName]['properties']) {
       if (doc['definitions'][defName]['properties'][propName].hasOwnProperty('type')) {
         if (doc['definitions'][defName]['properties'][propName]['type'] == 'array') {
-          parent.child = doc['definitions'][defName]['properties'][propName]['items']['$ref'];
-          parent.child = parent.child.slice(parent.child.lastIndexOf('/') + 1, parent.child.length);
-          parent.reference = defName;
+          if (doc['definitions'][defName]['properties'][propName]['type'].hasOwnProperty('items')){
+            parent.child = doc['definitions'][defName]['properties'][propName]['items']['$ref'];
+            parent.child = parent.child.slice(parent.child.lastIndexOf('/') + 1, parent.child.length);
+            parent.reference = defName;
+          }
         }
       }
       size = getPropSize(doc, defName, propName);

@@ -2,3 +2,8 @@ lsresponsemessage
 lsresponseerror
 lsresponse
 jsonmap
+batchresponse
+message
+successmessage
+errorresponse
+auditlogentry

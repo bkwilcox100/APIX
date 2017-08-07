@@ -46,11 +46,13 @@ if (program.graphic){
   // Display Welcome Message
   console.log(chalk.green("Welcome to APIX!"));
 
-  // Execute
+  // Execute with Command Line Tool
   stdfunc.executeWithInquirer();
 
 } else if (program.source && program.dest){
+  // Execute without CLI and with designated source and destination
   stdfunc.execute(program.source, program.dest);
 } else if (program.source){
+  // Execute without CLI and with designated source and current directory
   stdfunc.execute(program.source, __dirname);
 }

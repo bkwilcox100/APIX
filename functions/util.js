@@ -9,10 +9,14 @@ exports.toUnderscore = function(string) {
 }
 
 exports.toUnderscoreUpper = function(string) {
-  var newString = string.replace(/\.?([A-Z]+)/g, function(x, y) {
-    return "_" + y.toLowerCase()
-  }).replace(/^_/, "");
-  return newString.toUpperCase();
+  try {
+    var newString = string.replace(/\.?([A-Z]+)/g, function(x, y) {
+      return "_" + y.toLowerCase()
+    }).replace(/^_/, "");
+    return newString.toUpperCase();
+  } catch (e) {
+    throw e;
+  }
 }
 
 exports.toCamelCase = function capitalizeFirstLetter(string) {

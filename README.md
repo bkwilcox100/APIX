@@ -149,6 +149,10 @@ If no destination is specified, the current directory will be default
             type: string
 
 
+## FAQ & Troubleshooting
+#### Why do I keep getting a "Check Ignore List" error?
+You need to check the ignore list and make sure all standard objects are listed in that file. If not, the program won't run as standard objects are defined differently
+
 ## Credits
 
 Developer: Brandon Wilcox

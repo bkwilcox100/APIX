@@ -1,0 +1,3 @@
+<table name="{{definition_name_lower_underscore}}" type="primary" id-column="id">
+  {{columns}}
+</table>

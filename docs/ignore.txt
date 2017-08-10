@@ -8,3 +8,5 @@ successmessage
 errorresponse
 auditlogentry
 auditlog
+googleerrorresponse
+googleerrordetails

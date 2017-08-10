@@ -26,9 +26,12 @@ var generateHTML = require('./functions/createHTML.js').create;
 var src = '/Users/brandonwilcox/Downloads/openapi.yml';
 var dest = '/Users/brandonwilcox/Desktop';
 
+const constructDataStore = require('./functions/beta/constructDataStore.js');
+
 var object = serialize.YML(src);
 
-console.log(util.getTLC(object));
+constructDataStore.create(object);
+
 
 
 // http.createServer(function(req, res) {

@@ -1,0 +1,7 @@
+<named-query name="get_all_{{definition_name_underscore_underscore}}">
+  select id from heb_{{definition_name_underscore}};
+</named-query>
+
+<named-query name="get_limit_{{definition_name_underscore}}">
+  select id from heb_{{definition_name_underscore}} order by creation_date desc limit ?;
+</named-query>

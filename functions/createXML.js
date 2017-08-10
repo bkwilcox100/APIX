@@ -140,28 +140,34 @@ function endDataStore(str) {
 }
 //TODO: Combine EndTable with generateReferenceTable
 function generateReferenceTable(doc, def, prop) {
-  var str = "";
-	console.log('hit: ' + def + ' ' + prop);
-  var member = {
-    parent: "",
-    child: ""
-  };
-  var child = doc['definitions'][def]['properties'][prop]['items']['$ref'];
-  child = child.slice(child.lastIndexOf('/') + 1, child.length);
-  var primaryChildKey = util.getID(doc, child);
-  var dataType = util.toCamelCase(child);
-  str += ("\n\t<table name=\"heb_" + util.toUnderscore(child) + "\" ");
-  str += "type=\"reference\" ";
-  str += ("id-column=\"" + util.toUnderscore(util.getID(doc, def)) + "\">\n");
-  //  "dataType" is not set right.   this should be the data Type name like data-type name="appMessage"
-  str += ("\t\t<column column-name=\"" + util.toUnderscore(primaryChildKey) + "\" list-item-type=\"" + dataType + "\" property=\"" + prop + "\" read-only=\"true\" cascade=\"true\" />\n");
-  // make the parent backlink and store it for later use. (this needs to use the same value as what is incorrectly "dataType" above
-  //createXmlGlobals.parentLinks.add({"parentName": "\t\t<column column-name=\"" + util.toUnderscore(util.getID(doc, def)) + "\" item-type=\"" + def + "\" property=\"parent\" />\n"});
-  member.parent = def;
-  member.child = child;
-  createXmlGlobals.parentLinks.push(member);
-  str = endTable(str);
-  return str;
+  try {
+    var str = "";
+  	if (def && prop){
+      var member = {
+        parent: "",
+        child: ""
+      };
+      var child = doc['definitions'][def]['properties'][prop]['items']['$ref'] || doc['definitions'][def]['properties'][prop]['items']['type'];
+      child = child.slice(child.lastIndexOf('/') + 1, child.length);
+      var primaryChildKey = util.getID(doc, child);
+      var dataType = util.toCamelCase(child);
+      str += ("\n\t<table name=\"heb_" + util.toUnderscore(child) + "\" ");
+      str += "type=\"reference\" ";
+      str += ("id-column=\"" + util.toUnderscore(util.getID(doc, def)) + "\">\n");
+      //  "dataType" is not set right.   this should be the data Type name like data-type name="appMessage"
+      str += ("\t\t<column column-name=\"" + util.toUnderscore(primaryChildKey) + "\" list-item-type=\"" + dataType + "\" property=\"" + prop + "\" read-only=\"true\" cascade=\"true\" />\n");
+      // make the parent backlink and store it for later use. (this needs to use the same value as what is incorrectly "dataType" above
+      //createXmlGlobals.parentLinks.add({"parentName": "\t\t<column column-name=\"" + util.toUnderscore(util.getID(doc, def)) + "\" item-type=\"" + def + "\" property=\"parent\" />\n"});
+      member.parent = def;
+      member.child = child;
+      createXmlGlobals.parentLinks.push(member);
+      str = endTable(str);
+    }
+    return str;
+  } catch (e) {
+    console.error(e);
+    throw ("Error: Check Ignore List");
+  }
 }
 
 function getMaxSize(doc, def, prop) {

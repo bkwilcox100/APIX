@@ -162,6 +162,8 @@ exports.matchWithDefinition = function(doc, name){
     //console.log(def + " vs " + name);
     if (def.toLowerCase() == name.toLowerCase()){
       return def;
+    } else if (def.toLowerCase() == name.slice(0, name.length - 1).toLowerCase()){
+      return def;
     }
   }
   return false;

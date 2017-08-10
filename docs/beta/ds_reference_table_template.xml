@@ -1,0 +1,3 @@
+<table name="{{child_name_underscore}}" type="reference" id-column="{{child_id}}">
+  <column column-name="{{parent_id}}" list-item-type="{{parent_name}}" property="{{parent_name}}s" read-only="true" cascade="true" />
+</table>

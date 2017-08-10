@@ -1,0 +1,6 @@
+<column column-name="{{prop_underscore}}" property="{{prop}}">
+  <attribute name="requiredProperty" value="{{isRequired}}"/>
+  <attribute name="restrictedProperty" value="{{isRestricted}}"/>
+  <attribute name="maxLength" value="{{maxLength}}"/>
+  <attribute name="minLength" value="{{minLength}}"/>
+</column>

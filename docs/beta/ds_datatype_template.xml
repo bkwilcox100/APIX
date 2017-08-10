@@ -1,0 +1,10 @@
+<!--
+==========================================================
+Definitions of resources for {{definition_name}}
+==========================================================
+-->
+<data-type name="{{definition_name}}" id-property="id" id-generator-prefix="" use-id-generator="true" pub-sub-enabled="false" fcm-enabled="false">
+    <table>
+    {{columns}}
+    </table>
+</data-type>
